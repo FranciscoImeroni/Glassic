@@ -1,0 +1,207 @@
+/* Layout general de la página */
+.form-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.page-header {
+    color: #000000;
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+.page-header h1 {
+  font-size: 24px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+/* Grilla de dos columnas */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+/* Paneles (cajas) */
+.panel {
+  background: #ffffff;
+  border: 2px solid #cfcfcf;
+  padding: 12px;
+  margin: 12px 12px 12px 20px;
+}
+
+.panel-title {
+  font-weight: 800;
+  font-size: 14px;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.panel-body {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Filas con etiqueta + control */
+.panel-body label {
+  display: grid;
+  grid-template-columns: 120px 1fr;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Inputs similares a la maqueta */
+.panel-body input,
+.panel-body select,
+.panel-body textarea {
+  background: #f2f2f2;
+  border: 2px solid #b7b7b7;
+  padding: 6px 8px;
+  height: 32px;
+  box-sizing: border-box;
+  color: #000000; /* rojo suave para valores de ejemplo */
+  font-weight: 600;
+}
+
+.panel-body textarea {
+  min-height: 90px;
+  resize: vertical;
+}
+
+/* Fila inline para 'Cantidad' y texto lateral */
+.row-inline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.row-inline > label {
+  display: grid;
+  grid-template-columns: 100px 120px;
+  gap: 8px;
+  align-items: center;
+}
+
+.row-inline span {
+  font-weight: 600;
+  color: #555;
+}
+
+/* Tabla simple de accesorios */
+.table-header {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 8px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.table-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.cell-cant {
+  width: 70px;
+  text-align: center;
+}
+
+.cell-desc {
+  width: 100%;
+}
+
+/* Nota de accesorios (caja amplia) */
+.panel-note textarea {
+  width: 100%;
+  min-height: 120px;
+  background: #f7f7f7;
+}
+
+/* Acciones del formulario */
+.form-actions {
+  grid-column: 1 / -1; /* que ocupe el ancho de ambas columnas */
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 8px;
+}
+
+/* Estado (éxito/error) */
+.status {
+  margin-top: 8px;
+  font-weight: 700;
+}
+
+/* Responsivo: una columna debajo de 1000px */
+@media (max-width: 1000px) {
+  .form-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panel de accesorios: ajuste fino */
+.accessories-panel .panel-body {
+  gap: 8px;
+}
+
+.accessories-panel .table-header {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 8px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 6px;
+}
+
+.accessories-panel .table-row {
+  display: grid;
+  grid-template-columns: 80px 1fr;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+
+.accessories-panel .table-row .cell-cant,
+.accessories-panel .table-row .cell-desc {
+  height: 32px;
+  border: 2px solid #b7b7b7;
+  background: #f2f2f2; /* leve azulado como la foto */
+  box-sizing: border-box;
+}
+
+/* Cantidad angosta y centrada */
+.accessories-panel .table-row .cell-cant {
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+}
+
+/* Select con flecha a la derecha */
+.select-desc {
+  width: 100%;
+  appearance: none;
+  padding: 6px 32px 6px 8px; /* espacio para flecha */
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='14' height='14' viewBox='0 0 24 24'><path fill='%23999' d='M7 10l5 5 5-5z'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-color: #f2f2f2;
+  font-weight: 600;
+  color: #333;
+}
+
+/* Nota amplia con borde */
+.accessories-panel .panel-note textarea {
+  width: 100%;
+  min-height: 120px;
+  background: #f2f2f2;
+  border: 2px solid #b7b7b7;
+  box-sizing: border-box;
+}
