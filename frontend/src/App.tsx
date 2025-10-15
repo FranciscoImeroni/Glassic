@@ -2,7 +2,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { Navigate } from 'react-router-dom';
 import FormPage from './pages/FormPage/FormPage';
 import MainLayout from './layouts/MainLayout';
-import IngresarProductoPage from './pages/IngresarProductoPage';
+import IngresarProductoPage from './pages/IngresarProductosPage/IngresarProductoPage';
 import VerPlanoPage from './pages/VerPlanoPage';
 import VerFormulasPage from './pages/VerFormulasPage';
 import BasesDeDatosPage from './pages/BasesDeDatosPage';
