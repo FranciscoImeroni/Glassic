@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { Datos } from './entities/dato.entity';
+import { Datos } from './entities/datos.entity';
 import { DatosService } from './datos.service';
 import { DatosController } from './datos.controller';
 
