@@ -42,10 +42,21 @@ body {
   font-size: 18px;
 }
 
+.logo-link {
+  display: inline-block;
+  text-decoration: none;
+  transition: opacity 0.2s ease;
+}
+
+.logo-link:hover {
+  opacity: 0.8;
+}
+
 .brand-logo {
   max-height: 50px;
   max-width: 180px;
   object-fit: contain;
+  cursor: pointer;
 }
 
 /* Navegación */
