@@ -42,6 +42,12 @@ body {
   font-size: 18px;
 }
 
+.brand-logo {
+  max-height: 50px;
+  max-width: 180px;
+  object-fit: contain;
+}
+
 /* Navegación */
 .sidebar-nav {
   display: flex;

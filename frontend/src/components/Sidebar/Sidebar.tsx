@@ -1,5 +1,6 @@
 import { NavLink } from 'react-router-dom';
 import './Sidebar.css';
+import logo from '../../assets/glassic-logo.png'; // Ajusta el nombre del archivo según tu logo
 
 const menuItems = [
   { label: 'INGRESAR DATOS', to: '/ingresar-datos' },
@@ -16,8 +17,7 @@ export default function Sidebar() {
   return (
     <aside className="sidebar">
       <div className="sidebar-header">
-        {/* Pon tu logo aquí si querés */}
-        <span className="brand">GLASSIC</span>
+        <img src={logo} alt="Glassic Logo" className="brand-logo" />
       </div>
 
       <nav className="sidebar-nav">
