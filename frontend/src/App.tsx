@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import { Navigate } from 'react-router-dom';
 import FormPage from './pages/FormPage/FormPage';
 import MainLayout from './layouts/MainLayout';
 import IngresarProductoPage from './pages/IngresarProductosPage/IngresarProductoPage';
@@ -9,13 +8,14 @@ import BasesDeDatosPage from './pages/BasesDeDatosPage';
 import LimpiarDatosPage from './pages/LimpiarDatosPage';
 import SalirPage from './pages/SalirPage';
 import ProgramadorPage from './pages/ProgramadorPage';
+import HomePage from './pages/HomePage/HomePage';
 
 function App() {
   return (
     <BrowserRouter>
       <Routes>
         <Route element={<MainLayout />}>
-          <Route path="/" element={<Navigate to="/ingresar-datos" replace />} />
+          <Route path="/" element={<HomePage />} />
           <Route path="/ingresar-datos" element={<FormPage />} />
           <Route path="/ingresar-producto" element={<IngresarProductoPage />} />
           <Route path="/ver-plano" element={<VerPlanoPage />} />
