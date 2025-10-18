@@ -18,7 +18,7 @@ import { ProductosModule } from './modules/productos/productos.module';
         port: config.get('DB_PORT'),
         username: config.get('DB_USERNAME'),
         password: config.get('DB_PASSWORD'),
-        database: config.get('DB_NAME'),
+        database: config.get('DB_DATABASE'),
         autoLoadEntities: true,
         synchronize: true, // ⚠️ solo para desarrollo
       }),
