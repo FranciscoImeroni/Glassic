@@ -14,11 +14,11 @@ import { ProductosModule } from './modules/productos/productos.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
-        host: config.get('DB_HOST'),
-        port: config.get('DB_PORT'),
-        username: config.get('DB_USERNAME'),
-        password: config.get('DB_PASSWORD'),
-        database: config.get('DB_DATABASE'),
+        host: config.get('PGHOST'),
+        port: config.get('PGPORT'),
+        username: config.get('PGUSER'),
+        password: config.get('PGPASSWORD'),
+        database: config.get('POSTGRES_DB'),
         autoLoadEntities: true,
         synchronize: true, // ⚠️ solo para desarrollo
       }),
