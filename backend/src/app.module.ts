@@ -18,7 +18,7 @@ import { ProductosModule } from './modules/productos/productos.module';
         port: config.get('PGPORT'),
         username: config.get('PGUSER'),
         password: config.get('PGPASSWORD'),
-        database: config.get('POSTGRES_DB'),
+        database: config.get('PGDATABASE'),
         autoLoadEntities: true,
         synchronize: true, // ⚠️ solo para desarrollo
       }),
