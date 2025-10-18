@@ -1,6 +1,6 @@
 services:
   # Base de datos PostgreSQL
-  - type: pserv
+  - type: database
     name: glassic-database
     env: node
     plan: free
