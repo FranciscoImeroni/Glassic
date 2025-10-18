@@ -1,5 +1,4 @@
 services:
-
   # Backend API (NestJS)
   - type: web
     name: glassic-backend
@@ -43,7 +42,6 @@ services:
   - type: web
     name: glassic-frontend
     env: static
-    region: oregon
     plan: free
     buildCommand: cd frontend && npm ci && npm run build
     staticPublishPath: frontend/dist
