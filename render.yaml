@@ -1,13 +1,4 @@
 services:
-  # Base de datos PostgreSQL
-  - type: postgres
-    name: glassic-database
-    env: node
-    plan: free
-    region: oregon
-    databases:
-      - name: glassic_db
-        user: glassic_user
 
   # Backend API (NestJS)
   - type: web
