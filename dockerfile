@@ -1,4 +1,4 @@
-# Etapa 1: construir frontend
+# Etapa 1: frontend
 FROM node:22-alpine AS build-frontend
 WORKDIR /app/frontend
 COPY frontend/package*.json ./
@@ -6,16 +6,17 @@ RUN npm ci
 COPY frontend/ .
 RUN npm run build
 
-# Etapa 2: construir backend
+# Etapa 2: backend
 FROM node:22-alpine AS build-backend
 WORKDIR /app/backend
 COPY backend/package*.json ./
 RUN npm ci
 COPY backend/ .
-COPY --from=build-frontend /app/frontend/build ./frontend
+# Copiar dist de frontend
+COPY --from=build-frontend /app/frontend/dist ./frontend
 RUN npm run build
 
-# Etapa 3: imagen final para correr la app
+# Etapa 3: producción
 FROM node:22-alpine
 WORKDIR /app/backend
 COPY --from=build-backend /app/backend ./
