@@ -21,6 +21,9 @@ import { ProductosModule } from './modules/productos/productos.module';
         database: config.get('PGDATABASE'),
         autoLoadEntities: true,
         synchronize: true, // ⚠️ solo para desarrollo
+        ssl: {
+        rejectUnauthorized: false 
+    }
       }),
     }),
     UsersModule,
