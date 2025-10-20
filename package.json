@@ -1,8 +1,0 @@
-{
-  "name": "glassic-monorepo",
-  "version": "1.0.0",
-  "scripts": {
-    "build": "cd frontend && npm ci && npm run build && cd ../backend && mkdir -p frontend && cp -r ../frontend/build ./frontend && npm ci && npm run build",
-    "start": "cd backend && npm run start:prod"
-  }
-}
