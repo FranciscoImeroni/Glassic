@@ -12,11 +12,11 @@ WORKDIR /app/backend
 COPY backend/package*.json ./
 RUN npm ci
 COPY backend/ .
-# Copiar build del frontend al backend (para servirlo desde Nest)
+# Copiar el build del frontend dentro del backend
 COPY --from=build-frontend /app/frontend/build ./frontend
 RUN npm run build
 
-# Etapa 3: ejecutar la app NestJS
+# Etapa 3: imagen final para correr la app
 FROM node:22-alpine
 WORKDIR /app/backend
 COPY --from=build-backend /app/backend ./
