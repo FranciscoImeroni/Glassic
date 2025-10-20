@@ -8,29 +8,34 @@ import { DatosModule } from './modules/datos/datos.module';
 import { ProductosModule } from './modules/productos/productos.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
-    TypeOrmModule.forRootAsync({
-      inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        host: config.get('PGHOST'),
-        port: parseInt(config.get('PGPORT') || '5432', 10),
-        username: config.get('PGUSER'),
-        password: config.get('PGPASSWORD'),
-        database: config.get('PGDATABASE'),
-        autoLoadEntities: true,
-        synchronize: true, // ⚠️ solo para desarrollo
-        ssl: {
-        rejectUnauthorized: false 
-    }
-      }),
-    }),
-    UsersModule,
-    DatosModule,
-    ProductosModule,
-  ],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    TypeOrmModule.forRootAsync({
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => ({
+        type: 'postgres',
+        // 1. Operador de aserción no nula (!) para evitar error de TypeScript (TS2345)
+        host: config.get('PGHOST')!,
+        
+        // 2. Lógica de puerto robusta: si PGPORT es null/undefined, usa '5432'
+        port: parseInt(config.get('PGPORT') || '5432', 10),
+        
+        username: config.get('PGUSER')!,
+        password: config.get('PGPASSWORD')!,
+        database: config.get('PGDATABASE')!,
+        
+        autoLoadEntities: true,
+        synchronize: true, // ⚠️ solo para desarrollo
+        ssl: {
+        rejectUnauthorized: false 
+    }
+      }),
+    }),
+    UsersModule,
+    DatosModule,
+    ProductosModule,
+  ],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}
