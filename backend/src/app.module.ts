@@ -15,7 +15,7 @@ import { ProductosModule } from './modules/productos/productos.module';
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         host: config.get('PGHOST'),
-        port: config.get('PGPORT'),
+        port: parseInt(config.get('PGPORT') || '5432', 10),
         username: config.get('PGUSER'),
         password: config.get('PGPASSWORD'),
         database: config.get('PGDATABASE'),
