@@ -14,7 +14,9 @@ import { ProductosModule } from './modules/productos/productos.module';
   imports: [
     // 👇 Sirve los archivos estáticos del frontend
     ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'frontend'), // o 'out' si es Next export
+      rootPath: join(__dirname, '..', 'frontend'),
+      exclude: ['/api*'], // Excluye todas las rutas de API
+      serveRoot: '/', // Sirve el frontend en la raíz
     }),
 
     ConfigModule.forRoot({ isGlobal: true }),
