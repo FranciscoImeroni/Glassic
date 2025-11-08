@@ -30,7 +30,11 @@ import { ConfiguracionModule } from './modules/configuracion/configuracion.modul
         type: 'postgres',
         url: config.get('DATABASE_URL'),
         autoLoadEntities: true,
-        synchronize: true, // ⚠️ solo para desarrollo
+        // ⚠️ synchronize solo en desarrollo, NUNCA en producción
+        synchronize: config.get('NODE_ENV') !== 'production',
+        // Para producción, usar migraciones: npm run migration:run
+        migrations: ['dist/migrations/*.js'],
+        migrationsRun: config.get('NODE_ENV') === 'production',
         ssl: {
           rejectUnauthorized: false,
         },
