@@ -1,10 +1,22 @@
-import { useState } from 'react';
-import { createRecord } from '../../api/index';
+import { useState, useEffect } from 'react';
+import {
+  getComprobantes,
+  getTiposVidrio,
+  getColoresVidrio,
+  getServicios,
+  getHerrajes,
+  getAccesorios,
+  type Comprobante,
+  type Servicio,
+  type Herraje,
+  type Accesorio,
+} from '../../api/index';
 import './FormPage.css';
 
 export default function FormPage() {
-  type Accessory = { cantidad: string; descripcion: string };
+  type AccessoryItem = { cantidad: string; descripcion: string };
 
+  // Estados del formulario
   const [cliente, setCliente] = useState('');
   const [referencia, setReferencia] = useState('');
   const [obra, setObra] = useState('');
@@ -20,7 +32,7 @@ export default function FormPage() {
 
   const [colorHerraje, setColorHerraje] = useState('');
 
-  const [accesorios, setAccesorios] = useState<Accessory[]>([
+  const [accesorios, setAccesorios] = useState<AccessoryItem[]>([
     { cantidad: '', descripcion: '' },
     { cantidad: '', descripcion: '' },
     { cantidad: '', descripcion: '' },
@@ -30,11 +42,52 @@ export default function FormPage() {
   const [notaGeneral, setNotaGeneral] = useState('');
   const [status, setStatus] = useState('');
 
-  const handleAccessoryChange = (index: number, field: keyof Accessory, value: string) => {
+  // Estados para datos de la BD
+  const [comprobantes, setComprobantes] = useState<Comprobante[]>([]);
+  const [tiposVidrio, setTiposVidrio] = useState<string[]>([]);
+  const [coloresVidrio, setColoresVidrio] = useState<string[]>([]);
+  const [servicios, setServicios] = useState<Servicio[]>([]);
+  const [herrajes, setHerrajes] = useState<Herraje[]>([]);
+  const [accesoriosOptions, setAccesoriosOptions] = useState<Accesorio[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Cargar datos desde la BD al montar el componente
+  useEffect(() => {
+    async function loadData() {
+      try {
+        setLoading(true);
+        const [comprobantesData, tiposData, coloresData, serviciosData, herrajesData, accesoriosData] =
+          await Promise.all([
+            getComprobantes(),
+            getTiposVidrio(),
+            getColoresVidrio(),
+            getServicios(),
+            getHerrajes(),
+            getAccesorios(),
+          ]);
+
+        setComprobantes(comprobantesData);
+        setTiposVidrio(tiposData);
+        setColoresVidrio(coloresData);
+        setServicios(serviciosData);
+        setHerrajes(herrajesData);
+        setAccesoriosOptions(accesoriosData);
+      } catch (error) {
+        console.error('Error al cargar datos:', error);
+        setStatus('Error al cargar datos de catálogos');
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    loadData();
+  }, []);
+
+  const handleAccessoryChange = (index: number, field: keyof AccessoryItem, value: string) => {
     setAccesorios((prev) => prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)));
   };
 
-  const handleSubmit = async (e: any) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const formData = {
       datosCliente: { cliente, referencia, obra },
@@ -48,13 +101,26 @@ export default function FormPage() {
     };
 
     try {
-      await createRecord(formData);
+      // Aquí deberías crear el endpoint correcto en el backend
+      // await createDato(formData);
       setStatus('Registro creado con éxito');
+      console.log('Datos del formulario:', formData);
     } catch (err) {
       setStatus('Error al crear registro');
       console.error(err);
     }
   };
+
+  if (loading) {
+    return (
+      <div className="form-page">
+        <header className="page-header">
+          <h1>INGRESAR DATOS</h1>
+        </header>
+        <div style={{ padding: '2rem', textAlign: 'center' }}>Cargando catálogos...</div>
+      </div>
+    );
+  }
 
   return (
     <div className="form-page">
@@ -87,7 +153,14 @@ export default function FormPage() {
             <div className="panel-body">
               <label>
                 TIPO:
-                <select value={tipoComprobante} onChange={(e) => setTipoComprobante(e.target.value)}></select>
+                <select value={tipoComprobante} onChange={(e) => setTipoComprobante(e.target.value)}>
+                  <option value="">Seleccione...</option>
+                  {comprobantes.map((comp) => (
+                    <option key={comp.id} value={comp.codigo}>
+                      {comp.codigo} - {comp.descripcion}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label>
                 NUMERO:
@@ -101,11 +174,25 @@ export default function FormPage() {
             <div className="panel-body">
               <label>
                 TIPO:
-                <select value={tipoVidrio} onChange={(e) => setTipoVidrio(e.target.value)}></select>
+                <select value={tipoVidrio} onChange={(e) => setTipoVidrio(e.target.value)}>
+                  <option value="">Seleccione...</option>
+                  {tiposVidrio.map((tipo) => (
+                    <option key={tipo} value={tipo}>
+                      {tipo}
+                    </option>
+                  ))}
+                </select>
               </label>
               <label>
                 COLOR:
-                <select value={colorVidrio} onChange={(e) => setColorVidrio(e.target.value)}></select>
+                <select value={colorVidrio} onChange={(e) => setColorVidrio(e.target.value)}>
+                  <option value="">Seleccione...</option>
+                  {coloresVidrio.map((color) => (
+                    <option key={color} value={color}>
+                      {color}
+                    </option>
+                  ))}
+                </select>
               </label>
               <div className="row-inline">
                 <label>
@@ -125,7 +212,14 @@ export default function FormPage() {
             <div className="panel-title">SERVICIO:</div>
             <div className="panel-body">
               <label>
-                <select value={servicio} onChange={(e) => setServicio(e.target.value)}></select>
+                <select value={servicio} onChange={(e) => setServicio(e.target.value)}>
+                  <option value="">Seleccione...</option>
+                  {servicios.map((serv) => (
+                    <option key={serv.id} value={serv.nombre}>
+                      {serv.nombre}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
           </section>
@@ -137,7 +231,14 @@ export default function FormPage() {
             <div className="panel-body">
               <label>
                 COLOR:
-                <select value={colorHerraje} onChange={(e) => setColorHerraje(e.target.value)}></select>
+                <select value={colorHerraje} onChange={(e) => setColorHerraje(e.target.value)}>
+                  <option value="">Seleccione...</option>
+                  {herrajes.map((herraje) => (
+                    <option key={herraje.id} value={herraje.color}>
+                      {herraje.color}
+                    </option>
+                  ))}
+                </select>
               </label>
             </div>
           </section>
@@ -163,7 +264,12 @@ export default function FormPage() {
                     value={acc.descripcion}
                     onChange={(e) => handleAccessoryChange(idx, 'descripcion', e.target.value)}
                   >
-                    {/* opciones se poblarán desde la BD */}
+                    <option value="">Seleccione...</option>
+                    {accesoriosOptions.map((accOption) => (
+                      <option key={accOption.id} value={accOption.descripcion}>
+                        {accOption.descripcion}
+                      </option>
+                    ))}
                   </select>
                 </div>
               ))}
@@ -172,6 +278,7 @@ export default function FormPage() {
                 <textarea
                   value={notaAccesorios}
                   onChange={(e) => setNotaAccesorios(e.target.value)}
+                  placeholder="Notas sobre accesorios..."
                 />
               </div>
             </div>
@@ -180,9 +287,19 @@ export default function FormPage() {
           <section className="panel">
             <div className="panel-title">NOTA:</div>
             <div className="panel-body">
-              <textarea value={notaGeneral} onChange={(e) => setNotaGeneral(e.target.value)} />
+              <textarea
+                value={notaGeneral}
+                onChange={(e) => setNotaGeneral(e.target.value)}
+                placeholder="Nota general..."
+              />
             </div>
           </section>
+
+          <div className="form-actions">
+            <button type="submit" className="btn-submit">
+              GUARDAR
+            </button>
+          </div>
         </div>
       </form>
 
