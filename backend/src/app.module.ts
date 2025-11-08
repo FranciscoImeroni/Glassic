@@ -9,6 +9,8 @@ import { AppService } from './app.service';
 import { UsersModule } from './modules/users/users.module';
 import { DatosModule } from './modules/datos/datos.module';
 import { ProductosModule } from './modules/productos/productos.module';
+import { FormulasModule } from './modules/formulas/formulas.module';
+import { ConfiguracionModule } from './modules/configuracion/configuracion.module';
 
 @Module({
   imports: [
@@ -59,6 +61,8 @@ import { ProductosModule } from './modules/productos/productos.module';
     UsersModule,
     DatosModule,
     ProductosModule,
+    FormulasModule,
+    ConfiguracionModule,
   ],
   controllers: [AppController],
   providers: [AppService],
