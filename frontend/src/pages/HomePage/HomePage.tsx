@@ -5,7 +5,7 @@ export default function HomePage() {
     <div className="home-container">
       <div className="home-content">
         <h1 className="main-title">
-          GENERADOR DE ORDENES DE FABRICACION
+          GENERADOR DE ORDENES DE FABRICACIÓN
         </h1>
         <div className="subtitle-container">
           <span className="subtitle-text">MAMPARAS</span>
