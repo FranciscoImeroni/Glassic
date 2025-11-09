@@ -98,6 +98,8 @@ export class CloudinaryController {
    */
   @Get('test-orden')
   testOrden() {
+    const cloudConfig = this.cloudinaryService.getCloudinary().config();
+
     const variations = [
       this.cloudinaryService.getCloudinary().url('ORDEN_DE_FABRICACION', {
         secure: true,
@@ -113,10 +115,34 @@ export class CloudinaryController {
 
     return {
       mensaje: 'Prueba estas URLs para ORDEN_DE_FABRICACION',
+      cloudName: cloudConfig.cloud_name,
       urls: {
         'sin_extension': variations[0],
         'con_extension_jpg': variations[1],
       },
+    };
+  }
+
+  /**
+   * Endpoint de diagnóstico - verifica la configuración de Cloudinary
+   * GET /cloudinary/diagnostico
+   */
+  @Get('diagnostico')
+  diagnostico() {
+    const cloudConfig = this.cloudinaryService.getCloudinary().config();
+
+    return {
+      configuracion: {
+        cloud_name: cloudConfig.cloud_name || 'NO CONFIGURADO',
+        api_key: cloudConfig.api_key ? `${cloudConfig.api_key.substring(0, 4)}...` : 'NO CONFIGURADO',
+        api_secret_configurado: !!cloudConfig.api_secret,
+      },
+      url_ejemplo_ORDEN_DE_FABRICACION: this.cloudinaryService.getCloudinary().url('ORDEN_DE_FABRICACION', {
+        secure: true,
+        quality: 'auto',
+        fetch_format: 'auto',
+      }),
+      instrucciones: 'Si cloud_name es "NO CONFIGURADO" o "your_cloud_name", las variables de entorno no están configuradas en Railway',
     };
   }
 }
