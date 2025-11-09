@@ -38,47 +38,86 @@ export function getCloudinaryUrl(
 
 /**
  * Obtiene la URL de la imagen de un modelo
+ * Busca en la raíz de Cloudinary (sin carpeta) con el prefijo IM-
  * @param modeloNombre - Nombre del modelo (ej: 4200-D)
  * @param options - Opciones de transformación
  * @returns URL de la imagen del modelo
  */
 export function getModeloImageUrl(
   modeloNombre: string,
-  options?: { width?: number; height?: number }
+  options?: { width?: number; height?: number; quality?: string; format?: string }
 ): string {
-  // Agregar prefijo IM- y extensión .jpg
-  const imageFileName = `IM-${modeloNombre}.jpg`;
-  return getCloudinaryUrl('Imagenes', imageFileName, options);
+  const { width, height, quality = 'auto', format = 'auto' } = options || {};
+
+  let transformations = `q_${quality},f_${format}`;
+
+  if (width) {
+    transformations += `,w_${width}`;
+  }
+
+  if (height) {
+    transformations += `,h_${height}`;
+  }
+
+  // Buscar en la raíz sin carpeta, solo con prefijo IM-
+  const imageFileName = `IM-${modeloNombre}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${imageFileName}`;
 }
 
 /**
  * Obtiene la URL de un esquema
+ * Busca en la raíz de Cloudinary (sin carpeta) con el prefijo ES-
  * @param esquemaNombre - Nombre del esquema (ej: 4200-D)
  * @param options - Opciones de transformación
  * @returns URL del esquema
  */
 export function getEsquemaUrl(
   esquemaNombre: string,
-  options?: { width?: number; height?: number }
+  options?: { width?: number; height?: number; quality?: string; format?: string }
 ): string {
-  // Agregar prefijo ES- y extensión .jpg
-  const esquemaFileName = `ES-${esquemaNombre}.jpg`;
-  return getCloudinaryUrl('Esquemas', esquemaFileName, options);
+  const { width, height, quality = 'auto', format = 'auto' } = options || {};
+
+  let transformations = `q_${quality},f_${format}`;
+
+  if (width) {
+    transformations += `,w_${width}`;
+  }
+
+  if (height) {
+    transformations += `,h_${height}`;
+  }
+
+  // Buscar en la raíz sin carpeta, solo con prefijo ES-
+  const esquemaFileName = `ES-${esquemaNombre}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${esquemaFileName}`;
 }
 
 /**
  * Obtiene la URL de un plano
+ * Busca en la raíz de Cloudinary (sin carpeta) con el prefijo PL-
  * @param planoNombre - Nombre del plano (ej: 4200C2d)
  * @param options - Opciones de transformación
  * @returns URL del plano
  */
 export function getPlanoUrl(
   planoNombre: string,
-  options?: { width?: number; height?: number }
+  options?: { width?: number; height?: number; quality?: string; format?: string }
 ): string {
-  // Agregar prefijo PL- y extensión .jpg
-  const planoFileName = `PL-${planoNombre}.jpg`;
-  return getCloudinaryUrl('Planos', planoFileName, options);
+  const { width, height, quality = 'auto', format = 'auto' } = options || {};
+
+  let transformations = `q_${quality},f_${format}`;
+
+  if (width) {
+    transformations += `,w_${width}`;
+  }
+
+  if (height) {
+    transformations += `,h_${height}`;
+  }
+
+  // Buscar en la raíz sin carpeta, solo con prefijo PL-
+  const planoFileName = `PL-${planoNombre}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${planoFileName}`;
 }
 
 /**
@@ -101,6 +140,6 @@ export function getOrdenFabricacionUrl(
     transformations += `,h_${height}`;
   }
 
-  // La imagen está en la raíz de Cloudinary con extensión .jpg
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/ORDEN_DE_FABRICACION.jpg`;
+  // Buscar en la raíz de Cloudinary
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/ORDEN_DE_FABRICACION`;
 }
