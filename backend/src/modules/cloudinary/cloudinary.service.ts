@@ -32,32 +32,50 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de la imagen de un modelo
+   * Busca en la raíz de Cloudinary con el prefijo IM-
    * @param modeloNombre - Nombre del modelo (ej: 4200-D)
    * @returns URL de la imagen del modelo
    */
   getModeloImageUrl(modeloNombre: string): string {
-    const imageFileName = `IM-${modeloNombre}.jpg`;
-    return this.getImageUrl('Imagenes', imageFileName);
+    // Buscar en la raíz sin carpeta, solo con prefijo IM-
+    const imageFileName = `IM-${modeloNombre}`;
+    return cloudinary.url(imageFileName, {
+      secure: true,
+      quality: 'auto',
+      fetch_format: 'auto',
+    });
   }
 
   /**
    * Obtiene la URL de un esquema
+   * Busca en la raíz de Cloudinary con el prefijo ES-
    * @param esquemaNombre - Nombre del esquema (ej: 4200-D)
    * @returns URL del esquema
    */
   getEsquemaUrl(esquemaNombre: string): string {
-    const esquemaFileName = `ES-${esquemaNombre}.jpg`;
-    return this.getImageUrl('Esquemas', esquemaFileName);
+    // Buscar en la raíz sin carpeta, solo con prefijo ES-
+    const esquemaFileName = `ES-${esquemaNombre}`;
+    return cloudinary.url(esquemaFileName, {
+      secure: true,
+      quality: 'auto',
+      fetch_format: 'auto',
+    });
   }
 
   /**
    * Obtiene la URL de un plano
+   * Busca en la raíz de Cloudinary con el prefijo PL-
    * @param planoNombre - Nombre del plano (ej: 4200C2d)
    * @returns URL del plano
    */
   getPlanoUrl(planoNombre: string): string {
-    const planoFileName = `PL-${planoNombre}.jpg`;
-    return this.getImageUrl('Planos', planoFileName);
+    // Buscar en la raíz sin carpeta, solo con prefijo PL-
+    const planoFileName = `PL-${planoNombre}`;
+    return cloudinary.url(planoFileName, {
+      secure: true,
+      quality: 'auto',
+      fetch_format: 'auto',
+    });
   }
 
   /**
@@ -65,8 +83,8 @@ export class CloudinaryService {
    * @returns URL de la imagen de orden de fabricación
    */
   getOrdenFabricacionUrl(): string {
-    // La imagen suelta está en la raíz de Cloudinary con extensión .jpg
-    return cloudinary.url('ORDEN_DE_FABRICACION.jpg', {
+    // Buscar en la raíz de Cloudinary
+    return cloudinary.url('ORDEN_DE_FABRICACION', {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',
