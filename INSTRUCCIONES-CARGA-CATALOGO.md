@@ -11,15 +11,14 @@ Este directorio contiene comandos para cargar los datos del catálogo de product
 3. Selecciona el archivo `insomnia-catalog-data.json`
 4. La colección "Glassic - Catálogo de Productos" aparecerá en tu workspace
 
-### Paso 2: Configurar la URL Base
+### Paso 2: Configurar el Ambiente
 
 1. En Insomnia, ve a la colección importada
-2. Haz clic en **Manage Environments**
-3. Verifica que la variable `base_url` esté configurada como:
-   ```
-   http://localhost:3000/api
-   ```
-4. Si tu backend corre en otro puerto, cambia el valor
+2. Haz clic en el selector de ambientes (parte superior)
+3. Selecciona uno de los ambientes disponibles:
+   - **Base Environment**: `http://localhost:3000/api` (desarrollo local)
+   - **Production**: `https://glassic-production.up.railway.app/api` (producción)
+4. Asegúrate de que el ambiente correcto esté seleccionado antes de ejecutar los requests
 
 ### Paso 3: Ejecutar los Requests
 
@@ -53,22 +52,20 @@ chmod +x cargar-datos-catalogo.sh
 
 ### Paso 2: Ejecutar el Script
 
+**Para desarrollo local:**
 ```bash
 ./cargar-datos-catalogo.sh
+```
+
+**Para producción:**
+```bash
+./cargar-datos-catalogo.sh production
 ```
 
 El script creará automáticamente:
 - 5 Variables
 - 9 Códigos de Instrucción
 - 24 Productos
-
-### Personalizar URL del Backend
-
-Si tu backend corre en otro puerto, edita la línea 5 del script:
-
-```bash
-API_URL="http://localhost:PUERTO/api"
-```
 
 ---
 
@@ -101,24 +98,32 @@ API_URL="http://localhost:PUERTO/api"
 
 Después de ejecutar los comandos, puedes verificar que los datos se cargaron correctamente:
 
-### Ver todas las variables
+### Ambiente Local
+
 ```bash
 curl http://localhost:3000/api/variables
-```
-
-### Ver todos los códigos de instrucción
-```bash
 curl http://localhost:3000/api/codigos-instruccion
+curl http://localhost:3000/api/productos
 ```
 
-### Ver todos los productos
+### Ambiente Producción
+
 ```bash
-curl http://localhost:3000/api/productos
+curl https://glassic-production.up.railway.app/api/variables
+curl https://glassic-production.up.railway.app/api/codigos-instruccion
+curl https://glassic-production.up.railway.app/api/productos
 ```
 
 ---
 
 ## Solución de Problemas
+
+### Error 404: Cannot POST /variables
+- **Causa**: Falta el prefijo `/api` en la URL
+- **Solución**: Asegúrate de usar la URL completa con `/api`:
+  - Local: `http://localhost:3000/api/variables`
+  - Producción: `https://glassic-production.up.railway.app/api/variables`
+- En Insomnia, verifica que hayas seleccionado el ambiente correcto
 
 ### Error: Cannot connect to localhost:3000
 - Verifica que el backend esté corriendo

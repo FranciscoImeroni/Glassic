@@ -21,6 +21,15 @@
       "parentId": "wrk_glassic_catalog"
     },
     {
+      "_id": "env_production",
+      "_type": "environment",
+      "name": "Production",
+      "data": {
+        "base_url": "https://glassic-production.up.railway.app/api"
+      },
+      "parentId": "wrk_glassic_catalog"
+    },
+    {
       "_id": "req_var_van0",
       "_type": "request",
       "name": "1. Crear Variable VAN0",

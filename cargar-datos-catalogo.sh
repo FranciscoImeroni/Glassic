@@ -1,9 +1,18 @@
 #!/bin/bash
 
 # Script para cargar datos del catálogo en Glassic
-# Uso: ./cargar-datos-catalogo.sh
+# Uso: ./cargar-datos-catalogo.sh [production]
+# Ejemplos:
+#   ./cargar-datos-catalogo.sh           # Usa localhost
+#   ./cargar-datos-catalogo.sh production # Usa producción
 
-API_URL="http://localhost:3000/api"
+if [ "$1" == "production" ]; then
+  API_URL="https://glassic-production.up.railway.app/api"
+  echo "Usando ambiente de PRODUCCIÓN: $API_URL"
+else
+  API_URL="http://localhost:3000/api"
+  echo "Usando ambiente LOCAL: $API_URL"
+fi
 
 echo "======================================"
 echo "Cargando datos del catálogo Glassic"
