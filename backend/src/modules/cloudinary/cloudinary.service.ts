@@ -18,8 +18,8 @@ export class CloudinaryService {
 
   /**
    * Construye una URL de Cloudinary para una imagen
-   * @param folder - Carpeta en Cloudinary (esquemas, imagenes, planos)
-   * @param publicId - Nombre del archivo/imagen
+   * @param folder - Carpeta en Cloudinary (Esquemas, Imagenes, Planos)
+   * @param publicId - Nombre del archivo/imagen con extensión
    * @returns URL completa de la imagen
    */
   getImageUrl(folder: string, publicId: string): string {
@@ -32,29 +32,32 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de la imagen de un modelo
-   * @param modeloNombre - Nombre del modelo
+   * @param modeloNombre - Nombre del modelo (ej: 4200-D)
    * @returns URL de la imagen del modelo
    */
   getModeloImageUrl(modeloNombre: string): string {
-    return this.getImageUrl('imagenes', modeloNombre);
+    const imageFileName = `IM-${modeloNombre}.jpg`;
+    return this.getImageUrl('Imagenes', imageFileName);
   }
 
   /**
    * Obtiene la URL de un esquema
-   * @param esquemaNombre - Nombre del esquema
+   * @param esquemaNombre - Nombre del esquema (ej: 4200-D)
    * @returns URL del esquema
    */
   getEsquemaUrl(esquemaNombre: string): string {
-    return this.getImageUrl('esquemas', esquemaNombre);
+    const esquemaFileName = `ES-${esquemaNombre}.jpg`;
+    return this.getImageUrl('Esquemas', esquemaFileName);
   }
 
   /**
    * Obtiene la URL de un plano
-   * @param planoNombre - Nombre del plano
+   * @param planoNombre - Nombre del plano (ej: 4200C2d)
    * @returns URL del plano
    */
   getPlanoUrl(planoNombre: string): string {
-    return this.getImageUrl('planos', planoNombre);
+    const planoFileName = `PL-${planoNombre}.jpg`;
+    return this.getImageUrl('Planos', planoFileName);
   }
 
   /**
@@ -62,8 +65,8 @@ export class CloudinaryService {
    * @returns URL de la imagen de orden de fabricación
    */
   getOrdenFabricacionUrl(): string {
-    // La imagen suelta está en la raíz de Cloudinary
-    return cloudinary.url('ORDEN_DE_FABRICACION', {
+    // La imagen suelta está en la raíz de Cloudinary con extensión .jpg
+    return cloudinary.url('ORDEN_DE_FABRICACION.jpg', {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',
