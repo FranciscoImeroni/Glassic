@@ -1,0 +1,92 @@
+.ver-plano-container {
+  padding: 20px;
+  background-color: #ffffff;
+  min-height: 100vh;
+}
+
+.page-title {
+  text-align: center;
+  font-size: 24px;
+  font-weight: bold;
+  color: #000;
+  margin: 0 0 30px 0;
+}
+
+.plano-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.orden-fabricacion-section {
+  background-color: white;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 20px;
+}
+
+.orden-fabricacion-section h2 {
+  font-size: 18px;
+  font-weight: bold;
+  color: #000;
+  margin: 0 0 20px 0;
+  text-align: center;
+}
+
+.orden-image-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #f9f9f9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 20px;
+  min-height: 600px;
+  margin-bottom: 20px;
+}
+
+.orden-fabricacion-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.plano-info {
+  background-color: #f0f0f0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 15px;
+  margin-top: 20px;
+}
+
+.info-text {
+  color: #333;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+  text-align: center;
+}
+
+.error-message {
+  color: #666;
+  font-size: 14px;
+  text-align: center;
+  padding: 20px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .orden-image-container {
+    min-height: 400px;
+    padding: 10px;
+  }
+
+  .orden-fabricacion-section {
+    padding: 15px;
+  }
+
+  .plano-content {
+    padding: 10px;
+  }
+}

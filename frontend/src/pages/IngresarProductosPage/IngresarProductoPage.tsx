@@ -5,6 +5,7 @@ import {
   getModelosProductos,
   getEspesoresVidrio,
 } from '../../api/index';
+import { getModeloImageUrl } from '../../utils/cloudinary';
 import './IngresarProductoPage.css';
 
 export default function IngresarProductoPage() {
@@ -171,7 +172,20 @@ export default function IngresarProductoPage() {
         <div className="form-content">
           <div className="imagen-section">
             <div className="imagen-placeholder">
-              {/* Aquí se mostrará la imagen del producto cuando esté disponible */}
+              {formData.modelo ? (
+                <img
+                  src={getModeloImageUrl(formData.modelo, { width: 400 })}
+                  alt={`Modelo ${formData.modelo}`}
+                  className="modelo-image"
+                  onError={(e) => {
+                    const target = e.target as HTMLImageElement;
+                    target.style.display = 'none';
+                    target.parentElement!.innerHTML = '<p>Imagen no disponible</p>';
+                  }}
+                />
+              ) : (
+                <p>Seleccione un modelo para ver la imagen</p>
+              )}
             </div>
           </div>
 
