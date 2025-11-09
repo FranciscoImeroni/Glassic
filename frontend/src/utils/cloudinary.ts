@@ -2,7 +2,7 @@
  * Utilidades para construir URLs de Cloudinary
  */
 
-const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dmqbjlqqb';
+const CLOUD_NAME = import.meta.env.VITE_CLOUDINARY_CLOUD_NAME || 'dmshentls';
 
 /**
  * Construye una URL de Cloudinary para una imagen
