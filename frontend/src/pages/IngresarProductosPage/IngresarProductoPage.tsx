@@ -4,7 +4,6 @@ import {
   getSeriesProductos,
   getModelosProductos,
   getEspesoresVidrio,
-  createProducto,
 } from '../../api/index';
 import './IngresarProductoPage.css';
 
