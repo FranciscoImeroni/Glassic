@@ -1,0 +1,726 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2025-11-09T00:00:00.000Z",
+  "__export_source": "insomnia.desktop.app:v2023.5.8",
+  "resources": [
+    {
+      "_id": "wrk_glassic_catalog",
+      "_type": "workspace",
+      "name": "Glassic - Catálogo de Productos",
+      "description": "Carga de datos del catálogo de productos Glassic",
+      "parentId": null
+    },
+    {
+      "_id": "env_base",
+      "_type": "environment",
+      "name": "Base Environment",
+      "data": {
+        "base_url": "http://localhost:3000/api"
+      },
+      "parentId": "wrk_glassic_catalog"
+    },
+    {
+      "_id": "req_var_van0",
+      "_type": "request",
+      "name": "1. Crear Variable VAN0",
+      "url": "{{ _.base_url }}/variables",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"VAN0\",\n  \"nombre\": \"Vano 0\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_variables"
+    },
+    {
+      "_id": "req_var_alt1",
+      "_type": "request",
+      "name": "2. Crear Variable ALT1",
+      "url": "{{ _.base_url }}/variables",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"ALT1\",\n  \"nombre\": \"Altura 1\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_variables"
+    },
+    {
+      "_id": "req_var_vano1",
+      "_type": "request",
+      "name": "3. Crear Variable VANO1",
+      "url": "{{ _.base_url }}/variables",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"VANO1\",\n  \"nombre\": \"Vano 1\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_variables"
+    },
+    {
+      "_id": "req_var_vano2",
+      "_type": "request",
+      "name": "4. Crear Variable VANO2",
+      "url": "{{ _.base_url }}/variables",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"VANO2\",\n  \"nombre\": \"Vano 2\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_variables"
+    },
+    {
+      "_id": "req_var_paf1",
+      "_type": "request",
+      "name": "5. Crear Variable PAF1",
+      "url": "{{ _.base_url }}/variables",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"PAF1\",\n  \"nombre\": \"Paño Fijo 1\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_variables"
+    },
+    {
+      "_id": "req_inst_1001",
+      "_type": "request",
+      "name": "1. Crear Instrucción 1001",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1001\",\n  \"instruccion\": \"Instrucción para código 1001\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_inst_1002",
+      "_type": "request",
+      "name": "2. Crear Instrucción 1002",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1002\",\n  \"instruccion\": \"Instrucción para código 1002\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_inst_1003",
+      "_type": "request",
+      "name": "3. Crear Instrucción 1003",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1003\",\n  \"instruccion\": \"Instrucción para código 1003\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_inst_1004",
+      "_type": "request",
+      "name": "4. Crear Instrucción 1004",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1004\",\n  \"instruccion\": \"Instrucción para código 1004\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_inst_1005",
+      "_type": "request",
+      "name": "5. Crear Instrucción 1005",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1005\",\n  \"instruccion\": \"Instrucción para código 1005\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_inst_1006",
+      "_type": "request",
+      "name": "6. Crear Instrucción 1006",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1006\",\n  \"instruccion\": \"Instrucción para código 1006\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_inst_1007",
+      "_type": "request",
+      "name": "7. Crear Instrucción 1007",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1007\",\n  \"instruccion\": \"Instrucción para código 1007\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_inst_1008",
+      "_type": "request",
+      "name": "8. Crear Instrucción 1008",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1008\",\n  \"instruccion\": \"Instrucción para código 1008\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_inst_1010",
+      "_type": "request",
+      "name": "9. Crear Instrucción 1010",
+      "url": "{{ _.base_url }}/codigos-instruccion",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"codigo\": \"1010\",\n  \"instruccion\": \"Instrucción para código 1010\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_instrucciones"
+    },
+    {
+      "_id": "req_prod_1000",
+      "_type": "request",
+      "name": "Producto: Linea 1000 - Panel - 1000",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 1000\",\n  \"serie\": \"Panel\",\n  \"modelo\": \"1000\",\n  \"varVi\": \"VAN0,ALT1\",\n  \"codIvi\": \"1001.1002\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-1000\",\n  \"esquema\": \"ES-1000\",\n  \"plano\": \"PL-1000\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_1010i",
+      "_type": "request",
+      "name": "Producto: Linea 1000 - Panel - 1010-i",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 1000\",\n  \"serie\": \"Panel\",\n  \"modelo\": \"1010-i\",\n  \"varVi\": \"VAN0,ALT1\",\n  \"codIvi\": \"1001.1002\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-1010-i\",\n  \"esquema\": \"ES-1010-i\",\n  \"plano\": \"PL-1010-i\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_1010d",
+      "_type": "request",
+      "name": "Producto: Linea 1000 - Panel - 1010-d",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 1000\",\n  \"serie\": \"Panel\",\n  \"modelo\": \"1010-d\",\n  \"varVi\": \"VAN0,ALT1\",\n  \"codIvi\": \"1001.1002\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-1010-d\",\n  \"esquema\": \"ES-1010-d\",\n  \"plano\": \"PL-1010-d\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_1200i",
+      "_type": "request",
+      "name": "Producto: Linea 1000 - Panel Angulo - 1200-i",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 1000\",\n  \"serie\": \"Panel Angulo\",\n  \"modelo\": \"1200-i\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1002\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-1200-i\",\n  \"esquema\": \"ES-1200-i\",\n  \"plano\": \"PL-1200-i\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_1200d",
+      "_type": "request",
+      "name": "Producto: Linea 1000 - Panel Angulo - 1200-d",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 1000\",\n  \"serie\": \"Panel Angulo\",\n  \"modelo\": \"1200-d\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1002\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-1200-d\",\n  \"esquema\": \"ES-1200-d\",\n  \"plano\": \"PL-1200-d\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4000ai",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Frontal - 4000-Ai",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Frontal\",\n  \"modelo\": \"4000-Ai\",\n  \"varVi\": \"VAN0,ALT1\",\n  \"codIvi\": \"1004.1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4000-Ai\",\n  \"esquema\": \"ES-4000-Ai\",\n  \"plano\": \"PL-4000-Ai\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4000ad",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Frontal - 4000-Ad",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Frontal\",\n  \"modelo\": \"4000-Ad\",\n  \"varVi\": \"VAN0,ALT1\",\n  \"codIvi\": \"1004.1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4000-Ad\",\n  \"esquema\": \"ES-4000-Ad\",\n  \"plano\": \"PL-4000-Ad\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4000bi",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Frontal - 4000-Bi",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Frontal\",\n  \"modelo\": \"4000-Bi\",\n  \"varVi\": \"VAN0,ALT1\",\n  \"codIvi\": \"1006.1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4000-Bi\",\n  \"esquema\": \"ES-4000-Bi\",\n  \"plano\": \"PL-4000-Bi\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4000bd",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Frontal - 4000-Bd",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Frontal\",\n  \"modelo\": \"4000-Bd\",\n  \"varVi\": \"VAN0,ALT1\",\n  \"codIvi\": \"1006.1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4000-Bd\",\n  \"esquema\": \"ES-4000-Bd\",\n  \"plano\": \"PL-4000-Bd\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4000ci",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Frontal - 4000-Ci",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Frontal\",\n  \"modelo\": \"4000-Ci\",\n  \"varVi\": \"VAN0,ALT1,PAF1\",\n  \"codIvi\": \"1005,1003,1010\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4000-Ci\",\n  \"esquema\": \"ES-4000-Ci\",\n  \"plano\": \"PL-4000-Ci\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4000cd",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Frontal - 4000-Cd",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Frontal\",\n  \"modelo\": \"4000-Cd\",\n  \"varVi\": \"VAN0,ALT1,PAF1\",\n  \"codIvi\": \"1005,1003,1010\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4000-Cd\",\n  \"esquema\": \"ES-4000-Cd\",\n  \"plano\": \"PL-4000-Cd\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4000d",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Frontal - 4000-D",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Frontal\",\n  \"modelo\": \"4000-D\",\n  \"varVi\": \"VAN0,ALT1\",\n  \"codIvi\": \"1007.1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4000-D\",\n  \"esquema\": \"ES-4000-D\",\n  \"plano\": \"PL-4000-D\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4100",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Esquinero - 4100",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Esquinero\",\n  \"modelo\": \"4100\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4100\",\n  \"esquema\": \"ES-4100\",\n  \"plano\": \"PL-4100\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200a1i",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-A1i",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-A1i\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-A1i\",\n  \"esquema\": \"ES-4200-A1i\",\n  \"plano\": \"PL-4200-A1i\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200a1d",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-A1d",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-A1d\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-A1d\",\n  \"esquema\": \"ES-4200-A1d\",\n  \"plano\": \"PL-4200-A1d\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200a2i",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-A2i",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-A2i\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-A2i\",\n  \"esquema\": \"ES-4200-A2i\",\n  \"plano\": \"PL-4200-A2i\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200a2d",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-A2d",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-A2d\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-A2d\",\n  \"esquema\": \"ES-4200-A2d\",\n  \"plano\": \"PL-4200-A2d\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200bi",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-Bi",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-Bi\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-Bi\",\n  \"esquema\": \"ES-4200-Bi\",\n  \"plano\": \"PL-4200-Bi\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200bd",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-Bd",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-Bd\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-Bd\",\n  \"esquema\": \"ES-4200-Bd\",\n  \"plano\": \"PL-4200-Bd\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200c1i",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-C1i",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-C1i\",\n  \"varVi\": \"VANO1,VANO2,ALT1,PAF1\",\n  \"codIvi\": \"1008,1008,1003,1010\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-C1i\",\n  \"esquema\": \"ES-4200-C1i\",\n  \"plano\": \"PL-4200-C1i\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200c1d",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-C1d",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-C1d\",\n  \"varVi\": \"VANO1,VANO2,ALT1,PAF1\",\n  \"codIvi\": \"1008,1008,1003,1010\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-C1d\",\n  \"esquema\": \"ES-4200-C1d\",\n  \"plano\": \"PL-4200-C1d\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200c2i",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-C2i",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-C2i\",\n  \"varVi\": \"VANO1,VANO2,ALT1,PAF1\",\n  \"codIvi\": \"1008,1008,1003,1010\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-C2i\",\n  \"esquema\": \"ES-4200-C2i\",\n  \"plano\": \"PL-4200-C2i\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200c2d",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-C2d",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-C2d\",\n  \"varVi\": \"VANO1,VANO2,ALT1,PAF1\",\n  \"codIvi\": \"1008,1008,1003,1010\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-C2d\",\n  \"esquema\": \"ES-4200-C2d\",\n  \"plano\": \"PL-4200-C2d\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "req_prod_4200d",
+      "_type": "request",
+      "name": "Producto: Linea 4000 - Box Angular - 4200-D",
+      "url": "{{ _.base_url }}/productos",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"linea\": \"Linea 4000\",\n  \"serie\": \"Box Angular\",\n  \"modelo\": \"4200-D\",\n  \"varVi\": \"VANO1,VANO2,ALT1\",\n  \"codIvi\": \"1008,1008,1003\",\n  \"espVidrio\": 8,\n  \"imagen\": \"IM-4200-D\",\n  \"esquema\": \"ES-4200-D\",\n  \"plano\": \"PL-4200-D\"\n}"
+      },
+      "headers": [
+        {
+          "name": "Content-Type",
+          "value": "application/json"
+        }
+      ],
+      "parentId": "fld_productos"
+    },
+    {
+      "_id": "fld_variables",
+      "_type": "request_group",
+      "name": "1. Variables",
+      "parentId": "wrk_glassic_catalog"
+    },
+    {
+      "_id": "fld_instrucciones",
+      "_type": "request_group",
+      "name": "2. Códigos de Instrucción",
+      "parentId": "wrk_glassic_catalog"
+    },
+    {
+      "_id": "fld_productos",
+      "_type": "request_group",
+      "name": "3. Productos",
+      "parentId": "wrk_glassic_catalog"
+    }
+  ]
+}
