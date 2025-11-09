@@ -11,6 +11,7 @@ import { DatosModule } from './modules/datos/datos.module';
 import { ProductosModule } from './modules/productos/productos.module';
 import { FormulasModule } from './modules/formulas/formulas.module';
 import { ConfiguracionModule } from './modules/configuracion/configuracion.module';
+import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
 
 @Module({
   imports: [
@@ -46,6 +47,7 @@ import { ConfiguracionModule } from './modules/configuracion/configuracion.modul
     ProductosModule,
     FormulasModule,
     ConfiguracionModule,
+    CloudinaryModule,
   ],
   controllers: [AppController],
   providers: [AppService],
