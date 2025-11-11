@@ -32,14 +32,13 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de la imagen de un modelo
-   * Busca en la raíz de Cloudinary con el prefijo IM-
-   * @param modeloNombre - Nombre del modelo (ej: 4200-D)
+   * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen IM-)
+   * @param modeloNombre - Nombre del modelo con prefijo (ej: IM-4200-D)
    * @returns URL de la imagen del modelo
    */
   getModeloImageUrl(modeloNombre: string): string {
-    // Buscar en la raíz sin carpeta, solo con prefijo IM-
-    const imageFileName = `IM-${modeloNombre}`;
-    return cloudinary.url(imageFileName, {
+    // Usar el nombre tal cual (ya tiene el prefijo IM-)
+    return cloudinary.url(modeloNombre, {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',
@@ -48,14 +47,13 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de un esquema
-   * Busca en la raíz de Cloudinary con el prefijo ES-
-   * @param esquemaNombre - Nombre del esquema (ej: 4200-D)
+   * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen ES-)
+   * @param esquemaNombre - Nombre del esquema con prefijo (ej: ES-4200-D)
    * @returns URL del esquema
    */
   getEsquemaUrl(esquemaNombre: string): string {
-    // Buscar en la raíz sin carpeta, solo con prefijo ES-
-    const esquemaFileName = `ES-${esquemaNombre}`;
-    return cloudinary.url(esquemaFileName, {
+    // Usar el nombre tal cual (ya tiene el prefijo ES-)
+    return cloudinary.url(esquemaNombre, {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',
@@ -64,14 +62,13 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de un plano
-   * Busca en la raíz de Cloudinary con el prefijo PL-
-   * @param planoNombre - Nombre del plano (ej: 4200C2d)
+   * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen PL-)
+   * @param planoNombre - Nombre del plano con prefijo (ej: PL-4200C2d)
    * @returns URL del plano
    */
   getPlanoUrl(planoNombre: string): string {
-    // Buscar en la raíz sin carpeta, solo con prefijo PL-
-    const planoFileName = `PL-${planoNombre}`;
-    return cloudinary.url(planoFileName, {
+    // Usar el nombre tal cual (ya tiene el prefijo PL-)
+    return cloudinary.url(planoNombre, {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',
