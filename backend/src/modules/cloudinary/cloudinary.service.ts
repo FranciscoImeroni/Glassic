@@ -32,13 +32,15 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de la imagen de un modelo
-   * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen IM-)
-   * @param modeloNombre - Nombre del modelo con prefijo (ej: IM-4200-D)
+   * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200-C2i")
+   * Agrega prefijo IM- para buscar en Cloudinary (ej: "IM-4200-C2i")
+   * @param modeloNombre - Nombre del modelo SIN prefijo (ej: 4200-C2i)
    * @returns URL de la imagen del modelo
    */
   getModeloImageUrl(modeloNombre: string): string {
-    // Usar el nombre tal cual (ya tiene el prefijo IM-)
-    return cloudinary.url(modeloNombre, {
+    // Agregar prefijo IM- porque en BD está sin prefijo
+    const imageFileName = `IM-${modeloNombre}`;
+    return cloudinary.url(imageFileName, {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',
@@ -47,13 +49,15 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de un esquema
-   * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen ES-)
-   * @param esquemaNombre - Nombre del esquema con prefijo (ej: ES-4200-D)
+   * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200-C2i")
+   * Agrega prefijo ES- para buscar en Cloudinary (ej: "ES-4200-C2i")
+   * @param esquemaNombre - Nombre del esquema SIN prefijo (ej: 4200-C2i)
    * @returns URL del esquema
    */
   getEsquemaUrl(esquemaNombre: string): string {
-    // Usar el nombre tal cual (ya tiene el prefijo ES-)
-    return cloudinary.url(esquemaNombre, {
+    // Agregar prefijo ES- porque en BD está sin prefijo
+    const esquemaFileName = `ES-${esquemaNombre}`;
+    return cloudinary.url(esquemaFileName, {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',
@@ -62,13 +66,15 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de un plano
-   * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen PL-)
-   * @param planoNombre - Nombre del plano con prefijo (ej: PL-4200C2d)
+   * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200C2d")
+   * Agrega prefijo PL- para buscar en Cloudinary (ej: "PL-4200C2d")
+   * @param planoNombre - Nombre del plano SIN prefijo (ej: 4200C2d)
    * @returns URL del plano
    */
   getPlanoUrl(planoNombre: string): string {
-    // Usar el nombre tal cual (ya tiene el prefijo PL-)
-    return cloudinary.url(planoNombre, {
+    // Agregar prefijo PL- porque en BD está sin prefijo
+    const planoFileName = `PL-${planoNombre}`;
+    return cloudinary.url(planoFileName, {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',

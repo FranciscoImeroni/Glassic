@@ -38,8 +38,9 @@ export function getCloudinaryUrl(
 
 /**
  * Obtiene la URL de la imagen de un modelo
- * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen IM-)
- * @param modeloNombre - Nombre del modelo con prefijo (ej: IM-4200-D)
+ * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200-C2i")
+ * Agrega prefijo IM- para buscar en Cloudinary (ej: "IM-4200-C2i")
+ * @param modeloNombre - Nombre del modelo SIN prefijo (ej: 4200-C2i)
  * @param options - Opciones de transformación
  * @returns URL de la imagen del modelo
  */
@@ -59,14 +60,16 @@ export function getModeloImageUrl(
     transformations += `,h_${height}`;
   }
 
-  // Usar el nombre tal cual (ya tiene el prefijo IM-)
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${modeloNombre}`;
+  // Agregar prefijo IM- porque en BD está sin prefijo
+  const imageFileName = `IM-${modeloNombre}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${imageFileName}`;
 }
 
 /**
  * Obtiene la URL de un esquema
- * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen ES-)
- * @param esquemaNombre - Nombre del esquema con prefijo (ej: ES-4200-D)
+ * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200-C2i")
+ * Agrega prefijo ES- para buscar en Cloudinary (ej: "ES-4200-C2i")
+ * @param esquemaNombre - Nombre del esquema SIN prefijo (ej: 4200-C2i)
  * @param options - Opciones de transformación
  * @returns URL del esquema
  */
@@ -86,14 +89,16 @@ export function getEsquemaUrl(
     transformations += `,h_${height}`;
   }
 
-  // Usar el nombre tal cual (ya tiene el prefijo ES-)
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${esquemaNombre}`;
+  // Agregar prefijo ES- porque en BD está sin prefijo
+  const esquemaFileName = `ES-${esquemaNombre}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${esquemaFileName}`;
 }
 
 /**
  * Obtiene la URL de un plano
- * Busca directamente el nombre sin agregar prefijos (las imágenes ya tienen PL-)
- * @param planoNombre - Nombre del plano con prefijo (ej: PL-4200C2d)
+ * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200C2d")
+ * Agrega prefijo PL- para buscar en Cloudinary (ej: "PL-4200C2d")
+ * @param planoNombre - Nombre del plano SIN prefijo (ej: 4200C2d)
  * @param options - Opciones de transformación
  * @returns URL del plano
  */
@@ -113,8 +118,9 @@ export function getPlanoUrl(
     transformations += `,h_${height}`;
   }
 
-  // Usar el nombre tal cual (ya tiene el prefijo PL-)
-  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${planoNombre}`;
+  // Agregar prefijo PL- porque en BD está sin prefijo
+  const planoFileName = `PL-${planoNombre}`;
+  return `https://res.cloudinary.com/${CLOUD_NAME}/image/upload/${transformations}/${planoFileName}`;
 }
 
 /**
