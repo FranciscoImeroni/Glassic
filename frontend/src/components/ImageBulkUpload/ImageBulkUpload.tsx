@@ -66,7 +66,14 @@ export default function ImageBulkUpload() {
       });
 
       const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
-      const response = await fetch(`${apiUrl}/cloudinary/bulk-upload`, {
+      const fullUrl = `${apiUrl}/api/cloudinary/bulk-upload`;
+
+      console.log('[ImageBulkUpload] VITE_API_URL:', import.meta.env.VITE_API_URL);
+      console.log('[ImageBulkUpload] API URL usada:', apiUrl);
+      console.log('[ImageBulkUpload] URL completa:', fullUrl);
+      console.log('[ImageBulkUpload] Enviando', files.length, 'archivos');
+
+      const response = await fetch(fullUrl, {
         method: 'POST',
         body: formData,
       });
