@@ -22,5 +22,6 @@ import { CodigosInstruccionController } from './codigos-instruccion.controller';
     VariablesService,
     CodigosInstruccionService,
   ],
+  exports: [ProductosService],
 })
 export class ProductosModule {}

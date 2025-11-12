@@ -32,12 +32,13 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de la imagen de un modelo
-   * Busca en la raíz de Cloudinary con el prefijo IM-
-   * @param modeloNombre - Nombre del modelo (ej: 4200-D)
+   * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200-C2i")
+   * Agrega prefijo IM- para buscar en Cloudinary (ej: "IM-4200-C2i")
+   * @param modeloNombre - Nombre del modelo SIN prefijo (ej: 4200-C2i)
    * @returns URL de la imagen del modelo
    */
   getModeloImageUrl(modeloNombre: string): string {
-    // Buscar en la raíz sin carpeta, solo con prefijo IM-
+    // Agregar prefijo IM- porque en BD está sin prefijo
     const imageFileName = `IM-${modeloNombre}`;
     return cloudinary.url(imageFileName, {
       secure: true,
@@ -48,12 +49,13 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de un esquema
-   * Busca en la raíz de Cloudinary con el prefijo ES-
-   * @param esquemaNombre - Nombre del esquema (ej: 4200-D)
+   * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200-C2i")
+   * Agrega prefijo ES- para buscar en Cloudinary (ej: "ES-4200-C2i")
+   * @param esquemaNombre - Nombre del esquema SIN prefijo (ej: 4200-C2i)
    * @returns URL del esquema
    */
   getEsquemaUrl(esquemaNombre: string): string {
-    // Buscar en la raíz sin carpeta, solo con prefijo ES-
+    // Agregar prefijo ES- porque en BD está sin prefijo
     const esquemaFileName = `ES-${esquemaNombre}`;
     return cloudinary.url(esquemaFileName, {
       secure: true,
@@ -64,12 +66,13 @@ export class CloudinaryService {
 
   /**
    * Obtiene la URL de un plano
-   * Busca en la raíz de Cloudinary con el prefijo PL-
-   * @param planoNombre - Nombre del plano (ej: 4200C2d)
+   * IMPORTANTE: Espera que en BD esté sin prefijo (ej: "4200C2d")
+   * Agrega prefijo PL- para buscar en Cloudinary (ej: "PL-4200C2d")
+   * @param planoNombre - Nombre del plano SIN prefijo (ej: 4200C2d)
    * @returns URL del plano
    */
   getPlanoUrl(planoNombre: string): string {
-    // Buscar en la raíz sin carpeta, solo con prefijo PL-
+    // Agregar prefijo PL- porque en BD está sin prefijo
     const planoFileName = `PL-${planoNombre}`;
     return cloudinary.url(planoFileName, {
       secure: true,
@@ -88,6 +91,41 @@ export class CloudinaryService {
       secure: true,
       quality: 'auto',
       fetch_format: 'auto',
+    });
+  }
+
+  /**
+   * Sube una imagen a Cloudinary
+   * @param file - Buffer del archivo
+   * @param publicId - Public ID para la imagen (ej: "IM-4200-A2d")
+   * @returns Resultado del upload con URL y public_id
+   */
+  async uploadImage(
+    file: Buffer,
+    publicId: string,
+  ): Promise<{ publicId: string; url: string }> {
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          public_id: publicId,
+          overwrite: true, // Sobrescribir si ya existe
+          resource_type: 'image',
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else if (result) {
+            resolve({
+              publicId: result.public_id,
+              url: result.secure_url,
+            });
+          } else {
+            reject(new Error('Upload completado pero sin resultado'));
+          }
+        },
+      );
+
+      uploadStream.end(file);
     });
   }
 }
