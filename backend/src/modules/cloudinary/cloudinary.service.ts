@@ -93,4 +93,39 @@ export class CloudinaryService {
       fetch_format: 'auto',
     });
   }
+
+  /**
+   * Sube una imagen a Cloudinary
+   * @param file - Buffer del archivo
+   * @param publicId - Public ID para la imagen (ej: "IM-4200-A2d")
+   * @returns Resultado del upload con URL y public_id
+   */
+  async uploadImage(
+    file: Buffer,
+    publicId: string,
+  ): Promise<{ publicId: string; url: string }> {
+    return new Promise((resolve, reject) => {
+      const uploadStream = cloudinary.uploader.upload_stream(
+        {
+          public_id: publicId,
+          overwrite: true, // Sobrescribir si ya existe
+          resource_type: 'image',
+        },
+        (error, result) => {
+          if (error) {
+            reject(error);
+          } else if (result) {
+            resolve({
+              publicId: result.public_id,
+              url: result.secure_url,
+            });
+          } else {
+            reject(new Error('Upload completado pero sin resultado'));
+          }
+        },
+      );
+
+      uploadStream.end(file);
+    });
+  }
 }
