@@ -174,7 +174,11 @@ export class CloudinaryController {
     failed: number;
     errors: Array<{ fileName: string; reason: string }>;
   }> {
+    console.log('[BULK-UPLOAD] Endpoint llamado');
+    console.log('[BULK-UPLOAD] Archivos recibidos:', files ? files.length : 0);
+
     if (!files || files.length === 0) {
+      console.log('[BULK-UPLOAD] ERROR: No se proporcionaron archivos');
       throw new BadRequestException('No se proporcionaron archivos');
     }
 
@@ -185,12 +189,14 @@ export class CloudinaryController {
     for (const file of files) {
       try {
         const fileName = file.originalname;
+        console.log(`[BULK-UPLOAD] Procesando archivo: ${fileName}`);
 
         // Parsear el nombre del archivo (ej: "IM-4200-A2d.jpg" → prefix="IM", modelo="4200-A2d")
         const nameWithoutExt = fileName.replace(/\.(jpg|jpeg|png)$/i, '');
         const parts = nameWithoutExt.split('-');
 
         if (parts.length < 2) {
+          console.log(`[BULK-UPLOAD] ERROR: Formato inválido para ${fileName}`);
           errors.push({
             fileName,
             reason: 'Formato de nombre inválido (debe ser PREFIJO-MODELO, ej: IM-4200-A2d.jpg)',
@@ -201,9 +207,11 @@ export class CloudinaryController {
 
         const prefix = parts[0]; // IM, ES, o PL
         const modelo = parts.slice(1).join('-'); // 4200-A2d
+        console.log(`[BULK-UPLOAD] Parseado - Prefix: ${prefix}, Modelo: ${modelo}`);
 
         // Validar prefijo
         if (!['IM', 'ES', 'PL'].includes(prefix)) {
+          console.log(`[BULK-UPLOAD] ERROR: Prefijo inválido ${prefix}`);
           errors.push({
             fileName,
             reason: `Prefijo "${prefix}" inválido (debe ser IM, ES, o PL)`,
@@ -213,14 +221,18 @@ export class CloudinaryController {
         }
 
         // Buscar o crear producto por modelo
+        console.log(`[BULK-UPLOAD] Buscando/creando producto para modelo: ${modelo}`);
         const producto = await this.productosService.findOrCreateByModelo(modelo);
+        console.log(`[BULK-UPLOAD] Producto obtenido, ID: ${producto.id}`);
 
         // Subir imagen a Cloudinary con public_id fijo (sin sufijos)
         const publicId = nameWithoutExt; // ej: "IM-4200-A2d"
+        console.log(`[BULK-UPLOAD] Subiendo a Cloudinary con publicId: ${publicId}`);
         const uploadResult = await this.cloudinaryService.uploadImage(
           file.buffer,
           publicId,
         );
+        console.log(`[BULK-UPLOAD] Subida exitosa a Cloudinary: ${uploadResult.url}`);
 
         // Actualizar el campo correspondiente según el prefijo
         switch (prefix) {
@@ -236,14 +248,17 @@ export class CloudinaryController {
         }
 
         // Guardar producto con el nuevo cloudinary_id
+        console.log(`[BULK-UPLOAD] Guardando producto ID ${producto.id} en BD`);
         await this.productosService.update(producto.id, {
           imagenCloudinaryId: producto.imagenCloudinaryId,
           esquemaCloudinaryId: producto.esquemaCloudinaryId,
           planoCloudinaryId: producto.planoCloudinaryId,
         });
+        console.log(`[BULK-UPLOAD] Producto guardado exitosamente`);
 
         successCount++;
       } catch (error) {
+        console.log(`[BULK-UPLOAD] ERROR procesando ${file.originalname}:`, error);
         failedCount++;
         errors.push({
           fileName: file.originalname,
@@ -252,6 +267,7 @@ export class CloudinaryController {
       }
     }
 
+    console.log(`[BULK-UPLOAD] Finalizado - Exitosos: ${successCount}, Fallidos: ${failedCount}`);
     return {
       success: successCount,
       failed: failedCount,
