@@ -65,10 +65,14 @@ export default function ImageBulkUpload() {
         formData.append('files', file);
       });
 
-      const apiUrl = import.meta.env.VITE_API_URL || 'http://localhost:3000';
+      // Usar URL de Railway en producción, localhost en desarrollo
+      const isProduction = window.location.hostname !== 'localhost';
+      const apiUrl = isProduction
+        ? 'https://glassic-production.up.railway.app'
+        : 'http://localhost:3000';
       const fullUrl = `${apiUrl}/api/cloudinary/bulk-upload`;
 
-      console.log('[ImageBulkUpload] VITE_API_URL:', import.meta.env.VITE_API_URL);
+      console.log('[ImageBulkUpload] Entorno:', isProduction ? 'Producción' : 'Desarrollo');
       console.log('[ImageBulkUpload] API URL usada:', apiUrl);
       console.log('[ImageBulkUpload] URL completa:', fullUrl);
       console.log('[ImageBulkUpload] Enviando', files.length, 'archivos');
