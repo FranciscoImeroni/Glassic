@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import {
-  getLineasProductos,
-  getSeriesProductos,
-  getModelosProductos,
+  getProductos,
   getEspesoresVidrio,
+  type Producto,
 } from '../../api/index';
 import { getModeloImageUrl } from '../../utils/cloudinary';
 import './IngresarProductoPage.css';
@@ -18,36 +17,35 @@ export default function IngresarProductoPage() {
   });
 
   // Estados para datos desde la BD
+  const [productos, setProductos] = useState<Producto[]>([]);
   const [lineas, setLineas] = useState<string[]>([]);
-  const [series, setSeries] = useState<string[]>([]);
-  const [modelos, setModelos] = useState<string[]>([]);
+  const [seriesFiltradas, setSeriesFiltradas] = useState<string[]>([]);
+  const [modelosFiltrados, setModelosFiltrados] = useState<string[]>([]);
   const [espesores, setEspesores] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('');
+  const [imageError, setImageError] = useState(false);
 
   // Cargar datos desde la BD al montar el componente
   useEffect(() => {
     async function loadData() {
       try {
         setLoading(true);
-        const [lineasData, seriesData, modelosData, espesoresData] = await Promise.all([
-          getLineasProductos(),
-          getSeriesProductos(),
-          getModelosProductos(),
+        const [productosData, espesoresData] = await Promise.all([
+          getProductos(),
           getEspesoresVidrio(),
         ]);
 
-        setLineas(lineasData);
-        setSeries(seriesData);
-        setModelos(modelosData);
+        setProductos(productosData);
+        // Extraer líneas únicas
+        const lineasUnicas = [...new Set(productosData.map(p => p.linea))];
+        setLineas(lineasUnicas);
         setEspesores(espesoresData);
       } catch (error) {
         console.error('Error al cargar datos:', error);
         setStatus('Error al cargar catálogos. Usando valores por defecto.');
         // Valores por defecto en caso de error
         setLineas(['Linea 1000', 'Linea 4000']);
-        setSeries(['Panel', 'Panel Angulo', 'Box Frontal', 'Box Esquinero', 'Box Angular']);
-        setModelos(['1000', '1010-i', '1010-d', '4000-Ai', '4200-A1i']);
         setEspesores([6, 8, 10, 12]);
       } finally {
         setLoading(false);
@@ -56,6 +54,37 @@ export default function IngresarProductoPage() {
 
     loadData();
   }, []);
+
+  // Filtrar series cuando cambia la línea
+  useEffect(() => {
+    if (formData.linea) {
+      const productosFiltrados = productos.filter(p => p.linea === formData.linea);
+      const seriesUnicas = [...new Set(productosFiltrados.map(p => p.serie))];
+      setSeriesFiltradas(seriesUnicas);
+    } else {
+      setSeriesFiltradas([]);
+    }
+    // Limpiar campos dependientes
+    setFormData(prev => ({ ...prev, serie: '', modelo: '' }));
+    setModelosFiltrados([]);
+    setImageError(false);
+  }, [formData.linea, productos]);
+
+  // Filtrar modelos cuando cambia la serie
+  useEffect(() => {
+    if (formData.linea && formData.serie) {
+      const productosFiltrados = productos.filter(
+        p => p.linea === formData.linea && p.serie === formData.serie
+      );
+      const modelosUnicos = [...new Set(productosFiltrados.map(p => p.modelo))];
+      setModelosFiltrados(modelosUnicos);
+    } else {
+      setModelosFiltrados([]);
+    }
+    // Limpiar modelo
+    setFormData(prev => ({ ...prev, modelo: '' }));
+    setImageError(false);
+  }, [formData.serie, formData.linea, productos]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -137,9 +166,12 @@ export default function IngresarProductoPage() {
                 value={formData.serie}
                 onChange={(e) => handleInputChange('serie', e.target.value)}
                 className="dropdown"
+                disabled={!formData.linea}
               >
-                <option value="">Seleccione...</option>
-                {series.map((serie) => (
+                <option value="">
+                  {formData.linea ? 'Seleccione...' : 'Primero seleccione Línea'}
+                </option>
+                {seriesFiltradas.map((serie) => (
                   <option key={serie} value={serie}>
                     {serie}
                   </option>
@@ -153,9 +185,12 @@ export default function IngresarProductoPage() {
                 value={formData.modelo}
                 onChange={(e) => handleInputChange('modelo', e.target.value)}
                 className="dropdown"
+                disabled={!formData.serie}
               >
-                <option value="">Seleccione...</option>
-                {modelos.map((modelo) => (
+                <option value="">
+                  {formData.serie ? 'Seleccione...' : 'Primero seleccione Serie'}
+                </option>
+                {modelosFiltrados.map((modelo) => (
                   <option key={modelo} value={modelo}>
                     {modelo}
                   </option>
@@ -173,16 +208,17 @@ export default function IngresarProductoPage() {
           <div className="imagen-section">
             <div className="imagen-placeholder">
               {formData.modelo ? (
-                <img
-                  src={getModeloImageUrl(formData.modelo, { width: 400 })}
-                  alt={`Modelo ${formData.modelo}`}
-                  className="modelo-image"
-                  onError={(e) => {
-                    const target = e.target as HTMLImageElement;
-                    target.style.display = 'none';
-                    target.parentElement!.innerHTML = '<p>Imagen no disponible</p>';
-                  }}
-                />
+                imageError ? (
+                  <p>Imagen no disponible para {formData.modelo}</p>
+                ) : (
+                  <img
+                    src={getModeloImageUrl(formData.modelo, { width: 400 })}
+                    alt={`Modelo ${formData.modelo}`}
+                    className="modelo-image"
+                    onError={() => setImageError(true)}
+                    onLoad={() => setImageError(false)}
+                  />
+                )
               ) : (
                 <p>Seleccione un modelo para ver la imagen</p>
               )}
