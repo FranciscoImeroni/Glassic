@@ -15,6 +15,7 @@ export default function ImageBulkUpload() {
   const [uploading, setUploading] = useState(false);
   const [uploadResult, setUploadResult] = useState<UploadResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const folderInputRef = useRef<HTMLInputElement>(null);
 
   const handleDragOver = (e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -42,6 +43,16 @@ export default function ImageBulkUpload() {
   };
 
   const handleFileSelect = (e: ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      const selectedFiles = Array.from(e.target.files).filter(
+        (file) => file.type === 'image/jpeg' || file.type === 'image/jpg' || file.name.endsWith('.jpg')
+      );
+      setFiles(selectedFiles);
+      setUploadResult(null);
+    }
+  };
+
+  const handleFolderSelect = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const selectedFiles = Array.from(e.target.files).filter(
         (file) => file.type === 'image/jpeg' || file.type === 'image/jpg' || file.name.endsWith('.jpg')
@@ -110,43 +121,73 @@ export default function ImageBulkUpload() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+    if (folderInputRef.current) {
+      folderInputRef.current.value = '';
+    }
   };
 
   return (
     <div className="image-bulk-upload">
       <h2>Carga Masiva de Imágenes</h2>
       <p className="instructions">
-        Arrastra archivos JPG o selecciónalos manualmente. Los nombres deben tener el formato:
+        Arrastra archivos/carpetas JPG o selecciónalos manualmente. Los nombres deben tener el formato:
         <strong> IM-modelo.jpg</strong>, <strong>ES-modelo.jpg</strong>, o <strong>PL-modelo.jpg</strong>
       </p>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept=".jpg,.jpeg,image/jpeg"
+        multiple
+        onChange={handleFileSelect}
+        style={{ display: 'none' }}
+      />
+
+      <input
+        ref={folderInputRef}
+        type="file"
+        accept=".jpg,.jpeg,image/jpeg"
+        /* @ts-ignore */
+        webkitdirectory="true"
+        directory="true"
+        multiple
+        onChange={handleFolderSelect}
+        style={{ display: 'none' }}
+      />
+
+      <div className="selection-buttons">
+        <button
+          className="btn-select-files"
+          onClick={() => fileInputRef.current?.click()}
+          disabled={uploading}
+        >
+          📄 Seleccionar Archivos
+        </button>
+        <button
+          className="btn-select-folder"
+          onClick={() => folderInputRef.current?.click()}
+          disabled={uploading}
+        >
+          📁 Seleccionar Carpeta
+        </button>
+      </div>
 
       <div
         className={`drop-zone ${isDragging ? 'dragging' : ''} ${files.length > 0 ? 'has-files' : ''}`}
         onDragOver={handleDragOver}
         onDragLeave={handleDragLeave}
         onDrop={handleDrop}
-        onClick={() => fileInputRef.current?.click()}
       >
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".jpg,.jpeg,image/jpeg"
-          multiple
-          onChange={handleFileSelect}
-          style={{ display: 'none' }}
-        />
-
         {files.length === 0 ? (
           <div className="drop-zone-content">
             <div className="upload-icon">📁</div>
-            <p>Arrastra archivos aquí o haz clic para seleccionar</p>
+            <p>O arrastra archivos/carpetas aquí</p>
             <p className="file-info">Solo archivos JPG</p>
           </div>
         ) : (
           <div className="drop-zone-content">
             <div className="upload-icon">✓</div>
             <p className="files-count">{files.length} archivo(s) seleccionado(s)</p>
-            <p className="file-info">Haz clic para cambiar la selección</p>
           </div>
         )}
       </div>
