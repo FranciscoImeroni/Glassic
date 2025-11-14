@@ -1,11 +1,13 @@
 import { useState, useEffect } from 'react';
-import {
+import type {
   Comprobante,
   Vidrio,
   Servicio,
   Herraje,
   Accesorio,
   PaginatedResponse,
+} from '../api';
+import {
   getComprobantesPaginated,
   getVidriosPaginated,
   getServiciosPaginated,
