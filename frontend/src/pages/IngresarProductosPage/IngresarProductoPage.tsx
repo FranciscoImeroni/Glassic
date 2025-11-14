@@ -25,7 +25,8 @@ export default function IngresarProductoPage() {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('');
   const [imageError, setImageError] = useState(false);
-  const [imageUrlFallback, setImageUrlFallback] = useState<string | null>(null);
+  const [imageAttempts, setImageAttempts] = useState(0);
+  const [currentImageUrl, setCurrentImageUrl] = useState<string>('');
 
   // Cargar datos desde la BD al montar el componente
   useEffect(() => {
@@ -69,7 +70,8 @@ export default function IngresarProductoPage() {
     setFormData(prev => ({ ...prev, serie: '', modelo: '' }));
     setModelosFiltrados([]);
     setImageError(false);
-    setImageUrlFallback(null);
+    setImageAttempts(0);
+    setCurrentImageUrl('');
   }, [formData.linea, productos]);
 
   // Filtrar modelos cuando cambia la serie
@@ -86,8 +88,22 @@ export default function IngresarProductoPage() {
     // Limpiar modelo
     setFormData(prev => ({ ...prev, modelo: '' }));
     setImageError(false);
-    setImageUrlFallback(null);
+    setImageAttempts(0);
+    setCurrentImageUrl('');
   }, [formData.serie, formData.linea, productos]);
+
+  // Actualizar URL de imagen cuando cambia el modelo
+  useEffect(() => {
+    if (formData.modelo) {
+      setCurrentImageUrl(getModeloImageUrl(formData.modelo, { width: 400 }));
+      setImageError(false);
+      setImageAttempts(0);
+    } else {
+      setCurrentImageUrl('');
+      setImageError(false);
+      setImageAttempts(0);
+    }
+  }, [formData.modelo]);
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -106,15 +122,30 @@ export default function IngresarProductoPage() {
   };
 
   const handleImageError = () => {
-    // Si aún no hemos intentado con el fallback, intentar con modelo sin guiones
-    if (!imageUrlFallback && formData.modelo) {
-      const modeloSinGuiones = formData.modelo.replace(/-/g, '');
-      const fallbackUrl = getModeloImageUrl(modeloSinGuiones, { width: 400 });
-      setImageUrlFallback(fallbackUrl);
-    } else {
-      // Si el fallback también falló, mostrar error
+    // Cap de 3 intentos máximo
+    if (imageAttempts >= 3) {
       setImageError(true);
+      return;
     }
+
+    setImageAttempts(prev => prev + 1);
+
+    // Intento 1: Sin guiones (ej: 1000-d → 1000d)
+    if (imageAttempts === 0 && formData.modelo) {
+      const modeloSinGuiones = formData.modelo.replace(/-/g, '');
+      setCurrentImageUrl(getModeloImageUrl(modeloSinGuiones, { width: 400 }));
+      return;
+    }
+
+    // Intento 2: Sin guiones y lowercase (ej: 1000-D → 1000d)
+    if (imageAttempts === 1 && formData.modelo) {
+      const modeloSinGuiones = formData.modelo.replace(/-/g, '').toLowerCase();
+      setCurrentImageUrl(getModeloImageUrl(modeloSinGuiones, { width: 400 }));
+      return;
+    }
+
+    // Si llegamos aquí y no hay más variantes, mostrar error
+    setImageError(true);
   };
 
   const handleAplicar = async () => {
@@ -227,14 +258,11 @@ export default function IngresarProductoPage() {
                   <p>Imagen no disponible para {formData.modelo}</p>
                 ) : (
                   <img
-                    src={imageUrlFallback || getModeloImageUrl(formData.modelo, { width: 400 })}
+                    key={currentImageUrl}
+                    src={currentImageUrl}
                     alt={`Modelo ${formData.modelo}`}
                     className="modelo-image"
                     onError={handleImageError}
-                    onLoad={() => {
-                      setImageError(false);
-                      setImageUrlFallback(null);
-                    }}
                   />
                 )
               ) : (
