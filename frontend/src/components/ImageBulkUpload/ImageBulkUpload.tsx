@@ -3,7 +3,8 @@ import type { DragEvent, ChangeEvent } from 'react';
 import './ImageBulkUpload.css';
 
 interface UploadResult {
-  success: number;
+  uploaded: number;
+  skipped: number;
   failed: number;
   errors: Array<{ fileName: string; reason: string }>;
 }
@@ -89,8 +90,8 @@ export default function ImageBulkUpload() {
       const result: UploadResult = await response.json();
       setUploadResult(result);
 
-      if (result.success > 0) {
-        // Si todo fue exitoso, limpiar los archivos
+      if (result.uploaded > 0 || result.skipped > 0) {
+        // Si todo fue procesado exitosamente (subido o omitido), limpiar los archivos
         if (result.failed === 0) {
           setFiles([]);
         }
@@ -202,8 +203,12 @@ export default function ImageBulkUpload() {
           <h3>Resultado de la carga</h3>
           <div className="result-summary">
             <div className="result-item success">
-              <span className="result-label">Exitosas:</span>
-              <span className="result-value">{uploadResult.success}</span>
+              <span className="result-label">Subidas:</span>
+              <span className="result-value">{uploadResult.uploaded}</span>
+            </div>
+            <div className="result-item skipped">
+              <span className="result-label">Omitidas:</span>
+              <span className="result-value">{uploadResult.skipped}</span>
             </div>
             <div className="result-item failed">
               <span className="result-label">Fallidas:</span>

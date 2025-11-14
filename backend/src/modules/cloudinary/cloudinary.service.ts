@@ -95,6 +95,25 @@ export class CloudinaryService {
   }
 
   /**
+   * Verifica si una imagen existe en Cloudinary
+   * @param publicId - Public ID de la imagen (ej: "IM-4200-A2d")
+   * @returns true si existe, false si no existe
+   */
+  async imageExists(publicId: string): Promise<boolean> {
+    try {
+      await cloudinary.api.resource(publicId);
+      return true;
+    } catch (error) {
+      // Si el error es 404, la imagen no existe
+      if (error.error && error.error.http_code === 404) {
+        return false;
+      }
+      // Otros errores se propagan
+      throw error;
+    }
+  }
+
+  /**
    * Sube una imagen a Cloudinary
    * @param file - Buffer del archivo
    * @param publicId - Public ID para la imagen (ej: "IM-4200-A2d")
