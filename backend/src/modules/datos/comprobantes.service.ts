@@ -21,6 +21,23 @@ export class ComprobantesService {
     return await this.comprobanteRepository.find();
   }
 
+  async findPaginated(page: number = 1, limit: number = 20): Promise<{ data: Comprobante[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.comprobanteRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { codigo: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOne(id: string): Promise<Comprobante> {
     const comprobante = await this.comprobanteRepository.findOne({ where: { id } });
     if (!comprobante) {

@@ -21,6 +21,23 @@ export class VidriosService {
     return await this.vidrioRepository.find();
   }
 
+  async findPaginated(page: number = 1, limit: number = 20): Promise<{ data: Vidrio[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.vidrioRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { tipo: 'ASC', color: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOne(id: string): Promise<Vidrio> {
     const vidrio = await this.vidrioRepository.findOne({ where: { id } });
     if (!vidrio) {

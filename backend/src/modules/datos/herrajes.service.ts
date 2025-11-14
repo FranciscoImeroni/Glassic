@@ -21,6 +21,23 @@ export class HerrajesService {
     return await this.herrajeRepository.find();
   }
 
+  async findPaginated(page: number = 1, limit: number = 20): Promise<{ data: Herraje[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.herrajeRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { color: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOne(id: string): Promise<Herraje> {
     const herraje = await this.herrajeRepository.findOne({ where: { id } });
     if (!herraje) {

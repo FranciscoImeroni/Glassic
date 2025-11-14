@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ServiciosService } from './servicios.service';
 import { CreateServicioDto } from './dto/create-servicio.dto';
 import { UpdateServicioDto } from './dto/update-servicio.dto';
@@ -13,7 +13,12 @@ export class ServiciosController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.serviciosService.findPaginated(pageNum, limitNum);
+    }
     return this.serviciosService.findAll();
   }
 

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { VidriosService } from './vidrios.service';
 import { CreateVidrioDto } from './dto/create-vidrio.dto';
 import { UpdateVidrioDto } from './dto/update-vidrio.dto';
@@ -13,7 +13,12 @@ export class VidriosController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.vidriosService.findPaginated(pageNum, limitNum);
+    }
     return this.vidriosService.findAll();
   }
 
