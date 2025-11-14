@@ -25,6 +25,7 @@ export default function IngresarProductoPage() {
   const [loading, setLoading] = useState(true);
   const [status, setStatus] = useState('');
   const [imageError, setImageError] = useState(false);
+  const [imageUrlFallback, setImageUrlFallback] = useState<string | null>(null);
 
   // Cargar datos desde la BD al montar el componente
   useEffect(() => {
@@ -68,6 +69,7 @@ export default function IngresarProductoPage() {
     setFormData(prev => ({ ...prev, serie: '', modelo: '' }));
     setModelosFiltrados([]);
     setImageError(false);
+    setImageUrlFallback(null);
   }, [formData.linea, productos]);
 
   // Filtrar modelos cuando cambia la serie
@@ -84,6 +86,7 @@ export default function IngresarProductoPage() {
     // Limpiar modelo
     setFormData(prev => ({ ...prev, modelo: '' }));
     setImageError(false);
+    setImageUrlFallback(null);
   }, [formData.serie, formData.linea, productos]);
 
   const handleInputChange = (field: string, value: string) => {
@@ -100,6 +103,18 @@ export default function IngresarProductoPage() {
       ...prev,
       medidas: newMedidas,
     }));
+  };
+
+  const handleImageError = () => {
+    // Si aún no hemos intentado con el fallback, intentar con modelo sin guiones
+    if (!imageUrlFallback && formData.modelo) {
+      const modeloSinGuiones = formData.modelo.replace(/-/g, '');
+      const fallbackUrl = getModeloImageUrl(modeloSinGuiones, { width: 400 });
+      setImageUrlFallback(fallbackUrl);
+    } else {
+      // Si el fallback también falló, mostrar error
+      setImageError(true);
+    }
   };
 
   const handleAplicar = async () => {
@@ -212,11 +227,14 @@ export default function IngresarProductoPage() {
                   <p>Imagen no disponible para {formData.modelo}</p>
                 ) : (
                   <img
-                    src={getModeloImageUrl(formData.modelo, { width: 400 })}
+                    src={imageUrlFallback || getModeloImageUrl(formData.modelo, { width: 400 })}
                     alt={`Modelo ${formData.modelo}`}
                     className="modelo-image"
-                    onError={() => setImageError(true)}
-                    onLoad={() => setImageError(false)}
+                    onError={handleImageError}
+                    onLoad={() => {
+                      setImageError(false);
+                      setImageUrlFallback(null);
+                    }}
                   />
                 )
               ) : (
