@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsInt, IsOptional, MaxLength, IsArray, IsBoolean } from 'class-validator';
+import { IsString, IsNotEmpty, IsInt, IsOptional, MaxLength, IsArray } from 'class-validator';
 
 export class CreateProductoDto {
   @IsString()
@@ -28,41 +28,6 @@ export class CreateProductoDto {
 
   @IsInt()
   espVidrio: number;
-
-  @IsString()
-  @IsOptional()
-  @MaxLength(100)
-  imagen?: string;
-
-  @IsString()
-  @IsOptional()
-  @MaxLength(100)
-  esquema?: string;
-
-  @IsString()
-  @IsOptional()
-  @MaxLength(100)
-  plano?: string;
-
-  // Cloudinary IDs
-  @IsString()
-  @IsOptional()
-  @MaxLength(200)
-  imagenCloudinaryId?: string;
-
-  @IsString()
-  @IsOptional()
-  @MaxLength(200)
-  esquemaCloudinaryId?: string;
-
-  @IsString()
-  @IsOptional()
-  @MaxLength(200)
-  planoCloudinaryId?: string;
-
-  @IsBoolean()
-  @IsOptional()
-  datosCompletos?: boolean;
 
   @IsArray()
   @IsOptional()

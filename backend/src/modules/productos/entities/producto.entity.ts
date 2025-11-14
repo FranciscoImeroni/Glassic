@@ -31,20 +31,6 @@ export class Producto {
   @Column({ name: 'esp_vidrio', type: 'int' })
   espVidrio: number;
 
-  // Cloudinary IDs (public_id de las imágenes)
-  @Column({ name: 'imagen_cloudinary_id', type: 'varchar', length: 200, nullable: true })
-  imagenCloudinaryId?: string;
-
-  @Column({ name: 'esquema_cloudinary_id', type: 'varchar', length: 200, nullable: true })
-  esquemaCloudinaryId?: string;
-
-  @Column({ name: 'plano_cloudinary_id', type: 'varchar', length: 200, nullable: true })
-  planoCloudinaryId?: string;
-
-  // Flag para indicar si el producto tiene todos los datos o solo imágenes
-  @Column({ name: 'datos_completos', type: 'boolean', default: true })
-  datosCompletos: boolean;
-
   // 🔗 Relación con Variable
   @ManyToMany(() => Variable, (variable) => variable.productos, {
     cascade: true,
