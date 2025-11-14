@@ -64,7 +64,6 @@ export default function ImageBulkUpload() {
 
   const handleUpload = async () => {
     if (files.length === 0) {
-      alert('Por favor selecciona archivos primero');
       return;
     }
 
@@ -109,7 +108,12 @@ export default function ImageBulkUpload() {
       }
     } catch (error) {
       console.error('Error al subir imágenes:', error);
-      alert('Error al subir las imágenes. Revisa la consola para más detalles.');
+      setUploadResult({
+        uploaded: 0,
+        skipped: 0,
+        failed: files.length,
+        errors: [{ fileName: 'Error general', reason: 'Error al conectar con el servidor. Revisa la consola.' }]
+      });
     } finally {
       setUploading(false);
     }
