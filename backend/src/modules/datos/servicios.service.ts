@@ -21,6 +21,23 @@ export class ServiciosService {
     return await this.servicioRepository.find();
   }
 
+  async findPaginated(page: number = 1, limit: number = 20): Promise<{ data: Servicio[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.servicioRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { nombre: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOne(id: string): Promise<Servicio> {
     const servicio = await this.servicioRepository.findOne({ where: { id } });
     if (!servicio) {

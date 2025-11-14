@@ -2,6 +2,13 @@ import { API_URL } from './config';
 
 // ==================== TIPOS ====================
 
+export interface PaginatedResponse<T> {
+  data: T[];
+  total: number;
+  page: number;
+  totalPages: number;
+}
+
 export interface Comprobante {
   id: string;
   codigo: string;
@@ -64,6 +71,12 @@ export async function getComprobantes(): Promise<Comprobante[]> {
   return res.json();
 }
 
+export async function getComprobantesPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Comprobante>> {
+  const res = await fetch(`${API_URL}/comprobantes?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener comprobantes');
+  return res.json();
+}
+
 export async function createComprobante(data: Omit<Comprobante, 'id'>): Promise<Comprobante> {
   const res = await fetch(`${API_URL}/comprobantes`, {
     method: 'POST',
@@ -78,6 +91,12 @@ export async function createComprobante(data: Omit<Comprobante, 'id'>): Promise<
 
 export async function getVidrios(): Promise<Vidrio[]> {
   const res = await fetch(`${API_URL}/vidrios`);
+  if (!res.ok) throw new Error('Error al obtener vidrios');
+  return res.json();
+}
+
+export async function getVidriosPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Vidrio>> {
+  const res = await fetch(`${API_URL}/vidrios?page=${page}&limit=${limit}`);
   if (!res.ok) throw new Error('Error al obtener vidrios');
   return res.json();
 }
@@ -100,6 +119,12 @@ export async function getServicios(): Promise<Servicio[]> {
   return res.json();
 }
 
+export async function getServiciosPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Servicio>> {
+  const res = await fetch(`${API_URL}/servicios?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener servicios');
+  return res.json();
+}
+
 export async function createServicio(data: Omit<Servicio, 'id'>): Promise<Servicio> {
   const res = await fetch(`${API_URL}/servicios`, {
     method: 'POST',
@@ -118,6 +143,12 @@ export async function getHerrajes(): Promise<Herraje[]> {
   return res.json();
 }
 
+export async function getHerrajesPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Herraje>> {
+  const res = await fetch(`${API_URL}/herrajes?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener herrajes');
+  return res.json();
+}
+
 export async function createHerraje(data: Omit<Herraje, 'id'>): Promise<Herraje> {
   const res = await fetch(`${API_URL}/herrajes`, {
     method: 'POST',
@@ -132,6 +163,12 @@ export async function createHerraje(data: Omit<Herraje, 'id'>): Promise<Herraje>
 
 export async function getAccesorios(): Promise<Accesorio[]> {
   const res = await fetch(`${API_URL}/accesorios`);
+  if (!res.ok) throw new Error('Error al obtener accesorios');
+  return res.json();
+}
+
+export async function getAccesoriosPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Accesorio>> {
+  const res = await fetch(`${API_URL}/accesorios?page=${page}&limit=${limit}`);
   if (!res.ok) throw new Error('Error al obtener accesorios');
   return res.json();
 }

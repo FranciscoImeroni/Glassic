@@ -21,6 +21,23 @@ export class AccesoriosService {
     return await this.accesorioRepository.find();
   }
 
+  async findPaginated(page: number = 1, limit: number = 20): Promise<{ data: Accesorio[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.accesorioRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { descripcion: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOne(id: string): Promise<Accesorio> {
     const accesorio = await this.accesorioRepository.findOne({ where: { id } });
     if (!accesorio) {

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { AccesoriosService } from './accesorios.service';
 import { CreateAccesorioDto } from './dto/create-accesorio.dto';
 import { UpdateAccesorioDto } from './dto/update-accesorio.dto';
@@ -13,7 +13,12 @@ export class AccesoriosController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.accesoriosService.findPaginated(pageNum, limitNum);
+    }
     return this.accesoriosService.findAll();
   }
 
