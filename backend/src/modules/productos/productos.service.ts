@@ -84,40 +84,4 @@ export class ProductosService {
     const producto = await this.findOne(id);
     await this.productoRepository.remove(producto);
   }
-
-  /**
-   * Busca un producto por nombre de modelo
-   * @param modelo - Nombre del modelo (ej: "4200-A2d")
-   * @returns Producto o null si no existe
-   */
-  async findByModelo(modelo: string): Promise<Producto | null> {
-    return await this.productoRepository.findOne({
-      where: { modelo },
-    });
-  }
-
-  /**
-   * Busca un producto por modelo, o lo crea si no existe
-   * @param modelo - Nombre del modelo
-   * @returns Producto existente o recién creado
-   */
-  async findOrCreateByModelo(modelo: string): Promise<Producto> {
-    let producto = await this.findByModelo(modelo);
-
-    if (!producto) {
-      // Crear producto con datos mínimos
-      producto = this.productoRepository.create({
-        modelo,
-        linea: '', // Vacío por ahora
-        serie: '', // Vacío por ahora
-        varVi: '',
-        codIvi: '',
-        espVidrio: 0,
-        datosCompletos: false, // Marcar como incompleto
-      });
-      producto = await this.productoRepository.save(producto);
-    }
-
-    return producto;
-  }
 }
