@@ -232,6 +232,11 @@
   border: 1px solid #10b981;
 }
 
+.result-item.skipped {
+  background-color: #fef3c7;
+  border: 1px solid #f59e0b;
+}
+
 .result-item.failed {
   background-color: #fee2e2;
   border: 1px solid #ef4444;
@@ -249,6 +254,10 @@
 
 .result-item.success .result-value {
   color: #059669;
+}
+
+.result-item.skipped .result-value {
+  color: #d97706;
 }
 
 .result-item.failed .result-value {

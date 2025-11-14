@@ -9,14 +9,10 @@ import {
 } from '@nestjs/common';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { CloudinaryService } from './cloudinary.service';
-import { ProductosService } from '../productos/productos.service';
 
 @Controller('cloudinary')
 export class CloudinaryController {
-  constructor(
-    private readonly cloudinaryService: CloudinaryService,
-    private readonly productosService: ProductosService,
-  ) {}
+  constructor(private readonly cloudinaryService: CloudinaryService) {}
 
   /**
    * Endpoint de prueba para verificar URLs de Cloudinary
@@ -160,17 +156,18 @@ export class CloudinaryController {
   }
 
   /**
-   * Endpoint para subir imágenes en bulk
+   * Endpoint para subir imágenes en bulk a Cloudinary
    * POST /cloudinary/bulk-upload
    * Acepta múltiples archivos JPG, parsea nombres de archivo (ej: IM-4200-A2d.jpg)
-   * y asocia las imágenes con productos en la BD
+   * Verifica duplicados antes de subir
    */
   @Post('bulk-upload')
   @UseInterceptors(FilesInterceptor('files'))
   async bulkUpload(
     @UploadedFiles() files: Express.Multer.File[],
   ): Promise<{
-    success: number;
+    uploaded: number;
+    skipped: number;
     failed: number;
     errors: Array<{ fileName: string; reason: string }>;
   }> {
@@ -182,7 +179,8 @@ export class CloudinaryController {
       throw new BadRequestException('No se proporcionaron archivos');
     }
 
-    let successCount = 0;
+    let uploadedCount = 0;
+    let skippedCount = 0;
     let failedCount = 0;
     const errors: Array<{ fileName: string; reason: string }> = [];
 
@@ -191,7 +189,7 @@ export class CloudinaryController {
         const fileName = file.originalname;
         console.log(`[BULK-UPLOAD] Procesando archivo: ${fileName}`);
 
-        // Parsear el nombre del archivo (ej: "IM-4200-A2d.jpg" → prefix="IM", modelo="4200-A2d")
+        // Parsear el nombre del archivo (ej: "IM-4200-A2d.jpg" → publicId="IM-4200-A2d")
         const nameWithoutExt = fileName.replace(/\.(jpg|jpeg|png)$/i, '');
         const parts = nameWithoutExt.split('-');
 
@@ -206,8 +204,7 @@ export class CloudinaryController {
         }
 
         const prefix = parts[0]; // IM, ES, o PL
-        const modelo = parts.slice(1).join('-'); // 4200-A2d
-        console.log(`[BULK-UPLOAD] Parseado - Prefix: ${prefix}, Modelo: ${modelo}`);
+        console.log(`[BULK-UPLOAD] Parseado - Prefix: ${prefix}, PublicId: ${nameWithoutExt}`);
 
         // Validar prefijo
         if (!['IM', 'ES', 'PL'].includes(prefix)) {
@@ -220,43 +217,26 @@ export class CloudinaryController {
           continue;
         }
 
-        // Buscar o crear producto por modelo
-        console.log(`[BULK-UPLOAD] Buscando/creando producto para modelo: ${modelo}`);
-        const producto = await this.productosService.findOrCreateByModelo(modelo);
-        console.log(`[BULK-UPLOAD] Producto obtenido, ID: ${producto.id}`);
-
-        // Subir imagen a Cloudinary con public_id fijo (sin sufijos)
+        // Verificar si la imagen ya existe en Cloudinary
         const publicId = nameWithoutExt; // ej: "IM-4200-A2d"
-        console.log(`[BULK-UPLOAD] Subiendo a Cloudinary con publicId: ${publicId}`);
+        console.log(`[BULK-UPLOAD] Verificando si existe en Cloudinary: ${publicId}`);
+        const exists = await this.cloudinaryService.imageExists(publicId);
+
+        if (exists) {
+          console.log(`[BULK-UPLOAD] SKIP: Imagen ya existe en Cloudinary: ${publicId}`);
+          skippedCount++;
+          continue;
+        }
+
+        // Subir imagen a Cloudinary
+        console.log(`[BULK-UPLOAD] Subiendo a Cloudinary: ${publicId}`);
         const uploadResult = await this.cloudinaryService.uploadImage(
           file.buffer,
           publicId,
         );
-        console.log(`[BULK-UPLOAD] Subida exitosa a Cloudinary: ${uploadResult.url}`);
+        console.log(`[BULK-UPLOAD] Subida exitosa: ${uploadResult.url}`);
 
-        // Actualizar el campo correspondiente según el prefijo
-        switch (prefix) {
-          case 'IM':
-            producto.imagenCloudinaryId = uploadResult.publicId;
-            break;
-          case 'ES':
-            producto.esquemaCloudinaryId = uploadResult.publicId;
-            break;
-          case 'PL':
-            producto.planoCloudinaryId = uploadResult.publicId;
-            break;
-        }
-
-        // Guardar producto con el nuevo cloudinary_id
-        console.log(`[BULK-UPLOAD] Guardando producto ID ${producto.id} en BD`);
-        await this.productosService.update(producto.id, {
-          imagenCloudinaryId: producto.imagenCloudinaryId,
-          esquemaCloudinaryId: producto.esquemaCloudinaryId,
-          planoCloudinaryId: producto.planoCloudinaryId,
-        });
-        console.log(`[BULK-UPLOAD] Producto guardado exitosamente`);
-
-        successCount++;
+        uploadedCount++;
       } catch (error) {
         console.log(`[BULK-UPLOAD] ERROR procesando ${file.originalname}:`, error);
         failedCount++;
@@ -267,9 +247,10 @@ export class CloudinaryController {
       }
     }
 
-    console.log(`[BULK-UPLOAD] Finalizado - Exitosos: ${successCount}, Fallidos: ${failedCount}`);
+    console.log(`[BULK-UPLOAD] Finalizado - Subidas: ${uploadedCount}, Omitidas: ${skippedCount}, Fallidas: ${failedCount}`);
     return {
-      success: successCount,
+      uploaded: uploadedCount,
+      skipped: skippedCount,
       failed: failedCount,
       errors,
     };
