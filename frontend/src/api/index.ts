@@ -227,6 +227,12 @@ export async function getProductos(): Promise<Producto[]> {
   return res.json();
 }
 
+export async function getProductosPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Producto>> {
+  const res = await fetch(`${API_URL}/productos?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener productos');
+  return res.json();
+}
+
 export async function createProducto(data: Omit<Producto, 'id'>): Promise<Producto> {
   const res = await fetch(`${API_URL}/productos`, {
     method: 'POST',
