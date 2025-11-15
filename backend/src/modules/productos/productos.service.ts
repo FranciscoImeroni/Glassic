@@ -42,6 +42,24 @@ export class ProductosService {
     });
   }
 
+  async findPaginated(page: number = 1, limit: number = 20): Promise<{ data: Producto[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.productoRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { linea: 'ASC', serie: 'ASC', modelo: 'ASC' },
+      relations: ['variables', 'instrucciones'],
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOne(id: string): Promise<Producto> {
     const producto = await this.productoRepository.findOne({
       where: { id },

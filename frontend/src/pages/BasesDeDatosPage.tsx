@@ -5,6 +5,7 @@ import type {
   Servicio,
   Herraje,
   Accesorio,
+  Producto,
   PaginatedResponse,
 } from '../api';
 import {
@@ -13,10 +14,11 @@ import {
   getServiciosPaginated,
   getHerrajesPaginated,
   getAccesoriosPaginated,
+  getProductosPaginated,
 } from '../api';
 import './BasesDeDatosPage.css';
 
-type TabType = 'comprobantes' | 'vidrios' | 'servicios' | 'herrajes' | 'accesorios';
+type TabType = 'comprobantes' | 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos';
 
 interface DataTableProps<T> {
   data: T[];
@@ -44,6 +46,7 @@ function DataTable<T>({ data, columns, loading, error, page, totalPages, total, 
 
   const startRecord = (page - 1) * 20 + 1;
   const endRecord = Math.min(page * 20, total);
+  const showPagination = totalPages > 1;
 
   return (
     <>
@@ -68,30 +71,32 @@ function DataTable<T>({ data, columns, loading, error, page, totalPages, total, 
         </table>
       </div>
 
-      <div className="pagination">
-        <div className="pagination-info">
-          Mostrando {startRecord} - {endRecord} de {total} registros
+      {showPagination && (
+        <div className="pagination">
+          <div className="pagination-info">
+            Mostrando {startRecord} - {endRecord} de {total} registros
+          </div>
+          <div className="pagination-controls">
+            <button
+              className="pagination-button"
+              onClick={() => onPageChange(page - 1)}
+              disabled={page === 1}
+            >
+              Anterior
+            </button>
+            <span className="page-number">
+              Página {page} de {totalPages}
+            </span>
+            <button
+              className="pagination-button"
+              onClick={() => onPageChange(page + 1)}
+              disabled={page === totalPages}
+            >
+              Siguiente
+            </button>
+          </div>
         </div>
-        <div className="pagination-controls">
-          <button
-            className="pagination-button"
-            onClick={() => onPageChange(page - 1)}
-            disabled={page === 1}
-          >
-            Anterior
-          </button>
-          <span className="page-number">
-            Página {page} de {totalPages}
-          </span>
-          <button
-            className="pagination-button"
-            onClick={() => onPageChange(page + 1)}
-            disabled={page === totalPages}
-          >
-            Siguiente
-          </button>
-        </div>
-      </div>
+      )}
     </>
   );
 }
@@ -153,6 +158,17 @@ export default function BasesDeDatosPage() {
   const [accesoriosPage, setAccesoriosPage] = useState(1);
   const [accesoriosLoading, setAccesoriosLoading] = useState(false);
   const [accesoriosError, setAccesoriosError] = useState<string | null>(null);
+
+  // Estados para Productos
+  const [productosData, setProductosData] = useState<PaginatedResponse<Producto>>({
+    data: [],
+    total: 0,
+    page: 1,
+    totalPages: 0,
+  });
+  const [productosPage, setProductosPage] = useState(1);
+  const [productosLoading, setProductosLoading] = useState(false);
+  const [productosError, setProductosError] = useState<string | null>(null);
 
   // Cargar Comprobantes
   useEffect(() => {
@@ -254,6 +270,26 @@ export default function BasesDeDatosPage() {
     }
   }, [activeTab, accesoriosPage]);
 
+  // Cargar Productos
+  useEffect(() => {
+    const loadProductos = async () => {
+      setProductosLoading(true);
+      setProductosError(null);
+      try {
+        const result = await getProductosPaginated(productosPage, 20);
+        setProductosData(result);
+      } catch (err) {
+        setProductosError(err instanceof Error ? err.message : 'Error desconocido');
+      } finally {
+        setProductosLoading(false);
+      }
+    };
+
+    if (activeTab === 'productos') {
+      loadProductos();
+    }
+  }, [activeTab, productosPage]);
+
   return (
     <div className="bases-datos-page">
       <h1>Bases de Datos</h1>
@@ -290,6 +326,12 @@ export default function BasesDeDatosPage() {
           >
             Comprobantes
           </button>
+          <button
+            className={`tab-button ${activeTab === 'productos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('productos')}
+          >
+            Productos
+          </button>
         </div>
       </div>
 
@@ -300,7 +342,6 @@ export default function BasesDeDatosPage() {
             <DataTable
               data={vidriosData.data}
               columns={[
-                { key: 'id', label: 'ID' },
                 { key: 'tipo', label: 'Tipo' },
                 { key: 'color', label: 'Color' },
               ]}
@@ -320,7 +361,6 @@ export default function BasesDeDatosPage() {
             <DataTable
               data={serviciosData.data}
               columns={[
-                { key: 'id', label: 'ID' },
                 { key: 'nombre', label: 'Nombre' },
               ]}
               loading={serviciosLoading}
@@ -339,7 +379,6 @@ export default function BasesDeDatosPage() {
             <DataTable
               data={herrajesData.data}
               columns={[
-                { key: 'id', label: 'ID' },
                 { key: 'color', label: 'Color' },
               ]}
               loading={herrajesLoading}
@@ -358,7 +397,6 @@ export default function BasesDeDatosPage() {
             <DataTable
               data={accesoriosData.data}
               columns={[
-                { key: 'id', label: 'ID' },
                 { key: 'descripcion', label: 'Descripción' },
               ]}
               loading={accesoriosLoading}
@@ -377,7 +415,6 @@ export default function BasesDeDatosPage() {
             <DataTable
               data={comprobantesData.data}
               columns={[
-                { key: 'id', label: 'ID' },
                 { key: 'codigo', label: 'Código' },
                 { key: 'descripcion', label: 'Descripción' },
               ]}
@@ -387,6 +424,29 @@ export default function BasesDeDatosPage() {
               totalPages={comprobantesData.totalPages}
               total={comprobantesData.total}
               onPageChange={setComprobantesPage}
+            />
+          </div>
+        )}
+
+        {activeTab === 'productos' && (
+          <div className="tab-panel">
+            <h2>Productos</h2>
+            <DataTable
+              data={productosData.data}
+              columns={[
+                { key: 'linea', label: 'Línea' },
+                { key: 'serie', label: 'Serie' },
+                { key: 'modelo', label: 'Modelo' },
+                { key: 'varVi', label: 'Var. Vidrio' },
+                { key: 'codIvi', label: 'Cód. IVI' },
+                { key: 'espVidrio', label: 'Esp. Vidrio' },
+              ]}
+              loading={productosLoading}
+              error={productosError}
+              page={productosData.page}
+              totalPages={productosData.totalPages}
+              total={productosData.total}
+              onPageChange={setProductosPage}
             />
           </div>
         )}

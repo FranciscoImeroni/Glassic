@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ProductosService } from './productos.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
@@ -13,7 +13,12 @@ export class ProductosController {
   }
 
   @Get()
-  findAll() {
+  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.productosService.findPaginated(pageNum, limitNum);
+    }
     return this.productosService.findAll();
   }
 
