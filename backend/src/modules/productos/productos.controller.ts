@@ -22,6 +22,11 @@ export class ProductosController {
     return this.productosService.findAll();
   }
 
+  @Get(':id/variables-entrada')
+  getVariablesEntrada(@Param('id') id: string) {
+    return this.productosService.getVariablesEntrada(id);
+  }
+
   @Get(':id')
   findOne(@Param('id') id: string) {
     return this.productosService.findOne(id);
