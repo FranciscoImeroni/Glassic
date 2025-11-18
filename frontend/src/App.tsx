@@ -11,6 +11,7 @@ import ProgramadorPage from './pages/ProgramadorPage';
 import HomePage from './pages/HomePage/HomePage';
 import ConfigurarPlantillaPage from './pages/ConfigurarPlantillaPage/ConfigurarPlantillaPage';
 import ConfigurarPlanoPage from './pages/ConfigurarPlanoPage/ConfigurarPlanoPage';
+import AdminBasesDeDatosPage from './pages/AdminBasesDeDatosPage/AdminBasesDeDatosPage';
 import { ProductoProvider } from './context/ProductoContext';
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route path="/programador" element={<ProgramadorPage />} />
             <Route path="/config/plantilla" element={<ConfigurarPlantillaPage />} />
             <Route path="/config/plano" element={<ConfigurarPlanoPage />} />
+            <Route path="/admin/bases-de-datos" element={<AdminBasesDeDatosPage />} />
           </Route>
         </Routes>
       </BrowserRouter>
