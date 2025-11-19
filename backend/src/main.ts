@@ -6,6 +6,12 @@ import { NestFactory } from '@nestjs/core';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  // Habilitar CORS para desarrollo
+  app.enableCors({
+    origin: true, // En desarrollo permite todos los orígenes
+    credentials: true,
+  });
+
   // Prefijo global para todas las rutas de API
   app.setGlobalPrefix('api');
 
