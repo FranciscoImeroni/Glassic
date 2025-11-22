@@ -6,7 +6,7 @@ export class CoordenadasPlantilla {
   id: number;
 
   // Identificador único del elemento en la plantilla
-  @Column({ name: 'elemento', unique: true, length: 50 })
+  @Column({ name: 'elemento', type: 'varchar', unique: true, length: 50 })
   elemento: string; // 'cliente', 'obra', 'referencia', 'comprobante_tipo', 'comprobante_numero', 'fecha', 'plano_area', 'esquema', 'vidrio_tipo', 'vidrio_color', 'vidrio_cantidad', 'servicio', 'herraje', 'accesorio_1', 'accesorio_2', 'accesorio_3', 'notas'
 
   // Coordenadas en píxeles (relativas a la plantilla ORDEN_DE_FABRICACION)
@@ -27,16 +27,16 @@ export class CoordenadasPlantilla {
   @Column({ name: 'font_size', type: 'int', nullable: true })
   fontSize: number | null;
 
-  @Column({ name: 'font_family', length: 50, nullable: true })
+  @Column({ name: 'font_family', type: 'varchar', length: 50, nullable: true })
   fontFamily: string | null;
 
-  @Column({ name: 'font_weight', length: 20, nullable: true })
+  @Column({ name: 'font_weight', type: 'varchar', length: 20, nullable: true })
   fontWeight: string | null; // normal, bold
 
-  @Column({ name: 'color', length: 7, nullable: true })
+  @Column({ name: 'color', type: 'varchar', length: 7, nullable: true })
   color: string | null; // Hexadecimal
 
-  @Column({ name: 'align', length: 10, nullable: true })
+  @Column({ name: 'align', type: 'varchar', length: 10, nullable: true })
   align: string | null; // left, center, right
 
   @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

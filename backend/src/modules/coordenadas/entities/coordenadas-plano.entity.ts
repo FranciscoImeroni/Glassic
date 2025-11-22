@@ -33,16 +33,16 @@ export class CoordenadasPlano {
   @Column({ name: 'font_size', type: 'int', default: 14 })
   fontSize: number;
 
-  @Column({ name: 'font_family', length: 50, default: 'Arial' })
+  @Column({ name: 'font_family', type: 'varchar', length: 50, default: 'Arial' })
   fontFamily: string;
 
-  @Column({ name: 'font_weight', length: 20, default: 'normal' })
+  @Column({ name: 'font_weight', type: 'varchar', length: 20, default: 'normal' })
   fontWeight: string; // normal, bold
 
-  @Column({ name: 'color', length: 7, default: '#000000' })
+  @Column({ name: 'color', type: 'varchar', length: 7, default: '#000000' })
   color: string; // Hexadecimal
 
-  @Column({ name: 'align', length: 10, default: 'left' })
+  @Column({ name: 'align', type: 'varchar', length: 10, default: 'left' })
   align: string; // left, center, right
 
   @Column({ name: 'created_at', type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })

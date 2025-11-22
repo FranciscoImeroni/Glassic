@@ -28,19 +28,24 @@ import { CoordenadasModule } from './modules/coordenadas/coordenadas.module';
     // 👇 Conexión a la base de datos (versión simplificada con DATABASE_URL)
     TypeOrmModule.forRootAsync({
       inject: [ConfigService],
-      useFactory: (config: ConfigService) => ({
-        type: 'postgres',
-        url: config.get('DATABASE_URL'),
-        autoLoadEntities: true,
-        // ⚠️ synchronize solo en desarrollo, NUNCA en producción
-        synchronize: config.get('NODE_ENV') !== 'production',
-        // Para producción, usar migraciones: npm run migration:run
-        migrations: ['dist/migrations/*.js'],
-        migrationsRun: config.get('NODE_ENV') === 'production',
-        ssl: {
-          rejectUnauthorized: false,
-        },
-      }),
+      useFactory: (config: ConfigService) => {
+        const isProduction = config.get('NODE_ENV') === 'production';
+
+        return {
+          type: 'postgres',
+          url: config.get('DATABASE_URL'),
+          autoLoadEntities: true,
+          // ⚠️ synchronize solo en desarrollo, NUNCA en producción
+          synchronize: !isProduction,
+          // Para producción, usar migraciones: npm run migration:run
+          migrations: ['dist/migrations/*.js'],
+          migrationsRun: isProduction,
+          // SSL solo en producción (Railway, etc), no en desarrollo local
+          ssl: isProduction ? {
+            rejectUnauthorized: false,
+          } : false,
+        };
+      },
     }),
 
     UsersModule,
