@@ -38,7 +38,7 @@ async function seed() {
       { codigo: 'BAS2', nombre: 'Base' },
     ];
 
-    const variablesCreadas = [];
+    const variablesCreadas: Variable[] = [];
     for (const varData of variables) {
       const existing = await variableRepo.findOne({ where: { codigo: varData.codigo } });
       if (!existing) {
@@ -76,7 +76,7 @@ async function seed() {
       },
     ];
 
-    const productosCreados = [];
+    const productosCreados: Producto[] = [];
     for (const prodData of productos) {
       const existing = await productoRepo.findOne({
         where: { modelo: prodData.modelo },
@@ -102,7 +102,7 @@ async function seed() {
       { codigo: '4000-A1i', descripcion: 'Modelo 4000 A1 izquierdo' },
     ];
 
-    const modelosCreados = [];
+    const modelosCreados: Modelo[] = [];
     for (const modeloData of modelos) {
       let modelo = await modeloRepo.findOne({ where: { codigo: modeloData.codigo } });
       if (!modelo) {
@@ -126,7 +126,7 @@ async function seed() {
       { codigo: 'BPF2', descripcion: 'Base Paño Fijo 2', tipoSalida: 'number' as const },
     ];
 
-    const variablesCalcCreadas = [];
+    const variablesCalcCreadas: VariableCalculada[] = [];
     for (const varData of variablesCalculadas) {
       let varCalc = await varCalcRepo.findOne({ where: { codigo: varData.codigo } });
       if (!varCalc) {
@@ -222,11 +222,11 @@ async function seed() {
     const vidrioRepo = dataSource.getRepository(Vidrio);
 
     const vidrios = [
-      { tipo: 'Float', color: 'Incoloro', espesor: 6 },
-      { tipo: 'Float', color: 'Bronce', espesor: 6 },
-      { tipo: 'Float', color: 'Verde', espesor: 6 },
-      { tipo: 'Laminado', color: 'Incoloro', espesor: 8 },
-      { tipo: 'Templado', color: 'Incoloro', espesor: 10 },
+      { tipo: 'Float', color: 'Incoloro' },
+      { tipo: 'Float', color: 'Bronce' },
+      { tipo: 'Float', color: 'Verde' },
+      { tipo: 'Laminado', color: 'Incoloro' },
+      { tipo: 'Templado', color: 'Incoloro' },
     ];
 
     for (const vidrioData of vidrios) {
@@ -234,16 +234,15 @@ async function seed() {
         where: {
           tipo: vidrioData.tipo,
           color: vidrioData.color,
-          espesor: vidrioData.espesor,
         },
       });
 
       if (!existing) {
         const vidrio = vidrioRepo.create(vidrioData);
         await vidrioRepo.save(vidrio);
-        console.log(`  ✓ Vidrio ${vidrioData.tipo} ${vidrioData.color} ${vidrioData.espesor}mm creado`);
+        console.log(`  ✓ Vidrio ${vidrioData.tipo} ${vidrioData.color} creado`);
       } else {
-        console.log(`  • Vidrio ${vidrioData.tipo} ${vidrioData.color} ${vidrioData.espesor}mm ya existe`);
+        console.log(`  • Vidrio ${vidrioData.tipo} ${vidrioData.color} ya existe`);
       }
     }
 
