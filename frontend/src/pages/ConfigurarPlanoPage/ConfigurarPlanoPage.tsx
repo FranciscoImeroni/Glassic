@@ -59,6 +59,7 @@ export default function ConfigurarPlanoPage() {
       inicializarCanvas();
       cargarVariablesDelModelo();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [modeloSeleccionado, modeloCodigo]);
 
   const cargarModelos = async () => {
@@ -165,8 +166,8 @@ export default function ConfigurarPlanoPage() {
       const textObj = obj as fabric.Text;
       setFontSize(textObj.fontSize || 14);
       setFontFamily(textObj.fontFamily || 'Arial');
-      setFontWeight(textObj.fontWeight as string || 'normal');
-      setColor(textObj.fill as string || '#000000');
+      setFontWeight(String(textObj.fontWeight || 'normal'));
+      setColor(String(textObj.fill || '#000000'));
     }
   };
 
@@ -280,8 +281,8 @@ export default function ConfigurarPlanoPage() {
         y: Math.round(e.objeto.top || 0),
         fontSize: e.objeto.fontSize || 14,
         fontFamily: e.objeto.fontFamily || 'Arial',
-        fontWeight: e.objeto.fontWeight || 'normal',
-        color: e.objeto.fill as string || '#000000',
+        fontWeight: String(e.objeto.fontWeight || 'normal'),
+        color: String(e.objeto.fill || '#000000'),
         align: 'left',
       }));
 
