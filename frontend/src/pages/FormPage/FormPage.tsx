@@ -1,4 +1,6 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useProducto } from '../../context/ProductoContext';
 import {
   getComprobantes,
   getTiposVidrio,
@@ -14,32 +16,38 @@ import {
 import './FormPage.css';
 
 export default function FormPage() {
-  type AccessoryItem = { cantidad: string; descripcion: string };
+  const navigate = useNavigate();
+  const { datosCliente, setDatosCliente } = useProducto();
 
-  // Estados del formulario
-  const [cliente, setCliente] = useState('');
-  const [referencia, setReferencia] = useState('');
-  const [obra, setObra] = useState('');
+  type AccessoryItem = { cantidad: number; descripcion: string };
 
-  const [tipoComprobante, setTipoComprobante] = useState('');
-  const [numeroComprobante, setNumeroComprobante] = useState('');
+  // Estados del formulario - inicializar con datos del Context si existen
+  const [cliente, setCliente] = useState(datosCliente.cliente || '');
+  const [referencia, setReferencia] = useState(datosCliente.referencia || '');
+  const [obra, setObra] = useState(datosCliente.obra || '');
 
-  const [tipoVidrio, setTipoVidrio] = useState('');
-  const [colorVidrio, setColorVidrio] = useState('');
+  const [tipoComprobante, setTipoComprobante] = useState(datosCliente.comprobanteId || '');
+  const [numeroComprobante, setNumeroComprobante] = useState(datosCliente.numeroComprobante || '');
+
+  const [tipoVidrio, setTipoVidrio] = useState(datosCliente.vidrioId || '');
+  const [colorVidrio, setColorVidrio] = useState(''); // Asumimos que vidrioId incluye tipo y color
   const [cantidadVidrio, setCantidadVidrio] = useState('');
 
-  const [servicio, setServicio] = useState('');
+  const [servicio, setServicio] = useState(datosCliente.servicioId || '');
 
-  const [colorHerraje, setColorHerraje] = useState('');
+  const [colorHerraje, setColorHerraje] = useState(datosCliente.herrajeId || '');
 
-  const [accesorios, setAccesorios] = useState<AccessoryItem[]>([
-    { cantidad: '', descripcion: '' },
-    { cantidad: '', descripcion: '' },
-    { cantidad: '', descripcion: '' },
-  ]);
-  const [notaAccesorios, setNotaAccesorios] = useState('');
+  const [accesorios, setAccesorios] = useState<AccessoryItem[]>(
+    datosCliente.accesorios && datosCliente.accesorios.length > 0
+      ? datosCliente.accesorios
+      : [
+          { cantidad: 0, descripcion: '' },
+          { cantidad: 0, descripcion: '' },
+          { cantidad: 0, descripcion: '' },
+        ]
+  );
 
-  const [notaGeneral, setNotaGeneral] = useState('');
+  const [notaGeneral, setNotaGeneral] = useState(datosCliente.notas || '');
   const [status, setStatus] = useState('');
 
   // Estados para datos de la BD
@@ -84,29 +92,47 @@ export default function FormPage() {
   }, []);
 
   const handleAccessoryChange = (index: number, field: keyof AccessoryItem, value: string) => {
-    setAccesorios((prev) => prev.map((item, i) => (i === index ? { ...item, [field]: value } : item)));
+    setAccesorios((prev) =>
+      prev.map((item, i) =>
+        i === index
+          ? { ...item, [field]: field === 'cantidad' ? parseInt(value) || 0 : value }
+          : item
+      )
+    );
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const formData = {
-      datosCliente: { cliente, referencia, obra },
-      comprobante: { tipo: tipoComprobante, numero: numeroComprobante },
-      vidrio: { tipo: tipoVidrio, color: colorVidrio, cantidad: cantidadVidrio },
-      servicio,
-      herraje: { color: colorHerraje },
-      accesorios,
-      notaAccesorios,
-      notaGeneral,
+
+    // Obtener fecha actual
+    const fecha = new Date().toISOString().split('T')[0];
+
+    // Preparar datos para el Context
+    const datosParaGuardar = {
+      cliente,
+      referencia,
+      obra,
+      comprobanteId: tipoComprobante,
+      numeroComprobante,
+      fecha,
+      vidrioId: tipoVidrio, // Aquí deberías combinar tipo y color si es necesario
+      servicioId: servicio,
+      herrajeId: colorHerraje,
+      accesorios: accesorios.filter(acc => acc.cantidad > 0 || acc.descripcion), // Filtrar vacíos
+      notas: notaGeneral,
     };
 
     try {
-      // Aquí deberías crear el endpoint correcto en el backend
-      // await createDato(formData);
-      setStatus('Registro creado con éxito');
-      console.log('Datos del formulario:', formData);
+      // Guardar en el Context
+      setDatosCliente(datosParaGuardar);
+      setStatus('Datos guardados correctamente. Redirigiendo...');
+
+      // Navegar a ver plano
+      setTimeout(() => {
+        navigate('/ver-plano');
+      }, 1000);
     } catch (err) {
-      setStatus('Error al crear registro');
+      setStatus('Error al guardar datos');
       console.error(err);
     }
   };
@@ -156,7 +182,7 @@ export default function FormPage() {
                 <select value={tipoComprobante} onChange={(e) => setTipoComprobante(e.target.value)}>
                   <option value="">Seleccione...</option>
                   {comprobantes.map((comp) => (
-                    <option key={comp.id} value={comp.codigo}>
+                    <option key={comp.id} value={comp.id}>
                       {comp.codigo} - {comp.descripcion}
                     </option>
                   ))}
@@ -215,7 +241,7 @@ export default function FormPage() {
                 <select value={servicio} onChange={(e) => setServicio(e.target.value)}>
                   <option value="">Seleccione...</option>
                   {servicios.map((serv) => (
-                    <option key={serv.id} value={serv.nombre}>
+                    <option key={serv.id} value={serv.id}>
                       {serv.nombre}
                     </option>
                   ))}
@@ -234,7 +260,7 @@ export default function FormPage() {
                 <select value={colorHerraje} onChange={(e) => setColorHerraje(e.target.value)}>
                   <option value="">Seleccione...</option>
                   {herrajes.map((herraje) => (
-                    <option key={herraje.id} value={herraje.color}>
+                    <option key={herraje.id} value={herraje.id}>
                       {herraje.color}
                     </option>
                   ))}
@@ -256,7 +282,7 @@ export default function FormPage() {
                   <input
                     className="cell-cant"
                     type="number"
-                    value={acc.cantidad}
+                    value={acc.cantidad || ''}
                     onChange={(e) => handleAccessoryChange(idx, 'cantidad', e.target.value)}
                   />
                   <select
@@ -273,14 +299,6 @@ export default function FormPage() {
                   </select>
                 </div>
               ))}
-
-              <div className="panel-note">
-                <textarea
-                  value={notaAccesorios}
-                  onChange={(e) => setNotaAccesorios(e.target.value)}
-                  placeholder="Notas sobre accesorios..."
-                />
-              </div>
             </div>
           </section>
 
@@ -303,7 +321,7 @@ export default function FormPage() {
         </div>
       </form>
 
-      {status && <p className="status">{status}</p>}
+      {status && <p className="status" style={{ color: status.includes('Error') ? 'red' : 'green' }}>{status}</p>}
     </div>
   );
 }

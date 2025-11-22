@@ -12,6 +12,7 @@ import { ProductosModule } from './modules/productos/productos.module';
 import { FormulasModule } from './modules/formulas/formulas.module';
 import { ConfiguracionModule } from './modules/configuracion/configuracion.module';
 import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
+import { CoordenadasModule } from './modules/coordenadas/coordenadas.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { CloudinaryModule } from './modules/cloudinary/cloudinary.module';
     FormulasModule,
     ConfiguracionModule,
     CloudinaryModule,
+    CoordenadasModule,
   ],
   controllers: [AppController],
   providers: [AppService],

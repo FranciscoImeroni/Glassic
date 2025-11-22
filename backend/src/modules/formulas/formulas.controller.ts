@@ -6,6 +6,7 @@ import { CreateModeloDto } from './dto/create-modelo.dto';
 import { UpdateModeloDto } from './dto/update-modelo.dto';
 import { CreateFormulaCalculadaDto } from './dto/create-formula-calculada.dto';
 import { UpdateFormulaCalculadaDto } from './dto/update-formula-calculada.dto';
+import { CalcularFormulasDto } from './dto/calcular-formulas.dto';
 
 @Controller('formulas')
 export class FormulasController {
@@ -92,5 +93,11 @@ export class FormulasController {
   @Delete('calculadas/:id')
   removeFormulaCalculada(@Param('id') id: string) {
     return this.formulasService.removeFormulaCalculada(+id);
+  }
+
+  // CALCULAR FORMULAS ENDPOINT
+  @Post('calcular')
+  calcularFormulas(@Body() calcularDto: CalcularFormulasDto) {
+    return this.formulasService.calcularFormulas(calcularDto);
   }
 }
