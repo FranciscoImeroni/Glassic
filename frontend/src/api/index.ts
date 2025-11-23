@@ -63,6 +63,43 @@ export interface Producto {
   instrucciones?: CodigoInstruccion[];
 }
 
+export interface Modelo {
+  id: string;
+  codigo: string;
+  nombre: string;
+}
+
+export interface VariableCalculada {
+  id: string;
+  codigo: string;
+  nombre: string;
+  descripcion?: string;
+}
+
+export interface FormulaCalculada {
+  id: string;
+  modeloId: string;
+  variableId: string;
+  expresion: string;
+  orden: number;
+  activa: boolean;
+  modelo?: Modelo;
+  variable?: VariableCalculada;
+}
+
+export interface ValorFijo {
+  id: string;
+  clave: string;
+  valor: string;
+  descripcion?: string;
+}
+
+export interface Kit {
+  id: string;
+  codigo: string;
+  descripcion: string;
+}
+
 // ==================== COMPROBANTES ====================
 
 export async function getComprobantes(): Promise<Comprobante[]> {
@@ -240,6 +277,126 @@ export async function createProducto(data: Omit<Producto, 'id'>): Promise<Produc
     body: JSON.stringify(data),
   });
   if (!res.ok) throw new Error('Error al crear producto');
+  return res.json();
+}
+
+// ==================== MODELOS (FÓRMULAS) ====================
+
+export async function getModelos(): Promise<Modelo[]> {
+  const res = await fetch(`${API_URL}/formulas/modelos`);
+  if (!res.ok) throw new Error('Error al obtener modelos');
+  return res.json();
+}
+
+export async function getModelosPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Modelo>> {
+  const res = await fetch(`${API_URL}/formulas/modelos?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener modelos');
+  return res.json();
+}
+
+export async function createModelo(data: Omit<Modelo, 'id'>): Promise<Modelo> {
+  const res = await fetch(`${API_URL}/formulas/modelos`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al crear modelo');
+  return res.json();
+}
+
+// ==================== VARIABLES CALCULADAS ====================
+
+export async function getVariablesCalculadas(): Promise<VariableCalculada[]> {
+  const res = await fetch(`${API_URL}/formulas/variables`);
+  if (!res.ok) throw new Error('Error al obtener variables calculadas');
+  return res.json();
+}
+
+export async function getVariablesCalculadasPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<VariableCalculada>> {
+  const res = await fetch(`${API_URL}/formulas/variables?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener variables calculadas');
+  return res.json();
+}
+
+export async function createVariableCalculada(data: Omit<VariableCalculada, 'id'>): Promise<VariableCalculada> {
+  const res = await fetch(`${API_URL}/formulas/variables`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al crear variable calculada');
+  return res.json();
+}
+
+// ==================== FÓRMULAS CALCULADAS ====================
+
+export async function getFormulasCalculadas(): Promise<FormulaCalculada[]> {
+  const res = await fetch(`${API_URL}/formulas/calculadas`);
+  if (!res.ok) throw new Error('Error al obtener fórmulas calculadas');
+  return res.json();
+}
+
+export async function getFormulasCalculadasPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<FormulaCalculada>> {
+  const res = await fetch(`${API_URL}/formulas/calculadas?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener fórmulas calculadas');
+  return res.json();
+}
+
+export async function createFormulaCalculada(data: Omit<FormulaCalculada, 'id' | 'modelo' | 'variable'>): Promise<FormulaCalculada> {
+  const res = await fetch(`${API_URL}/formulas/calculadas`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al crear fórmula calculada');
+  return res.json();
+}
+
+// ==================== VALORES FIJOS ====================
+
+export async function getValoresFijos(): Promise<ValorFijo[]> {
+  const res = await fetch(`${API_URL}/configuracion/valores-fijos`);
+  if (!res.ok) throw new Error('Error al obtener valores fijos');
+  return res.json();
+}
+
+export async function getValoresFijosPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<ValorFijo>> {
+  const res = await fetch(`${API_URL}/configuracion/valores-fijos?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener valores fijos');
+  return res.json();
+}
+
+export async function createValorFijo(data: Omit<ValorFijo, 'id'>): Promise<ValorFijo> {
+  const res = await fetch(`${API_URL}/configuracion/valores-fijos`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al crear valor fijo');
+  return res.json();
+}
+
+// ==================== KITS ====================
+
+export async function getKits(): Promise<Kit[]> {
+  const res = await fetch(`${API_URL}/configuracion/kits`);
+  if (!res.ok) throw new Error('Error al obtener kits');
+  return res.json();
+}
+
+export async function getKitsPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<Kit>> {
+  const res = await fetch(`${API_URL}/configuracion/kits?page=${page}&limit=${limit}`);
+  if (!res.ok) throw new Error('Error al obtener kits');
+  return res.json();
+}
+
+export async function createKit(data: Omit<Kit, 'id'>): Promise<Kit> {
+  const res = await fetch(`${API_URL}/configuracion/kits`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al crear kit');
   return res.json();
 }
 
