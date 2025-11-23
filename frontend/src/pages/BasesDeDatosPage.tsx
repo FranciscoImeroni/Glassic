@@ -1,24 +1,32 @@
 import { useState, useEffect } from 'react';
 import type {
-  Comprobante,
   Vidrio,
   Servicio,
   Herraje,
   Accesorio,
   Producto,
+  Modelo,
+  VariableCalculada,
+  FormulaCalculada,
+  ValorFijo,
+  Kit,
   PaginatedResponse,
 } from '../api';
 import {
-  getComprobantesPaginated,
   getVidriosPaginated,
   getServiciosPaginated,
   getHerrajesPaginated,
   getAccesoriosPaginated,
   getProductosPaginated,
+  getModelosPaginated,
+  getVariablesCalculadasPaginated,
+  getFormulasCalculadasPaginated,
+  getValoresFijosPaginated,
+  getKitsPaginated,
 } from '../api';
 import './BasesDeDatosPage.css';
 
-type TabType = 'comprobantes' | 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos';
+type TabType = 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos' | 'modelos' | 'variablesCalculadas' | 'formulas' | 'valoresFijos' | 'kits';
 
 interface DataTableProps<T> {
   data: T[];
@@ -104,191 +112,56 @@ function DataTable<T>({ data, columns, loading, error, page, totalPages, total, 
 export default function BasesDeDatosPage() {
   const [activeTab, setActiveTab] = useState<TabType>('vidrios');
 
-  // Estados para Comprobantes
-  const [comprobantesData, setComprobantesData] = useState<PaginatedResponse<Comprobante>>({
-    data: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-  });
-  const [comprobantesPage, setComprobantesPage] = useState(1);
-  const [comprobantesLoading, setComprobantesLoading] = useState(false);
-  const [comprobantesError, setComprobantesError] = useState<string | null>(null);
+  // Función genérica para crear estados
+  const createState = <T,>() => {
+    const [data, setData] = useState<PaginatedResponse<T>>({ data: [], total: 0, page: 1, totalPages: 0 });
+    const [page, setPage] = useState(1);
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState<string | null>(null);
+    return { data, setData, page, setPage, loading, setLoading, error, setError };
+  };
 
-  // Estados para Vidrios
-  const [vidriosData, setVidriosData] = useState<PaginatedResponse<Vidrio>>({
-    data: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-  });
-  const [vidriosPage, setVidriosPage] = useState(1);
-  const [vidriosLoading, setVidriosLoading] = useState(false);
-  const [vidriosError, setVidriosError] = useState<string | null>(null);
+  const vidrios = createState<Vidrio>();
+  const servicios = createState<Servicio>();
+  const herrajes = createState<Herraje>();
+  const accesorios = createState<Accesorio>();
+  const productos = createState<Producto>();
+  const modelos = createState<Modelo>();
+  const variablesCalculadas = createState<VariableCalculada>();
+  const formulas = createState<FormulaCalculada>();
+  const valoresFijos = createState<ValorFijo>();
+  const kits = createState<Kit>();
 
-  // Estados para Servicios
-  const [serviciosData, setServiciosData] = useState<PaginatedResponse<Servicio>>({
-    data: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-  });
-  const [serviciosPage, setServiciosPage] = useState(1);
-  const [serviciosLoading, setServiciosLoading] = useState(false);
-  const [serviciosError, setServiciosError] = useState<string | null>(null);
+  // Función de carga genérica
+  const loadData = async <T,>(
+    loader: (page: number, limit: number) => Promise<PaginatedResponse<T>>,
+    state: ReturnType<typeof createState<T>>,
+    tab: TabType
+  ) => {
+    if (activeTab !== tab) return;
 
-  // Estados para Herrajes
-  const [herrajesData, setHerrajesData] = useState<PaginatedResponse<Herraje>>({
-    data: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-  });
-  const [herrajesPage, setHerrajesPage] = useState(1);
-  const [herrajesLoading, setHerrajesLoading] = useState(false);
-  const [herrajesError, setHerrajesError] = useState<string | null>(null);
-
-  // Estados para Accesorios
-  const [accesoriosData, setAccesoriosData] = useState<PaginatedResponse<Accesorio>>({
-    data: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-  });
-  const [accesoriosPage, setAccesoriosPage] = useState(1);
-  const [accesoriosLoading, setAccesoriosLoading] = useState(false);
-  const [accesoriosError, setAccesoriosError] = useState<string | null>(null);
-
-  // Estados para Productos
-  const [productosData, setProductosData] = useState<PaginatedResponse<Producto>>({
-    data: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-  });
-  const [productosPage, setProductosPage] = useState(1);
-  const [productosLoading, setProductosLoading] = useState(false);
-  const [productosError, setProductosError] = useState<string | null>(null);
-
-  // Cargar Comprobantes
-  useEffect(() => {
-    const loadComprobantes = async () => {
-      setComprobantesLoading(true);
-      setComprobantesError(null);
-      try {
-        const result = await getComprobantesPaginated(comprobantesPage, 20);
-        setComprobantesData(result);
-      } catch (err) {
-        setComprobantesError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setComprobantesLoading(false);
-      }
-    };
-
-    if (activeTab === 'comprobantes') {
-      loadComprobantes();
+    state.setLoading(true);
+    state.setError(null);
+    try {
+      const result = await loader(state.page, 20);
+      state.setData(result);
+    } catch (err) {
+      state.setError(err instanceof Error ? err.message : 'Error desconocido');
+    } finally {
+      state.setLoading(false);
     }
-  }, [activeTab, comprobantesPage]);
+  };
 
-  // Cargar Vidrios
-  useEffect(() => {
-    const loadVidrios = async () => {
-      setVidriosLoading(true);
-      setVidriosError(null);
-      try {
-        const result = await getVidriosPaginated(vidriosPage, 20);
-        setVidriosData(result);
-      } catch (err) {
-        setVidriosError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setVidriosLoading(false);
-      }
-    };
-
-    if (activeTab === 'vidrios') {
-      loadVidrios();
-    }
-  }, [activeTab, vidriosPage]);
-
-  // Cargar Servicios
-  useEffect(() => {
-    const loadServicios = async () => {
-      setServiciosLoading(true);
-      setServiciosError(null);
-      try {
-        const result = await getServiciosPaginated(serviciosPage, 20);
-        setServiciosData(result);
-      } catch (err) {
-        setServiciosError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setServiciosLoading(false);
-      }
-    };
-
-    if (activeTab === 'servicios') {
-      loadServicios();
-    }
-  }, [activeTab, serviciosPage]);
-
-  // Cargar Herrajes
-  useEffect(() => {
-    const loadHerrajes = async () => {
-      setHerrajesLoading(true);
-      setHerrajesError(null);
-      try {
-        const result = await getHerrajesPaginated(herrajesPage, 20);
-        setHerrajesData(result);
-      } catch (err) {
-        setHerrajesError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setHerrajesLoading(false);
-      }
-    };
-
-    if (activeTab === 'herrajes') {
-      loadHerrajes();
-    }
-  }, [activeTab, herrajesPage]);
-
-  // Cargar Accesorios
-  useEffect(() => {
-    const loadAccesorios = async () => {
-      setAccesoriosLoading(true);
-      setAccesoriosError(null);
-      try {
-        const result = await getAccesoriosPaginated(accesoriosPage, 20);
-        setAccesoriosData(result);
-      } catch (err) {
-        setAccesoriosError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setAccesoriosLoading(false);
-      }
-    };
-
-    if (activeTab === 'accesorios') {
-      loadAccesorios();
-    }
-  }, [activeTab, accesoriosPage]);
-
-  // Cargar Productos
-  useEffect(() => {
-    const loadProductos = async () => {
-      setProductosLoading(true);
-      setProductosError(null);
-      try {
-        const result = await getProductosPaginated(productosPage, 20);
-        setProductosData(result);
-      } catch (err) {
-        setProductosError(err instanceof Error ? err.message : 'Error desconocido');
-      } finally {
-        setProductosLoading(false);
-      }
-    };
-
-    if (activeTab === 'productos') {
-      loadProductos();
-    }
-  }, [activeTab, productosPage]);
+  useEffect(() => { loadData(getVidriosPaginated, vidrios, 'vidrios'); }, [activeTab, vidrios.page]);
+  useEffect(() => { loadData(getServiciosPaginated, servicios, 'servicios'); }, [activeTab, servicios.page]);
+  useEffect(() => { loadData(getHerrajesPaginated, herrajes, 'herrajes'); }, [activeTab, herrajes.page]);
+  useEffect(() => { loadData(getAccesoriosPaginated, accesorios, 'accesorios'); }, [activeTab, accesorios.page]);
+  useEffect(() => { loadData(getProductosPaginated, productos, 'productos'); }, [activeTab, productos.page]);
+  useEffect(() => { loadData(getModelosPaginated, modelos, 'modelos'); }, [activeTab, modelos.page]);
+  useEffect(() => { loadData(getVariablesCalculadasPaginated, variablesCalculadas, 'variablesCalculadas'); }, [activeTab, variablesCalculadas.page]);
+  useEffect(() => { loadData(getFormulasCalculadasPaginated, formulas, 'formulas'); }, [activeTab, formulas.page]);
+  useEffect(() => { loadData(getValoresFijosPaginated, valoresFijos, 'valoresFijos'); }, [activeTab, valoresFijos.page]);
+  useEffect(() => { loadData(getKitsPaginated, kits, 'kits'); }, [activeTab, kits.page]);
 
   return (
     <div className="bases-datos-page">
@@ -296,41 +169,35 @@ export default function BasesDeDatosPage() {
 
       <div className="tabs-container">
         <div className="tabs">
-          <button
-            className={`tab-button ${activeTab === 'vidrios' ? 'active' : ''}`}
-            onClick={() => setActiveTab('vidrios')}
-          >
+          <button className={`tab-button ${activeTab === 'vidrios' ? 'active' : ''}`} onClick={() => setActiveTab('vidrios')}>
             Vidrios
           </button>
-          <button
-            className={`tab-button ${activeTab === 'servicios' ? 'active' : ''}`}
-            onClick={() => setActiveTab('servicios')}
-          >
+          <button className={`tab-button ${activeTab === 'servicios' ? 'active' : ''}`} onClick={() => setActiveTab('servicios')}>
             Servicios
           </button>
-          <button
-            className={`tab-button ${activeTab === 'herrajes' ? 'active' : ''}`}
-            onClick={() => setActiveTab('herrajes')}
-          >
+          <button className={`tab-button ${activeTab === 'herrajes' ? 'active' : ''}`} onClick={() => setActiveTab('herrajes')}>
             Herrajes
           </button>
-          <button
-            className={`tab-button ${activeTab === 'accesorios' ? 'active' : ''}`}
-            onClick={() => setActiveTab('accesorios')}
-          >
+          <button className={`tab-button ${activeTab === 'accesorios' ? 'active' : ''}`} onClick={() => setActiveTab('accesorios')}>
             Accesorios
           </button>
-          <button
-            className={`tab-button ${activeTab === 'comprobantes' ? 'active' : ''}`}
-            onClick={() => setActiveTab('comprobantes')}
-          >
-            Comprobantes
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'productos' ? 'active' : ''}`}
-            onClick={() => setActiveTab('productos')}
-          >
+          <button className={`tab-button ${activeTab === 'productos' ? 'active' : ''}`} onClick={() => setActiveTab('productos')}>
             Productos
+          </button>
+          <button className={`tab-button ${activeTab === 'modelos' ? 'active' : ''}`} onClick={() => setActiveTab('modelos')}>
+            Modelos
+          </button>
+          <button className={`tab-button ${activeTab === 'variablesCalculadas' ? 'active' : ''}`} onClick={() => setActiveTab('variablesCalculadas')}>
+            Variables Calc.
+          </button>
+          <button className={`tab-button ${activeTab === 'formulas' ? 'active' : ''}`} onClick={() => setActiveTab('formulas')}>
+            Fórmulas
+          </button>
+          <button className={`tab-button ${activeTab === 'valoresFijos' ? 'active' : ''}`} onClick={() => setActiveTab('valoresFijos')}>
+            Valores Fijos
+          </button>
+          <button className={`tab-button ${activeTab === 'kits' ? 'active' : ''}`} onClick={() => setActiveTab('kits')}>
+            Kits
           </button>
         </div>
       </div>
@@ -340,17 +207,14 @@ export default function BasesDeDatosPage() {
           <div className="tab-panel">
             <h2>Vidrios</h2>
             <DataTable
-              data={vidriosData.data}
-              columns={[
-                { key: 'tipo', label: 'Tipo' },
-                { key: 'color', label: 'Color' },
-              ]}
-              loading={vidriosLoading}
-              error={vidriosError}
-              page={vidriosData.page}
-              totalPages={vidriosData.totalPages}
-              total={vidriosData.total}
-              onPageChange={setVidriosPage}
+              data={vidrios.data.data}
+              columns={[{ key: 'tipo', label: 'Tipo' }, { key: 'color', label: 'Color' }]}
+              loading={vidrios.loading}
+              error={vidrios.error}
+              page={vidrios.data.page}
+              totalPages={vidrios.data.totalPages}
+              total={vidrios.data.total}
+              onPageChange={vidrios.setPage}
             />
           </div>
         )}
@@ -359,16 +223,14 @@ export default function BasesDeDatosPage() {
           <div className="tab-panel">
             <h2>Servicios</h2>
             <DataTable
-              data={serviciosData.data}
-              columns={[
-                { key: 'nombre', label: 'Nombre' },
-              ]}
-              loading={serviciosLoading}
-              error={serviciosError}
-              page={serviciosData.page}
-              totalPages={serviciosData.totalPages}
-              total={serviciosData.total}
-              onPageChange={setServiciosPage}
+              data={servicios.data.data}
+              columns={[{ key: 'nombre', label: 'Nombre' }]}
+              loading={servicios.loading}
+              error={servicios.error}
+              page={servicios.data.page}
+              totalPages={servicios.data.totalPages}
+              total={servicios.data.total}
+              onPageChange={servicios.setPage}
             />
           </div>
         )}
@@ -377,16 +239,14 @@ export default function BasesDeDatosPage() {
           <div className="tab-panel">
             <h2>Herrajes</h2>
             <DataTable
-              data={herrajesData.data}
-              columns={[
-                { key: 'color', label: 'Color' },
-              ]}
-              loading={herrajesLoading}
-              error={herrajesError}
-              page={herrajesData.page}
-              totalPages={herrajesData.totalPages}
-              total={herrajesData.total}
-              onPageChange={setHerrajesPage}
+              data={herrajes.data.data}
+              columns={[{ key: 'color', label: 'Color' }]}
+              loading={herrajes.loading}
+              error={herrajes.error}
+              page={herrajes.data.page}
+              totalPages={herrajes.data.totalPages}
+              total={herrajes.data.total}
+              onPageChange={herrajes.setPage}
             />
           </div>
         )}
@@ -395,35 +255,14 @@ export default function BasesDeDatosPage() {
           <div className="tab-panel">
             <h2>Accesorios</h2>
             <DataTable
-              data={accesoriosData.data}
-              columns={[
-                { key: 'descripcion', label: 'Descripción' },
-              ]}
-              loading={accesoriosLoading}
-              error={accesoriosError}
-              page={accesoriosData.page}
-              totalPages={accesoriosData.totalPages}
-              total={accesoriosData.total}
-              onPageChange={setAccesoriosPage}
-            />
-          </div>
-        )}
-
-        {activeTab === 'comprobantes' && (
-          <div className="tab-panel">
-            <h2>Comprobantes</h2>
-            <DataTable
-              data={comprobantesData.data}
-              columns={[
-                { key: 'codigo', label: 'Código' },
-                { key: 'descripcion', label: 'Descripción' },
-              ]}
-              loading={comprobantesLoading}
-              error={comprobantesError}
-              page={comprobantesData.page}
-              totalPages={comprobantesData.totalPages}
-              total={comprobantesData.total}
-              onPageChange={setComprobantesPage}
+              data={accesorios.data.data}
+              columns={[{ key: 'descripcion', label: 'Descripción' }]}
+              loading={accesorios.loading}
+              error={accesorios.error}
+              page={accesorios.data.page}
+              totalPages={accesorios.data.totalPages}
+              total={accesorios.data.total}
+              onPageChange={accesorios.setPage}
             />
           </div>
         )}
@@ -432,7 +271,7 @@ export default function BasesDeDatosPage() {
           <div className="tab-panel">
             <h2>Productos</h2>
             <DataTable
-              data={productosData.data}
+              data={productos.data.data}
               columns={[
                 { key: 'linea', label: 'Línea' },
                 { key: 'serie', label: 'Serie' },
@@ -441,12 +280,110 @@ export default function BasesDeDatosPage() {
                 { key: 'codIvi', label: 'Cód. IVI' },
                 { key: 'espVidrio', label: 'Esp. Vidrio' },
               ]}
-              loading={productosLoading}
-              error={productosError}
-              page={productosData.page}
-              totalPages={productosData.totalPages}
-              total={productosData.total}
-              onPageChange={setProductosPage}
+              loading={productos.loading}
+              error={productos.error}
+              page={productos.data.page}
+              totalPages={productos.data.totalPages}
+              total={productos.data.total}
+              onPageChange={productos.setPage}
+            />
+          </div>
+        )}
+
+        {activeTab === 'modelos' && (
+          <div className="tab-panel">
+            <h2>Modelos</h2>
+            <DataTable
+              data={modelos.data.data}
+              columns={[
+                { key: 'codigo', label: 'Código' },
+                { key: 'nombre', label: 'Nombre' },
+              ]}
+              loading={modelos.loading}
+              error={modelos.error}
+              page={modelos.data.page}
+              totalPages={modelos.data.totalPages}
+              total={modelos.data.total}
+              onPageChange={modelos.setPage}
+            />
+          </div>
+        )}
+
+        {activeTab === 'variablesCalculadas' && (
+          <div className="tab-panel">
+            <h2>Variables Calculadas</h2>
+            <DataTable
+              data={variablesCalculadas.data.data}
+              columns={[
+                { key: 'codigo', label: 'Código' },
+                { key: 'nombre', label: 'Nombre' },
+                { key: 'descripcion', label: 'Descripción' },
+              ]}
+              loading={variablesCalculadas.loading}
+              error={variablesCalculadas.error}
+              page={variablesCalculadas.data.page}
+              totalPages={variablesCalculadas.data.totalPages}
+              total={variablesCalculadas.data.total}
+              onPageChange={variablesCalculadas.setPage}
+            />
+          </div>
+        )}
+
+        {activeTab === 'formulas' && (
+          <div className="tab-panel">
+            <h2>Fórmulas Calculadas</h2>
+            <DataTable
+              data={formulas.data.data}
+              columns={[
+                { key: 'expresion', label: 'Expresión' },
+                { key: 'orden', label: 'Orden' },
+                { key: 'activa', label: 'Activa' },
+              ]}
+              loading={formulas.loading}
+              error={formulas.error}
+              page={formulas.data.page}
+              totalPages={formulas.data.totalPages}
+              total={formulas.data.total}
+              onPageChange={formulas.setPage}
+            />
+          </div>
+        )}
+
+        {activeTab === 'valoresFijos' && (
+          <div className="tab-panel">
+            <h2>Valores Fijos</h2>
+            <DataTable
+              data={valoresFijos.data.data}
+              columns={[
+                { key: 'clave', label: 'Clave' },
+                { key: 'valor', label: 'Valor' },
+                { key: 'descripcion', label: 'Descripción' },
+              ]}
+              loading={valoresFijos.loading}
+              error={valoresFijos.error}
+              page={valoresFijos.data.page}
+              totalPages={valoresFijos.data.totalPages}
+              total={valoresFijos.data.total}
+              onPageChange={valoresFijos.setPage}
+            />
+          </div>
+        )}
+
+        {activeTab === 'kits' && (
+          <div className="tab-panel">
+            <h2>Kits</h2>
+            <DataTable
+              data={kits.data.data}
+              columns={[
+                { key: 'codigo', label: 'Código' },
+                { key: 'descripcion', label: 'Descripción' },
+              ]}
+              loading={kits.loading}
+              error={kits.error}
+              page={kits.data.page}
+              totalPages={kits.data.totalPages}
+              total={kits.data.total}
+              onPageChange={kits.setPage}
             />
           </div>
         )}

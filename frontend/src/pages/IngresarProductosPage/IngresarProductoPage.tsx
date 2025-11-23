@@ -408,16 +408,23 @@ export default function IngresarProductoPage() {
             {variablesParaIngresar.length > 0 ? (
               <div className="medidas-grid">
                 {variablesParaIngresar.map((variable) => (
-                  <div key={variable.id} style={{ marginBottom: '0.5rem' }}>
-                    <label style={{ fontSize: '0.9rem', marginBottom: '0.25rem', display: 'block' }}>
-                      {variable.nombre} ({variable.codigo}):
+                  <div key={variable.id} style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                    <label style={{
+                      fontSize: '0.9rem',
+                      fontWeight: '500',
+                      minWidth: '150px',
+                      textAlign: 'right',
+                      color: '#333'
+                    }}>
+                      {variable.nombre}:
                     </label>
                     <input
                       type="number"
                       value={valoresMedidas[variable.codigo] || ''}
                       onChange={(e) => handleMedidaChange(variable.codigo, e.target.value)}
                       className="medida-input"
-                      placeholder={`Ingrese ${variable.nombre}`}
+                      placeholder={variable.codigo}
+                      style={{ flex: 1, maxWidth: '200px' }}
                     />
                   </div>
                 ))}
