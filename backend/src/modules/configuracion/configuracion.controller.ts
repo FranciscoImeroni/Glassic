@@ -22,17 +22,17 @@ export class ConfiguracionController {
 
   @Get('valores-fijos/:id')
   findOneValorFijo(@Param('id') id: string) {
-    return this.configuracionService.findOneValorFijo(+id);
+    return this.configuracionService.findOneValorFijo(id);
   }
 
   @Patch('valores-fijos/:id')
   updateValorFijo(@Param('id') id: string, @Body() updateValorFijoDto: UpdateValorFijoDto) {
-    return this.configuracionService.updateValorFijo(+id, updateValorFijoDto);
+    return this.configuracionService.updateValorFijo(id, updateValorFijoDto);
   }
 
   @Delete('valores-fijos/:id')
   removeValorFijo(@Param('id') id: string) {
-    return this.configuracionService.removeValorFijo(+id);
+    return this.configuracionService.removeValorFijo(id);
   }
 
   // KITS ENDPOINTS
@@ -48,16 +48,16 @@ export class ConfiguracionController {
 
   @Get('kits/:id')
   findOneKit(@Param('id') id: string) {
-    return this.configuracionService.findOneKit(+id);
+    return this.configuracionService.findOneKit(id);
   }
 
   @Patch('kits/:id')
   updateKit(@Param('id') id: string, @Body() updateKitDto: UpdateKitDto) {
-    return this.configuracionService.updateKit(+id, updateKitDto);
+    return this.configuracionService.updateKit(id, updateKitDto);
   }
 
   @Delete('kits/:id')
   removeKit(@Param('id') id: string) {
-    return this.configuracionService.removeKit(+id);
+    return this.configuracionService.removeKit(id);
   }
 }

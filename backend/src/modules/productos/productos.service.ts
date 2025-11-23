@@ -102,4 +102,9 @@ export class ProductosService {
     const producto = await this.findOne(id);
     await this.productoRepository.remove(producto);
   }
+
+  async getVariablesEntrada(id: string): Promise<Variable[]> {
+    const producto = await this.findOne(id);
+    return producto.variables || [];
+  }
 }

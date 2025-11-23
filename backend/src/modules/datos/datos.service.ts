@@ -72,7 +72,7 @@ export class DatosService {
     return this.datosRepo.find();
   }
 
-  async findOne(id: number) {
+  async findOne(id: string) {
     const dato = await this.datosRepo.findOne({ where: { id } });
     if (!dato) {
       throw new NotFoundException(`Dato #${id} no encontrado`);
@@ -80,7 +80,7 @@ export class DatosService {
     return dato;
   }
 
-  async update(id: number, updateDatoDto: UpdateDatoDto) {
+  async update(id: string, updateDatoDto: UpdateDatoDto) {
     const existing = await this.datosRepo.findOne({ where: { id } });
     if (!existing) {
       throw new NotFoundException(`Dato #${id} no encontrado`);
@@ -134,7 +134,7 @@ export class DatosService {
     return this.datosRepo.save(toUpdate);
   }
 
-  async remove(id: number) {
+  async remove(id: string) {
     const dato = await this.datosRepo.findOne({ where: { id } });
     if (!dato) {
       throw new NotFoundException(`Dato #${id} no encontrado`);

@@ -1,13 +1,13 @@
-import { IsString, IsNotEmpty, IsNumber, IsBoolean, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsBoolean, IsOptional, IsUUID } from 'class-validator';
 
 export class CreateFormulaCalculadaDto {
-  @IsNumber()
+  @IsUUID()
   @IsNotEmpty()
-  modeloId: number;
+  modeloId: string;
 
-  @IsNumber()
+  @IsUUID()
   @IsNotEmpty()
-  variableId: number;
+  variableId: string;
 
   @IsString()
   @IsNotEmpty()

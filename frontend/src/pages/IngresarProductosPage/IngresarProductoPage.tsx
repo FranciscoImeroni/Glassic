@@ -1,18 +1,38 @@
 import { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useProducto } from '../../context/ProductoContext';
 import {
   getProductos,
   getEspesoresVidrio,
   type Producto,
 } from '../../api/index';
-import { getModeloImageUrl } from '../../utils/cloudinary';
+import { getModeloImageUrl, getPlanoUrl, getEsquemaUrl } from '../../utils/cloudinary';
 import './IngresarProductoPage.css';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+
+interface Variable {
+  id: string;
+  codigo: string;
+  nombre: string;
+}
+
 export default function IngresarProductoPage() {
+  const navigate = useNavigate();
+  const {
+    setProducto,
+    setVariablesEntrada,
+    setValoresEntrada,
+    setValoresCalculados,
+    setImagenModeloUrl,
+    setPlanoUrl,
+    setEsquemaUrl,
+  } = useProducto();
+
   const [formData, setFormData] = useState({
     linea: '',
     serie: '',
     modelo: '',
-    medidas: Array(10).fill(''),
     espesorVidrio: '',
   });
 
@@ -20,9 +40,13 @@ export default function IngresarProductoPage() {
   const [productos, setProductos] = useState<Producto[]>([]);
   const [lineas, setLineas] = useState<string[]>([]);
   const [seriesFiltradas, setSeriesFiltradas] = useState<string[]>([]);
-  const [modelosFiltrados, setModelosFiltrados] = useState<string[]>([]);
+  const [modelosFiltrados, setModelosFiltrados] = useState<Producto[]>([]);
+  const [productoSeleccionado, setProductoSeleccionado] = useState<Producto | null>(null);
+  const [variablesParaIngresar, setVariablesParaIngresar] = useState<Variable[]>([]);
+  const [valoresMedidas, setValoresMedidas] = useState<Record<string, number>>({});
   const [espesores, setEspesores] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [calculando, setCalculando] = useState(false);
   const [status, setStatus] = useState('');
   const [imageError, setImageError] = useState(false);
   const [imageAttempts, setImageAttempts] = useState(0);
@@ -69,6 +93,9 @@ export default function IngresarProductoPage() {
     // Limpiar campos dependientes
     setFormData(prev => ({ ...prev, serie: '', modelo: '' }));
     setModelosFiltrados([]);
+    setProductoSeleccionado(null);
+    setVariablesParaIngresar([]);
+    setValoresMedidas({});
     setImageError(false);
     setImageAttempts(0);
     setCurrentImageUrl('');
@@ -80,30 +107,60 @@ export default function IngresarProductoPage() {
       const productosFiltrados = productos.filter(
         p => p.linea === formData.linea && p.serie === formData.serie
       );
-      const modelosUnicos = [...new Set(productosFiltrados.map(p => p.modelo))];
-      setModelosFiltrados(modelosUnicos);
+      setModelosFiltrados(productosFiltrados);
     } else {
       setModelosFiltrados([]);
     }
     // Limpiar modelo
     setFormData(prev => ({ ...prev, modelo: '' }));
+    setProductoSeleccionado(null);
+    setVariablesParaIngresar([]);
+    setValoresMedidas({});
     setImageError(false);
     setImageAttempts(0);
     setCurrentImageUrl('');
   }, [formData.serie, formData.linea, productos]);
 
-  // Actualizar URL de imagen cuando cambia el modelo
+  // Cargar variables cuando se selecciona un modelo
   useEffect(() => {
     if (formData.modelo) {
-      setCurrentImageUrl(getModeloImageUrl(formData.modelo, { width: 400 }));
-      setImageError(false);
-      setImageAttempts(0);
+      const producto = modelosFiltrados.find(p => p.modelo === formData.modelo);
+      if (producto) {
+        setProductoSeleccionado(producto);
+        cargarVariablesDeEntrada(producto.id);
+        setCurrentImageUrl(getModeloImageUrl(formData.modelo, { width: 400 }));
+        setImageError(false);
+        setImageAttempts(0);
+      }
     } else {
+      setProductoSeleccionado(null);
+      setVariablesParaIngresar([]);
+      setValoresMedidas({});
       setCurrentImageUrl('');
       setImageError(false);
       setImageAttempts(0);
     }
-  }, [formData.modelo]);
+  }, [formData.modelo, modelosFiltrados]);
+
+  const cargarVariablesDeEntrada = async (productoId: string) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/productos/${productoId}/variables-entrada`);
+      if (!response.ok) {
+        throw new Error('Error al cargar variables de entrada');
+      }
+      const variables: Variable[] = await response.json();
+      setVariablesParaIngresar(variables);
+      // Inicializar valores vacíos
+      const valoresIniciales: Record<string, number> = {};
+      variables.forEach(v => {
+        valoresIniciales[v.codigo] = 0;
+      });
+      setValoresMedidas(valoresIniciales);
+    } catch (error) {
+      console.error('Error al cargar variables de entrada:', error);
+      setStatus('Error al cargar variables de entrada');
+    }
+  };
 
   const handleInputChange = (field: string, value: string) => {
     setFormData((prev) => ({
@@ -112,12 +169,10 @@ export default function IngresarProductoPage() {
     }));
   };
 
-  const handleMedidaChange = (index: number, value: string) => {
-    const newMedidas = [...formData.medidas];
-    newMedidas[index] = value;
-    setFormData((prev) => ({
+  const handleMedidaChange = (codigo: string, value: string) => {
+    setValoresMedidas((prev) => ({
       ...prev,
-      medidas: newMedidas,
+      [codigo]: parseFloat(value) || 0,
     }));
   };
 
@@ -150,29 +205,102 @@ export default function IngresarProductoPage() {
 
   const handleAplicar = async () => {
     try {
-      console.log('Datos del formulario:', formData);
-
       // Validar que los campos requeridos estén llenos
-      if (!formData.linea || !formData.serie || !formData.modelo) {
+      if (!formData.linea || !formData.serie || !formData.modelo || !productoSeleccionado) {
         setStatus('Por favor complete los campos requeridos (Línea, Serie, Modelo)');
         return;
       }
 
-      // Aquí puedes hacer el submit al backend
-      // const productoData = {
-      //   linea: formData.linea,
-      //   serie: formData.serie,
-      //   modelo: formData.modelo,
-      //   espVidrio: parseInt(formData.espesorVidrio),
-      //   // ... otros campos
-      // };
-      // await createProducto(productoData);
+      // Validar que se hayan ingresado valores
+      const hayValoresIngresados = Object.values(valoresMedidas).some(v => v > 0);
+      if (!hayValoresIngresados) {
+        setStatus('Por favor ingrese al menos una medida');
+        return;
+      }
 
-      setStatus('Producto aplicado correctamente');
-    } catch (error) {
+      setCalculando(true);
+      setStatus('Calculando fórmulas...');
+
+      // Necesitamos el modeloId de la tabla de fórmulas
+      // Asumiendo que el modelo de producto tiene un campo relacionado o usamos el codigo del modelo
+      // Por ahora, vamos a obtener el modelo por codigo desde el backend
+      const modelosResponse = await fetch(`${API_BASE_URL}/formulas/modelos`);
+      if (!modelosResponse.ok) {
+        throw new Error('Error al obtener modelos de fórmulas');
+      }
+      const modelos = await modelosResponse.json();
+      const modeloFormulas = modelos.find((m: any) =>
+        m.codigo === formData.modelo ||
+        m.codigo.replace(/-/g, '') === formData.modelo.replace(/-/g, '')
+      );
+
+      if (!modeloFormulas) {
+        setStatus('No se encontraron fórmulas para este modelo. Continuando sin cálculos.');
+        // Guardar en contexto sin valores calculados
+        guardarEnContexto({});
+        return;
+      }
+
+      // Llamar al endpoint de calcular fórmulas
+      const calcularResponse = await fetch(`${API_BASE_URL}/formulas/calcular`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          modeloId: modeloFormulas.id,
+          valoresEntrada: valoresMedidas,
+        }),
+      });
+
+      if (!calcularResponse.ok) {
+        const errorData = await calcularResponse.json();
+        throw new Error(errorData.message || 'Error al calcular fórmulas');
+      }
+
+      const { valoresCalculados } = await calcularResponse.json();
+
+      // Guardar todo en el contexto
+      guardarEnContexto(valoresCalculados);
+
+    } catch (error: any) {
       console.error('Error al aplicar producto:', error);
-      setStatus('Error al aplicar producto');
+      setStatus(`Error: ${error.message}`);
+      setCalculando(false);
     }
+  };
+
+  const guardarEnContexto = (valoresCalculados: Record<string, number | string>) => {
+    // Guardar producto seleccionado
+    setProducto(
+      formData.linea,
+      formData.serie,
+      formData.modelo,
+      productoSeleccionado!.id,
+      0 // modeloId lo obtenemos al calcular
+    );
+
+    // Guardar variables de entrada
+    setVariablesEntrada(variablesParaIngresar);
+
+    // Guardar valores ingresados
+    setValoresEntrada(valoresMedidas);
+
+    // Guardar valores calculados
+    setValoresCalculados(valoresCalculados);
+
+    // Guardar URLs de imágenes
+    setImagenModeloUrl(getModeloImageUrl(formData.modelo));
+    setPlanoUrl(getPlanoUrl(formData.modelo));
+    setEsquemaUrl(getEsquemaUrl(formData.modelo));
+
+    setStatus('Datos guardados correctamente. Redirigiendo...');
+    setCalculando(false);
+
+    // Navegar a la página de ingresar datos
+    setTimeout(() => {
+      navigate('/ingresar-datos');
+    }, 1000);
   };
 
   if (loading) {
@@ -236,17 +364,21 @@ export default function IngresarProductoPage() {
                 <option value="">
                   {formData.serie ? 'Seleccione...' : 'Primero seleccione Serie'}
                 </option>
-                {modelosFiltrados.map((modelo) => (
-                  <option key={modelo} value={modelo}>
-                    {modelo}
+                {modelosFiltrados.map((producto) => (
+                  <option key={producto.id} value={producto.modelo}>
+                    {producto.modelo}
                   </option>
                 ))}
               </select>
             </div>
           </div>
 
-          <button className="aplicar-btn" onClick={handleAplicar}>
-            APLICAR
+          <button
+            className="aplicar-btn"
+            onClick={handleAplicar}
+            disabled={calculando || !productoSeleccionado || variablesParaIngresar.length === 0}
+          >
+            {calculando ? 'CALCULANDO...' : 'APLICAR'}
           </button>
         </div>
 
@@ -273,18 +405,26 @@ export default function IngresarProductoPage() {
 
           <div className="medidas-section">
             <h3>MEDIDAS EN mm:</h3>
-            <div className="medidas-grid">
-              {formData.medidas.map((medida, index) => (
-                <input
-                  key={index}
-                  type="number"
-                  value={medida}
-                  onChange={(e) => handleMedidaChange(index, e.target.value)}
-                  className="medida-input"
-                  placeholder={`Medida ${index + 1}`}
-                />
-              ))}
-            </div>
+            {variablesParaIngresar.length > 0 ? (
+              <div className="medidas-grid">
+                {variablesParaIngresar.map((variable) => (
+                  <div key={variable.id} style={{ marginBottom: '0.5rem' }}>
+                    <label style={{ fontSize: '0.9rem', marginBottom: '0.25rem', display: 'block' }}>
+                      {variable.nombre} ({variable.codigo}):
+                    </label>
+                    <input
+                      type="number"
+                      value={valoresMedidas[variable.codigo] || ''}
+                      onChange={(e) => handleMedidaChange(variable.codigo, e.target.value)}
+                      className="medida-input"
+                      placeholder={`Ingrese ${variable.nombre}`}
+                    />
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <p>Seleccione un modelo para ver las medidas requeridas</p>
+            )}
 
             <div className="espesor-section">
               <label>ESPESOR VIDRIO:</label>
@@ -305,7 +445,7 @@ export default function IngresarProductoPage() {
         </div>
 
         {status && (
-          <div className="status-message" style={{ marginTop: '1rem', textAlign: 'center' }}>
+          <div className="status-message" style={{ marginTop: '1rem', textAlign: 'center', color: status.includes('Error') ? 'red' : 'green' }}>
             {status}
           </div>
         )}

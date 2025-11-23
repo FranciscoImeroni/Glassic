@@ -5,22 +5,22 @@ import { Modelo } from './modelo.entity';
 @Entity('formulas_calculadas')
 @Index(['modelo', 'variable'], { unique: true }) // Índice único compuesto
 export class FormulaCalculada {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => Modelo, modelo => modelo.formulas, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'modelo_id' })
   modelo: Modelo;
 
   @Column({ name: 'modelo_id' })
-  modeloId: number;
+  modeloId: string;
 
   @ManyToOne(() => VariableCalculada, variable => variable.formulas, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'variable_id' })
   variable: VariableCalculada;
 
   @Column({ name: 'variable_id' })
-  variableId: number;
+  variableId: string;
 
   @Column({ name: 'expresion', type: 'text' })
   expresion: string; // La fórmula como string: "ALT1-7", "SI(ALT1>1600;900;700)", etc.
