@@ -66,14 +66,14 @@ export interface Producto {
 export interface Modelo {
   id: string;
   codigo: string;
-  nombre: string;
+  descripcion: string;
 }
 
 export interface VariableCalculada {
   id: string;
   codigo: string;
-  nombre: string;
-  descripcion?: string;
+  descripcion: string;
+  tipoSalida?: 'number' | 'string';
 }
 
 export interface FormulaCalculada {
@@ -89,15 +89,16 @@ export interface FormulaCalculada {
 
 export interface ValorFijo {
   id: string;
-  clave: string;
-  valor: string;
-  descripcion?: string;
+  codigo: string;
+  descripcion: string;
+  valorMm: number;
 }
 
 export interface Kit {
   id: string;
   codigo: string;
-  descripcion: string;
+  serieMampara: string;
+  nombreKit: string;
 }
 
 // ==================== COMPROBANTES ====================
