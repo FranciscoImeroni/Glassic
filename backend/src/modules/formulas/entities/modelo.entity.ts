@@ -3,8 +3,8 @@ import { FormulaCalculada } from './formula-calculada.entity';
 
 @Entity('modelos')
 export class Modelo {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ name: 'codigo', unique: true, length: 50 })
   codigo: string; // 1000, 1010-i, 1010-d, 4000-Ai, 4200-A1i, etc.

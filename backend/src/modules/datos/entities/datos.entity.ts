@@ -12,8 +12,8 @@ import { Accesorio } from './accesorio.entity';
 
 @Entity('datos')
 export class Datos {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => Comprobante, (comprobante) => comprobante.datos, { eager: true })
   @JoinColumn({ name: 'comprobante_id' })

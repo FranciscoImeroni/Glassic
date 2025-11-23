@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import ImageBulkUpload from '../components/ImageBulkUpload/ImageBulkUpload';
+import AdminBasesDeDatosPage from './AdminBasesDeDatosPage/AdminBasesDeDatosPage';
 import './ProgramadorPage.css';
 
-type TabType = 'imagenes' | 'configuracion' | 'avanzado';
+type TabType = 'imagenes' | 'basesdatos' | 'configuracion' | 'avanzado';
 
 export default function ProgramadorPage() {
   const [activeTab, setActiveTab] = useState<TabType>('imagenes');
@@ -18,6 +19,12 @@ export default function ProgramadorPage() {
             onClick={() => setActiveTab('imagenes')}
           >
             Carga de Imágenes
+          </button>
+          <button
+            className={`tab-button ${activeTab === 'basesdatos' ? 'active' : ''}`}
+            onClick={() => setActiveTab('basesdatos')}
+          >
+            Base de Datos
           </button>
           <button
             className={`tab-button ${activeTab === 'configuracion' ? 'active' : ''}`}
@@ -38,6 +45,12 @@ export default function ProgramadorPage() {
         {activeTab === 'imagenes' && (
           <div className="tab-panel">
             <ImageBulkUpload />
+          </div>
+        )}
+
+        {activeTab === 'basesdatos' && (
+          <div className="tab-panel">
+            <AdminBasesDeDatosPage />
           </div>
         )}
 

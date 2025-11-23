@@ -6,6 +6,7 @@ import { CreateModeloDto } from './dto/create-modelo.dto';
 import { UpdateModeloDto } from './dto/update-modelo.dto';
 import { CreateFormulaCalculadaDto } from './dto/create-formula-calculada.dto';
 import { UpdateFormulaCalculadaDto } from './dto/update-formula-calculada.dto';
+import { CalcularFormulasDto } from './dto/calcular-formulas.dto';
 
 @Controller('formulas')
 export class FormulasController {
@@ -24,17 +25,17 @@ export class FormulasController {
 
   @Get('variables/:id')
   findOneVariable(@Param('id') id: string) {
-    return this.formulasService.findOneVariable(+id);
+    return this.formulasService.findOneVariable(id);
   }
 
   @Patch('variables/:id')
   updateVariable(@Param('id') id: string, @Body() updateVariableDto: UpdateVariableCalculadaDto) {
-    return this.formulasService.updateVariable(+id, updateVariableDto);
+    return this.formulasService.updateVariable(id, updateVariableDto);
   }
 
   @Delete('variables/:id')
   removeVariable(@Param('id') id: string) {
-    return this.formulasService.removeVariable(+id);
+    return this.formulasService.removeVariable(id);
   }
 
   // MODELOS ENDPOINTS
@@ -50,17 +51,17 @@ export class FormulasController {
 
   @Get('modelos/:id')
   findOneModelo(@Param('id') id: string) {
-    return this.formulasService.findOneModelo(+id);
+    return this.formulasService.findOneModelo(id);
   }
 
   @Patch('modelos/:id')
   updateModelo(@Param('id') id: string, @Body() updateModeloDto: UpdateModeloDto) {
-    return this.formulasService.updateModelo(+id, updateModeloDto);
+    return this.formulasService.updateModelo(id, updateModeloDto);
   }
 
   @Delete('modelos/:id')
   removeModelo(@Param('id') id: string) {
-    return this.formulasService.removeModelo(+id);
+    return this.formulasService.removeModelo(id);
   }
 
   // FORMULAS CALCULADAS ENDPOINTS
@@ -76,21 +77,27 @@ export class FormulasController {
 
   @Get('calculadas/:id')
   findOneFormulaCalculada(@Param('id') id: string) {
-    return this.formulasService.findOneFormulaCalculada(+id);
+    return this.formulasService.findOneFormulaCalculada(id);
   }
 
   @Get('calculadas/modelo/:modeloId')
   findFormulasByModelo(@Param('modeloId') modeloId: string) {
-    return this.formulasService.findFormulasByModelo(+modeloId);
+    return this.formulasService.findFormulasByModelo(modeloId);
   }
 
   @Patch('calculadas/:id')
   updateFormulaCalculada(@Param('id') id: string, @Body() updateFormulaDto: UpdateFormulaCalculadaDto) {
-    return this.formulasService.updateFormulaCalculada(+id, updateFormulaDto);
+    return this.formulasService.updateFormulaCalculada(id, updateFormulaDto);
   }
 
   @Delete('calculadas/:id')
   removeFormulaCalculada(@Param('id') id: string) {
-    return this.formulasService.removeFormulaCalculada(+id);
+    return this.formulasService.removeFormulaCalculada(id);
+  }
+
+  // CALCULAR FORMULAS ENDPOINT
+  @Post('calcular')
+  calcularFormulas(@Body() calcularDto: CalcularFormulasDto) {
+    return this.formulasService.calcularFormulas(calcularDto);
   }
 }
