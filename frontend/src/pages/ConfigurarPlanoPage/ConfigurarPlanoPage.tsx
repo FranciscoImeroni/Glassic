@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 import { getPlanoUrl } from '../../utils/cloudinary';
 import './ConfigurarPlanoPage.css';
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
-import { fabric } from 'fabric';
+import * as fabric from 'fabric';
 import { getOrdenFabricacionUrl } from '../../utils/cloudinary';
 import './ConfigurarPlantillaPage.css';
 

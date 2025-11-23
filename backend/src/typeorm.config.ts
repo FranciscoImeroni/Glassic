@@ -11,7 +11,7 @@ export const AppDataSource = new DataSource({
   url: process.env.DATABASE_URL,
   entities: ['src/**/*.entity.ts'],
   migrations: ['src/migrations/*.ts'],
-  synchronize: false, // SIEMPRE false cuando usas migraciones
+  synchronize: true, // SIEMPRE false cuando usas migraciones
   // SSL solo en producción (Railway, etc), no en desarrollo local
   ssl: isProduction ? {
     rejectUnauthorized: false,
