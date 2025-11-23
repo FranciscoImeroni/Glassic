@@ -46,6 +46,8 @@ export default function IngresarProductoPage() {
   const [valoresMedidas, setValoresMedidas] = useState<Record<string, number>>({});
   const [espesores, setEspesores] = useState<number[]>([]);
   const [loading, setLoading] = useState(true);
+  const [loadingVariables, setLoadingVariables] = useState(false);
+  const [errorVariables, setErrorVariables] = useState<string | null>(null);
   const [calculando, setCalculando] = useState(false);
   const [status, setStatus] = useState('');
   const [imageError, setImageError] = useState(false);
@@ -99,6 +101,7 @@ export default function IngresarProductoPage() {
     setImageError(false);
     setImageAttempts(0);
     setCurrentImageUrl('');
+    setErrorVariables(null);
   }, [formData.linea, productos]);
 
   // Filtrar modelos cuando cambia la serie
@@ -119,6 +122,7 @@ export default function IngresarProductoPage() {
     setImageError(false);
     setImageAttempts(0);
     setCurrentImageUrl('');
+    setErrorVariables(null);
   }, [formData.serie, formData.linea, productos]);
 
   // Cargar variables cuando se selecciona un modelo
@@ -139,16 +143,25 @@ export default function IngresarProductoPage() {
       setCurrentImageUrl('');
       setImageError(false);
       setImageAttempts(0);
+      setErrorVariables(null);
     }
   }, [formData.modelo, modelosFiltrados]);
 
   const cargarVariablesDeEntrada = async (productoId: string) => {
     try {
+      setLoadingVariables(true);
+      setErrorVariables(null);
       const response = await fetch(`${API_BASE_URL}/productos/${productoId}/variables-entrada`);
       if (!response.ok) {
-        throw new Error('Error al cargar variables de entrada');
+        throw new Error(`Error ${response.status}: No se pudieron cargar las variables de entrada`);
       }
       const variables: Variable[] = await response.json();
+
+      // Verificar que sea un array válido
+      if (!Array.isArray(variables)) {
+        throw new Error('Respuesta inválida del servidor');
+      }
+
       setVariablesParaIngresar(variables);
       // Inicializar valores vacíos
       const valoresIniciales: Record<string, number> = {};
@@ -158,7 +171,12 @@ export default function IngresarProductoPage() {
       setValoresMedidas(valoresIniciales);
     } catch (error) {
       console.error('Error al cargar variables de entrada:', error);
-      setStatus('Error al cargar variables de entrada');
+      const errorMsg = error instanceof Error ? error.message : 'Error desconocido al cargar variables';
+      setErrorVariables(errorMsg);
+      setVariablesParaIngresar([]);
+      setValoresMedidas({});
+    } finally {
+      setLoadingVariables(false);
     }
   };
 
@@ -405,7 +423,17 @@ export default function IngresarProductoPage() {
 
           <div className="medidas-section">
             <h3>MEDIDAS EN mm:</h3>
-            {variablesParaIngresar.length > 0 ? (
+            {loadingVariables ? (
+              <p style={{ color: '#666', fontStyle: 'italic' }}>Cargando variables de entrada...</p>
+            ) : errorVariables ? (
+              <p style={{ color: '#d32f2f', fontWeight: 'bold' }}>
+                ⚠️ {errorVariables}
+                <br />
+                <span style={{ fontSize: '0.85rem', fontWeight: 'normal' }}>
+                  Verifique que el backend esté corriendo y que el producto tenga variables asociadas.
+                </span>
+              </p>
+            ) : variablesParaIngresar.length > 0 ? (
               <div className="medidas-grid">
                 {variablesParaIngresar.map((variable) => (
                   <div key={variable.id} style={{ marginBottom: '0.75rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -429,6 +457,14 @@ export default function IngresarProductoPage() {
                   </div>
                 ))}
               </div>
+            ) : formData.modelo ? (
+              <p style={{ color: '#ff9800', fontStyle: 'italic' }}>
+                ℹ️ Este producto no tiene variables de entrada asociadas.
+                <br />
+                <span style={{ fontSize: '0.85rem' }}>
+                  Puede agregárselas desde la página de administración.
+                </span>
+              </p>
             ) : (
               <p>Seleccione un modelo para ver las medidas requeridas</p>
             )}
