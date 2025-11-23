@@ -2,8 +2,8 @@ import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
 
 @Entity('coordenadas_plantilla')
 export class CoordenadasPlantilla {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   // Identificador único del elemento en la plantilla
   @Column({ name: 'elemento', type: 'varchar', unique: true, length: 50 })

@@ -5,22 +5,22 @@ import { VariableCalculada } from '../../formulas/entities/formula.entity';
 @Entity('coordenadas_plano')
 @Index(['modelo', 'variable'], { unique: true }) // Una variable solo puede tener una posición por modelo
 export class CoordenadasPlano {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @ManyToOne(() => Modelo, { onDelete: 'CASCADE', eager: true })
   @JoinColumn({ name: 'modelo_id' })
   modelo: Modelo;
 
   @Column({ name: 'modelo_id' })
-  modeloId: number;
+  modeloId: string;
 
   @ManyToOne(() => VariableCalculada, { onDelete: 'CASCADE', eager: true })
   @JoinColumn({ name: 'variable_id' })
   variable: VariableCalculada;
 
   @Column({ name: 'variable_id' })
-  variableId: number;
+  variableId: string;
 
   // Coordenadas en píxeles (relativas a la imagen del plano)
   @Column({ name: 'x', type: 'int' })
