@@ -48,7 +48,10 @@ function DataTable<T>({ data, columns, loading, error, page, totalPages, total, 
     return <div className="error-message">Error: {error}</div>;
   }
 
-  if (data.length === 0) {
+  // Manejo defensivo: asegurar que data sea un array válido
+  const safeData = Array.isArray(data) ? data : [];
+
+  if (safeData.length === 0) {
     return <div className="empty-message">No hay datos para mostrar</div>;
   }
 
@@ -68,7 +71,7 @@ function DataTable<T>({ data, columns, loading, error, page, totalPages, total, 
             </tr>
           </thead>
           <tbody>
-            {data.map((row, idx) => (
+            {safeData.map((row, idx) => (
               <tr key={idx}>
                 {columns.map((col) => (
                   <td key={String(col.key)}>{String(row[col.key] || '-')}</td>

@@ -69,7 +69,9 @@ function DataTable<T>({
     return <div className="error-message">Error: {error}</div>;
   }
 
-  const startRecord = data.length > 0 ? (page - 1) * 20 + 1 : 0;
+  // Manejo defensivo: asegurar que data sea un array válido
+  const safeData = Array.isArray(data) ? data : [];
+  const startRecord = safeData.length > 0 ? (page - 1) * 20 + 1 : 0;
   const endRecord = Math.min(page * 20, total);
   const showPagination = totalPages > 1;
 
@@ -81,7 +83,7 @@ function DataTable<T>({
         </button>
       </div>
 
-      {data.length === 0 ? (
+      {safeData.length === 0 ? (
         <div className="empty-message">No hay datos. Agrega el primero usando el botón de arriba.</div>
       ) : (
         <>
@@ -95,7 +97,7 @@ function DataTable<T>({
                 </tr>
               </thead>
               <tbody>
-                {data.map((row, idx) => (
+                {safeData.map((row, idx) => (
                   <tr key={idx}>
                     {columns.map((col) => (
                       <td key={String(col.key)}>{String(row[col.key] || '-')}</td>
