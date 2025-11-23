@@ -24,7 +24,7 @@
     "migration:run": "npm run typeorm -- migration:run",
     "migration:revert": "npm run typeorm -- migration:revert",
     "migration:show": "npm run typeorm -- migration:show",
-    "seed": "ts-node src/seeds/seed-data.ts"
+    "seed": "ts-node --project tsconfig.seed.json src/seeds/seed-data.ts"
   },
   "dependencies": {
     "@nestjs/common": "^11.0.1",
