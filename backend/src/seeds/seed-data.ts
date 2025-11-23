@@ -3,8 +3,6 @@ import { config } from 'dotenv';
 import { Variable } from '../modules/productos/entities/variable.entity';
 import { Producto } from '../modules/productos/entities/producto.entity';
 import { Modelo } from '../modules/formulas/entities/modelo.entity';
-import { VariableCalculada } from '../modules/formulas/entities/formula.entity';
-import { FormulaCalculada } from '../modules/formulas/entities/formula-calculada.entity';
 import { Comprobante } from '../modules/datos/entities/comprobante.entity';
 import { Vidrio } from '../modules/datos/entities/vidrio.entity';
 import { Herraje } from '../modules/datos/entities/herraje.entity';
@@ -98,8 +96,241 @@ async function seed() {
     const modeloRepo = dataSource.getRepository(Modelo);
 
     const modelos = [
-      { codigo: '1000-d', descripcion: 'Modelo 1000 derecho' },
-      { codigo: '4000-A1i', descripcion: 'Modelo 4000 A1 izquierdo' },
+      {
+        codigo: '1000',
+        descripcion: 'Modelo 1000',
+        hpf1: 'ALT1-7',
+        bpf1: 'VANO-7',
+        ckit: 'PN-80',
+        hkit: 'SI(ALT1>1600;"x 200";"x 160")',
+      },
+      {
+        codigo: '1010-i',
+        descripcion: 'Modelo 1010 izquierdo',
+        hpf1: 'ALT1-7',
+        bpf1: 'VANO-7',
+        ckit: 'PN-80',
+        hkit: 'SI(ALT1>1600;"x 200";"x 160")',
+      },
+      {
+        codigo: '1010-d',
+        descripcion: 'Modelo 1010 derecho',
+        hpf1: 'ALT1-7',
+        bpf1: 'VANO-7',
+        ckit: 'PN-80',
+        hkit: 'SI(ALT1>1600;"x 200";"x 160")',
+      },
+      {
+        codigo: '1200-i',
+        descripcion: 'Modelo 1200 izquierdo',
+        hpf1: 'ALT1-7',
+        bpf1: 'VANO1-16',
+        bpf2: 'VANO2-33',
+        ckit: 'PA-80',
+        hkit: 'SI(ALT1>1600;"x 200";"x 160")',
+      },
+      {
+        codigo: '1200-d',
+        descripcion: 'Modelo 1200 derecho',
+        hpf1: 'ALT1-7',
+        bpf1: 'VANO1-16',
+        bpf2: 'VANO2-33',
+        ckit: 'PA-80',
+        hkit: 'SI(ALT1>1600;"x 200";"x 160")',
+      },
+      {
+        codigo: '4000-A1i',
+        descripcion: 'Modelo 4000 A1 izquierdo',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VAN0/2)-8',
+        bpu1: '(VAN0/2)+37',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VAN0>2000;BF-250-1;SI(VAN0>1600;BF-250-1;SI(ALT1>1600;"x 200";"x 160")))',
+      },
+      {
+        codigo: '4000-Ad',
+        descripcion: 'Modelo 4000 Ad',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VAN0/2)-8',
+        bpu1: '(VAN0/2)+37',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VAN0>2000;BF-250-1;SI(VAN0>1600;BF-250-1;SI(ALT1>1600;"x 200";"x 160")))',
+      },
+      {
+        codigo: '4000-Bi',
+        descripcion: 'Modelo 4000 Bi',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VAN0/3)+3',
+        bpu1: '(VAN0/3)+48',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VAN0>2000;BF-250-1;SI(VAN0>1600;BF-250-1;SI(ALT1>1600;"x 200";"x 160")))',
+      },
+      {
+        codigo: '4000-Bd',
+        descripcion: 'Modelo 4000 Bd',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VAN0/3)+3',
+        bpu1: '(VAN0/3)+48',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VAN0>2000;BF-250-1;SI(VAN0>1600;BF-250-1;SI(ALT1>1600;"x 200";"x 160")))',
+      },
+      {
+        codigo: '4000-Ci',
+        descripcion: 'Modelo 4000 Ci',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO-PAF1)/2)+5',
+        bpu1: '((VANO-PAF1)/2)+48',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VAN0>2000;BF-250-1;SI(VAN0>1600;BF-250-1;SI(ALT1>1600;"x 200";"x 160")))',
+      },
+      {
+        codigo: '4000-Cd',
+        descripcion: 'Modelo 4000 Cd',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: 'PAF1-8',
+        bpf2: '((VANO-PAF1)/2)+5',
+        bpu1: '((VANO-PAF1)/2)+48',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VAN0>2000;BF-250-1;SI(VAN0>1600;BF-250-1;SI(ALT1>1600;"x 200";"x 160")))',
+      },
+      {
+        codigo: '4000-D',
+        descripcion: 'Modelo 4000 D',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VAN0/4)+8',
+        bpf2: '(VAN0/4)+4',
+        bpu1: '(VAN0/4)+39',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VAN0>2000;BF-250-2;SI(VAN0>1600;BF-250-2;SI(ALT1>1600;"x 200";"x 160")))',
+      },
+      {
+        codigo: '4100',
+        descripcion: 'Modelo 4100',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO1/2)-32',
+        bpf2: '(VANO2/2)-32',
+        bpf4: '(VANO2/2)+33',
+        bpu1: '(VANO1/2)+33',
+        hkit: 'SI(ALT1>1600;900;700) =SI((VANO1+VANO2)>2400;BF-250-2;SI(ALT1>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-A1i',
+        descripcion: 'Modelo 4200 A1i',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO1/2)-5',
+        bpf2: 'VANO2-33',
+        bpu1: '(VANO1/2)+26',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-A1d',
+        descripcion: 'Modelo 4200 A1d',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO1/2)-5',
+        bpf2: 'VANO2-33',
+        bpu1: '(VANO1/2)+26',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-A2i',
+        descripcion: 'Modelo 4200 A2i',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO1/2)-19',
+        bpf2: 'VANO2-36',
+        bpu1: '(VANO1/2)+26',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-A2d',
+        descripcion: 'Modelo 4200 A2d',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO1/2)-19',
+        bpf2: 'VANO2-36',
+        bpu1: '(VANO1/2)+26',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-Bi',
+        descripcion: 'Modelo 4200 Bi',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO1/3)+15',
+        bpf2: '(VANO1/3)-7',
+        bpf3: 'VANO2-33',
+        bpu1: '(VANO1/3)+38',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-Bd',
+        descripcion: 'Modelo 4200 Bd',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO1/3)+15',
+        bpf2: '(VANO1/3)-7',
+        bpf3: 'VANO2-33',
+        bpu1: '(VANO1/3)+38',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-Ci',
+        descripcion: 'Modelo 4200 Ci',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: 'PAF1-8',
+        bpf2: '((VANO1-PAF1)/2)+12',
+        bpf3: 'VANO2-33',
+        bpu1: '((VANO1-PAF1)/2)+33',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-C1d',
+        descripcion: 'Modelo 4200 C1d',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: 'PAF1-8',
+        bpf2: '((VANO1-PAF1)/2)+12',
+        bpf3: 'VANO2-33',
+        bpu1: '((VANO1-PAF1)/2)+33',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-C2i',
+        descripcion: 'Modelo 4200 C2i',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: 'PAF1-16',
+        bpf2: '((VANO1-PAF1)/2',
+        bpf3: 'VANO2-33',
+        bpu1: '((VANO1-PAF1)/2)+44',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-C2d',
+        descripcion: 'Modelo 4200 C2d',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: 'PAF1-16',
+        bpf2: '((VANO1-PAF1)/2',
+        bpf3: 'VANO2-33',
+        bpu1: '((VANO1-PAF1)/2)+44',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
+      {
+        codigo: '4200-D',
+        descripcion: 'Modelo 4200 D',
+        hpf1: 'ALT1-65',
+        hpf2: 'ALT1-25',
+        bpf1: '(VANO1/4)+8',
+        bpf2: '(VANO1/4)+4',
+        bpf3: 'VANO2-33',
+        bpu1: '(VANO1/4)+31',
+        hkit: 'SI(ALT1>1600;900;700) =SI(VANO1>2000,BA-250;(SI(VAN01>1600;"x 200";"x 160"))',
+      },
     ];
 
     const modelosCreados: Modelo[] = [];
@@ -115,87 +346,7 @@ async function seed() {
       modelosCreados.push(modelo);
     }
 
-    // 4. Variables calculadas
-    console.log('\n📊 Creando variables calculadas...');
-    const varCalcRepo = dataSource.getRepository(VariableCalculada);
-
-    const variablesCalculadas = [
-      { codigo: 'HPF1', descripcion: 'Altura Paño Fijo 1', tipoSalida: 'number' as const },
-      { codigo: 'BPF1', descripcion: 'Base Paño Fijo 1', tipoSalida: 'number' as const },
-      { codigo: 'HPF2', descripcion: 'Altura Paño Fijo 2', tipoSalida: 'number' as const },
-      { codigo: 'BPF2', descripcion: 'Base Paño Fijo 2', tipoSalida: 'number' as const },
-    ];
-
-    const variablesCalcCreadas: VariableCalculada[] = [];
-    for (const varData of variablesCalculadas) {
-      let varCalc = await varCalcRepo.findOne({ where: { codigo: varData.codigo } });
-      if (!varCalc) {
-        varCalc = varCalcRepo.create(varData);
-        await varCalcRepo.save(varCalc);
-        console.log(`  ✓ Variable calculada ${varData.codigo} creada`);
-      } else {
-        console.log(`  • Variable calculada ${varData.codigo} ya existe`);
-      }
-      variablesCalcCreadas.push(varCalc);
-    }
-
-    // 5. Fórmulas calculadas
-    console.log('\n🧮 Creando fórmulas...');
-    const formulaRepo = dataSource.getRepository(FormulaCalculada);
-
-    const formulas = [
-      {
-        modelo: modelosCreados[0], // 1000-d
-        variable: variablesCalcCreadas[0], // HPF1
-        expresion: 'ALT1-7',
-        orden: 1,
-      },
-      {
-        modelo: modelosCreados[0], // 1000-d
-        variable: variablesCalcCreadas[1], // BPF1
-        expresion: 'SI(VAN0>1600;900;700)',
-        orden: 2,
-      },
-      {
-        modelo: modelosCreados[1], // 4000-A1i
-        variable: variablesCalcCreadas[2], // HPF2
-        expresion: 'ALT1-10',
-        orden: 1,
-      },
-      {
-        modelo: modelosCreados[1], // 4000-A1i
-        variable: variablesCalcCreadas[3], // BPF2
-        expresion: 'BAS2/2',
-        orden: 2,
-      },
-    ];
-
-    for (const formulaData of formulas) {
-      const existing = await formulaRepo.findOne({
-        where: {
-          modeloId: formulaData.modelo.id,
-          variableId: formulaData.variable.id,
-        },
-      });
-
-      if (!existing) {
-        const formula = formulaRepo.create({
-          modelo: formulaData.modelo,
-          modeloId: formulaData.modelo.id,
-          variable: formulaData.variable,
-          variableId: formulaData.variable.id,
-          expresion: formulaData.expresion,
-          orden: formulaData.orden,
-          activa: true,
-        });
-        await formulaRepo.save(formula);
-        console.log(`  ✓ Fórmula ${formulaData.variable.codigo} para ${formulaData.modelo.codigo} creada`);
-      } else {
-        console.log(`  • Fórmula ${formulaData.variable.codigo} para ${formulaData.modelo.codigo} ya existe`);
-      }
-    }
-
-    // 6. Comprobantes
+    // 4. Comprobantes
     console.log('\n📋 Creando comprobantes...');
     const comprobanteRepo = dataSource.getRepository(Comprobante);
 
@@ -217,7 +368,7 @@ async function seed() {
       }
     }
 
-    // 7. Vidrios
+    // 5. Vidrios
     console.log('\n🪟 Creando vidrios...');
     const vidrioRepo = dataSource.getRepository(Vidrio);
 
@@ -246,7 +397,7 @@ async function seed() {
       }
     }
 
-    // 8. Herrajes
+    // 6. Herrajes
     console.log('\n🔩 Creando herrajes...');
     const herrajeRepo = dataSource.getRepository(Herraje);
 
@@ -268,7 +419,7 @@ async function seed() {
       }
     }
 
-    // 9. Servicios
+    // 7. Servicios
     console.log('\n🛠️  Creando servicios...');
     const servicioRepo = dataSource.getRepository(Servicio);
 
@@ -289,7 +440,7 @@ async function seed() {
       }
     }
 
-    // 10. Accesorios
+    // 8. Accesorios
     console.log('\n🔧 Creando accesorios...');
     const accesorioRepo = dataSource.getRepository(Accesorio);
 
@@ -317,9 +468,7 @@ async function seed() {
     console.log('📊 Resumen de datos creados:');
     console.log(`   • ${variables.length} Variables de entrada`);
     console.log(`   • ${productos.length} Productos`);
-    console.log(`   • ${modelos.length} Modelos de fórmulas`);
-    console.log(`   • ${variablesCalculadas.length} Variables calculadas`);
-    console.log(`   • ${formulas.length} Fórmulas`);
+    console.log(`   • ${modelos.length} Modelos con fórmulas`);
     console.log(`   • ${comprobantes.length} Comprobantes`);
     console.log(`   • ${vidrios.length} Vidrios`);
     console.log(`   • ${herrajes.length} Herrajes`);

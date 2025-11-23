@@ -1,9 +1,8 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, Index } from 'typeorm';
 import { Modelo } from '../../formulas/entities/modelo.entity';
-import { VariableCalculada } from '../../formulas/entities/formula.entity';
 
 @Entity('coordenadas_plano')
-@Index(['modelo', 'variable'], { unique: true }) // Una variable solo puede tener una posición por modelo
+@Index(['modelo', 'variableCodigo'], { unique: true }) // Una variable solo puede tener una posición por modelo
 export class CoordenadasPlano {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -15,12 +14,9 @@ export class CoordenadasPlano {
   @Column({ name: 'modelo_id' })
   modeloId: string;
 
-  @ManyToOne(() => VariableCalculada, { onDelete: 'CASCADE', eager: true })
-  @JoinColumn({ name: 'variable_id' })
-  variable: VariableCalculada;
-
-  @Column({ name: 'variable_id' })
-  variableId: string;
+  // Código de la variable (HPF1, BPF1, HPF2, etc.)
+  @Column({ name: 'variable_codigo', type: 'varchar', length: 20 })
+  variableCodigo: string;
 
   // Coordenadas en píxeles (relativas a la imagen del plano)
   @Column({ name: 'x', type: 'int' })
