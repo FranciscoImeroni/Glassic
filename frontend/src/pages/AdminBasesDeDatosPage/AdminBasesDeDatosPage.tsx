@@ -222,7 +222,7 @@ export default function AdminBasesDeDatosPage() {
   const [modelosPage, setModelosPage] = useState(1);
   const [modelosLoading, setModelosLoading] = useState(false);
   const [modelosError, setModelosError] = useState<string | null>(null);
-  const [formModelo, setFormModelo] = useState({ codigo: '', nombre: '' });
+  const [formModelo, setFormModelo] = useState({ codigo: '', descripcion: '' });
 
   // Estados para Variables Calculadas
   const [variablesCalculadasData, setVariablesCalculadasData] = useState<PaginatedResponse<VariableCalculada>>({
@@ -234,7 +234,7 @@ export default function AdminBasesDeDatosPage() {
   const [variablesCalculadasPage, setVariablesCalculadasPage] = useState(1);
   const [variablesCalculadasLoading, setVariablesCalculadasLoading] = useState(false);
   const [variablesCalculadasError, setVariablesCalculadasError] = useState<string | null>(null);
-  const [formVariableCalculada, setFormVariableCalculada] = useState({ codigo: '', nombre: '', descripcion: '' });
+  const [formVariableCalculada, setFormVariableCalculada] = useState({ codigo: '', descripcion: '', tipoSalida: 'number' as 'number' | 'string' });
 
   // Estados para Fórmulas Calculadas
   const [formulasData, setFormulasData] = useState<PaginatedResponse<FormulaCalculada>>({
@@ -264,7 +264,7 @@ export default function AdminBasesDeDatosPage() {
   const [valoresFijosPage, setValoresFijosPage] = useState(1);
   const [valoresFijosLoading, setValoresFijosLoading] = useState(false);
   const [valoresFijosError, setValoresFijosError] = useState<string | null>(null);
-  const [formValorFijo, setFormValorFijo] = useState({ clave: '', valor: '', descripcion: '' });
+  const [formValorFijo, setFormValorFijo] = useState({ codigo: '', descripcion: '', valorMm: 0 });
 
   // Estados para Kits
   const [kitsData, setKitsData] = useState<PaginatedResponse<Kit>>({
@@ -276,7 +276,7 @@ export default function AdminBasesDeDatosPage() {
   const [kitsPage, setKitsPage] = useState(1);
   const [kitsLoading, setKitsLoading] = useState(false);
   const [kitsError, setKitsError] = useState<string | null>(null);
-  const [formKit, setFormKit] = useState({ codigo: '', descripcion: '' });
+  const [formKit, setFormKit] = useState({ codigo: '', serieMampara: '', nombreKit: '' });
 
   // Cargar datos según el tab activo
   const loadData = async () => {
@@ -443,11 +443,11 @@ export default function AdminBasesDeDatosPage() {
     setFormHerraje({ color: '' });
     setFormAccesorio({ descripcion: '' });
     setFormProducto({ linea: '', serie: '', modelo: '', varVi: '', codIvi: '', espVidrio: 6 });
-    setFormModelo({ codigo: '', nombre: '' });
-    setFormVariableCalculada({ codigo: '', nombre: '', descripcion: '' });
+    setFormModelo({ codigo: '', descripcion: '' });
+    setFormVariableCalculada({ codigo: '', descripcion: '', tipoSalida: 'number' as 'number' | 'string' });
     setFormFormula({ modeloId: '', variableId: '', expresion: '', orden: 0, activa: true });
-    setFormValorFijo({ clave: '', valor: '', descripcion: '' });
-    setFormKit({ codigo: '', descripcion: '' });
+    setFormValorFijo({ codigo: '', descripcion: '', valorMm: 0 });
+    setFormKit({ codigo: '', serieMampara: '', nombreKit: '' });
   };
 
   const handleSave = async () => {
@@ -482,12 +482,12 @@ export default function AdminBasesDeDatosPage() {
 
         case 'modelos':
           await createModelo(formModelo);
-          setFormModelo({ codigo: '', nombre: '' });
+          setFormModelo({ codigo: '', descripcion: '' });
           break;
 
         case 'variablesCalculadas':
           await createVariableCalculada(formVariableCalculada);
-          setFormVariableCalculada({ codigo: '', nombre: '', descripcion: '' });
+          setFormVariableCalculada({ codigo: '', descripcion: '', tipoSalida: 'number' as 'number' | 'string' });
           break;
 
         case 'formulas':
@@ -497,12 +497,12 @@ export default function AdminBasesDeDatosPage() {
 
         case 'valoresFijos':
           await createValorFijo(formValorFijo);
-          setFormValorFijo({ clave: '', valor: '', descripcion: '' });
+          setFormValorFijo({ codigo: '', descripcion: '', valorMm: 0 });
           break;
 
         case 'kits':
           await createKit(formKit);
-          setFormKit({ codigo: '', descripcion: '' });
+          setFormKit({ codigo: '', serieMampara: '', nombreKit: '' });
           break;
       }
 
@@ -768,11 +768,11 @@ export default function AdminBasesDeDatosPage() {
                   />
                 </label>
                 <label>
-                  Nombre:
+                  Descripción:
                   <input
                     type="text"
-                    value={formModelo.nombre}
-                    onChange={(e) => setFormModelo({ ...formModelo, nombre: e.target.value })}
+                    value={formModelo.descripcion}
+                    onChange={(e) => setFormModelo({ ...formModelo, descripcion: e.target.value })}
                     placeholder="Ej: Modelo 1000-d"
                   />
                 </label>
@@ -791,22 +791,23 @@ export default function AdminBasesDeDatosPage() {
                   />
                 </label>
                 <label>
-                  Nombre:
-                  <input
-                    type="text"
-                    value={formVariableCalculada.nombre}
-                    onChange={(e) => setFormVariableCalculada({ ...formVariableCalculada, nombre: e.target.value })}
-                    placeholder="Ej: Carpintería 1"
-                  />
-                </label>
-                <label>
-                  Descripción (opcional):
+                  Descripción:
                   <input
                     type="text"
                     value={formVariableCalculada.descripcion}
                     onChange={(e) => setFormVariableCalculada({ ...formVariableCalculada, descripcion: e.target.value })}
                     placeholder="Ej: Medida de carpintería"
                   />
+                </label>
+                <label>
+                  Tipo de Salida:
+                  <select
+                    value={formVariableCalculada.tipoSalida}
+                    onChange={(e) => setFormVariableCalculada({ ...formVariableCalculada, tipoSalida: e.target.value as 'number' | 'string' })}
+                  >
+                    <option value="number">Number</option>
+                    <option value="string">String</option>
+                  </select>
                 </label>
               </div>
             )}
@@ -863,30 +864,30 @@ export default function AdminBasesDeDatosPage() {
             {activeTab === 'valoresFijos' && (
               <div className="form-fields">
                 <label>
-                  Clave:
+                  Código:
                   <input
                     type="text"
-                    value={formValorFijo.clave}
-                    onChange={(e) => setFormValorFijo({ ...formValorFijo, clave: e.target.value })}
-                    placeholder="Ej: MARGEN"
+                    value={formValorFijo.codigo}
+                    onChange={(e) => setFormValorFijo({ ...formValorFijo, codigo: e.target.value })}
+                    placeholder="Ej: VAN0"
                   />
                 </label>
                 <label>
-                  Valor:
-                  <input
-                    type="text"
-                    value={formValorFijo.valor}
-                    onChange={(e) => setFormValorFijo({ ...formValorFijo, valor: e.target.value })}
-                    placeholder="Ej: 1.5"
-                  />
-                </label>
-                <label>
-                  Descripción (opcional):
+                  Descripción:
                   <input
                     type="text"
                     value={formValorFijo.descripcion}
                     onChange={(e) => setFormValorFijo({ ...formValorFijo, descripcion: e.target.value })}
-                    placeholder="Ej: Margen de ganancia"
+                    placeholder="Ej: Vano Variable 0"
+                  />
+                </label>
+                <label>
+                  Valor (mm):
+                  <input
+                    type="number"
+                    value={formValorFijo.valorMm}
+                    onChange={(e) => setFormValorFijo({ ...formValorFijo, valorMm: parseFloat(e.target.value) || 0 })}
+                    placeholder="Ej: 25.5"
                   />
                 </label>
               </div>
@@ -900,16 +901,25 @@ export default function AdminBasesDeDatosPage() {
                     type="text"
                     value={formKit.codigo}
                     onChange={(e) => setFormKit({ ...formKit, codigo: e.target.value })}
-                    placeholder="Ej: KIT001"
+                    placeholder="Ej: A01000"
                   />
                 </label>
                 <label>
-                  Descripción:
+                  Serie Mampara:
                   <input
                     type="text"
-                    value={formKit.descripcion}
-                    onChange={(e) => setFormKit({ ...formKit, descripcion: e.target.value })}
-                    placeholder="Ej: Kit de instalación básico"
+                    value={formKit.serieMampara}
+                    onChange={(e) => setFormKit({ ...formKit, serieMampara: e.target.value })}
+                    placeholder="Ej: 1000"
+                  />
+                </label>
+                <label>
+                  Nombre Kit:
+                  <input
+                    type="text"
+                    value={formKit.nombreKit}
+                    onChange={(e) => setFormKit({ ...formKit, nombreKit: e.target.value })}
+                    placeholder="Ej: KIT ANGULAR MAMPARA 1000 MM"
                   />
                 </label>
               </div>
@@ -1029,7 +1039,7 @@ export default function AdminBasesDeDatosPage() {
               data={modelosData.data}
               columns={[
                 { key: 'codigo', label: 'Código' },
-                { key: 'nombre', label: 'Nombre' },
+                { key: 'descripcion', label: 'Descripción' },
               ]}
               loading={modelosLoading}
               error={modelosError}
@@ -1049,8 +1059,8 @@ export default function AdminBasesDeDatosPage() {
               data={variablesCalculadasData.data}
               columns={[
                 { key: 'codigo', label: 'Código' },
-                { key: 'nombre', label: 'Nombre' },
                 { key: 'descripcion', label: 'Descripción' },
+                { key: 'tipoSalida', label: 'Tipo' },
               ]}
               loading={variablesCalculadasLoading}
               error={variablesCalculadasError}
@@ -1090,9 +1100,9 @@ export default function AdminBasesDeDatosPage() {
             <DataTable
               data={valoresFijosData.data}
               columns={[
-                { key: 'clave', label: 'Clave' },
-                { key: 'valor', label: 'Valor' },
+                { key: 'codigo', label: 'Código' },
                 { key: 'descripcion', label: 'Descripción' },
+                { key: 'valorMm', label: 'Valor (mm)' },
               ]}
               loading={valoresFijosLoading}
               error={valoresFijosError}
@@ -1112,7 +1122,8 @@ export default function AdminBasesDeDatosPage() {
               data={kitsData.data}
               columns={[
                 { key: 'codigo', label: 'Código' },
-                { key: 'descripcion', label: 'Descripción' },
+                { key: 'serieMampara', label: 'Serie' },
+                { key: 'nombreKit', label: 'Nombre' },
               ]}
               loading={kitsLoading}
               error={kitsError}
