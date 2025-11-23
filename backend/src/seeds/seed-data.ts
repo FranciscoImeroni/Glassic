@@ -22,35 +22,25 @@ async function seed() {
     url: process.env.DATABASE_URL,
     entities: ['src/**/*.entity.ts'],
     synchronize: false,
-    ssl: {
-      rejectUnauthorized: false,
-    },
+    ssl: (process.env.NODE_ENV === 'production') ? { rejectUnauthorized: false } : false,
   });
 
   try {
     await dataSource.initialize();
     console.log('✅ Conexión a la base de datos establecida');
 
-    // LIMPIAR DATOS EXISTENTES
-    console.log('\n🗑️  Limpiando datos existentes...');
-
-    await dataSource.query('TRUNCATE TABLE formula_calculada CASCADE');
-    await dataSource.query('TRUNCATE TABLE variables_calculadas CASCADE');
-    await dataSource.query('TRUNCATE TABLE modelos CASCADE');
-    await dataSource.query('TRUNCATE TABLE producto_variable CASCADE');
-    await dataSource.query('TRUNCATE TABLE producto_instruccion CASCADE');
-    await dataSource.query('TRUNCATE TABLE productos CASCADE');
-    await dataSource.query('TRUNCATE TABLE variables CASCADE');
-    await dataSource.query('TRUNCATE TABLE codigo_instrucciones CASCADE');
-    await dataSource.query('TRUNCATE TABLE comprobantes CASCADE');
-    await dataSource.query('TRUNCATE TABLE vidrios CASCADE');
-    await dataSource.query('TRUNCATE TABLE herrajes CASCADE');
-    await dataSource.query('TRUNCATE TABLE servicios CASCADE');
-    await dataSource.query('TRUNCATE TABLE accesorios CASCADE');
-    await dataSource.query('TRUNCATE TABLE kits CASCADE');
-    await dataSource.query('TRUNCATE TABLE valores_fijos CASCADE');
-
-    console.log('✓ Datos existentes eliminados');
+    const shouldClear = process.argv.includes('--clear');
+    if (shouldClear) {
+      console.log('\nLimpiando datos existentes...');
+      const rows = await dataSource.query("SELECT tablename FROM pg_tables WHERE schemaname = 'public'");
+      const tables = rows.map((r: any) => r.tablename).filter((t: string) => t !== 'migrations');
+      if (tables.length) {
+        const quoted = tables.map((t: string) => `"${t}"`).join(', ');
+        await dataSource.query(`TRUNCATE TABLE ${quoted} RESTART IDENTITY CASCADE`);
+      }
+      console.log('Datos existentes eliminados');
+      return;
+    }
 
     // 1. COMPROBANTES
     console.log('\n📋 Creando comprobantes...');
