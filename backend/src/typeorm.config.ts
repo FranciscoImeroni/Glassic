@@ -4,13 +4,16 @@ import { config } from 'dotenv';
 // Cargar variables de entorno
 config();
 
+const isProduction = process.env.NODE_ENV === 'production';
+
 export const AppDataSource = new DataSource({
   type: 'postgres',
   url: process.env.DATABASE_URL,
   entities: ['src/**/*.entity.ts'],
   migrations: ['src/migrations/*.ts'],
   synchronize: false, // SIEMPRE false cuando usas migraciones
-  ssl: {
+  // SSL solo en producción (Railway, etc), no en desarrollo local
+  ssl: isProduction ? {
     rejectUnauthorized: false,
-  },
+  } : false,
 });
