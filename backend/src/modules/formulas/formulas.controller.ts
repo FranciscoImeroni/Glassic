@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { FormulasService } from './formulas.service';
 import { CreateVariableCalculadaDto } from './dto/create-formula.dto';
 import { UpdateVariableCalculadaDto } from './dto/update-formula.dto';
@@ -19,7 +19,12 @@ export class FormulasController {
   }
 
   @Get('variables')
-  findAllVariables() {
+  findAllVariables(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.formulasService.findVariablesPaginated(pageNum, limitNum);
+    }
     return this.formulasService.findAllVariables();
   }
 
@@ -45,7 +50,12 @@ export class FormulasController {
   }
 
   @Get('modelos')
-  findAllModelos() {
+  findAllModelos(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.formulasService.findModelosPaginated(pageNum, limitNum);
+    }
     return this.formulasService.findAllModelos();
   }
 
@@ -71,7 +81,12 @@ export class FormulasController {
   }
 
   @Get('calculadas')
-  findAllFormulasCalculadas() {
+  findAllFormulasCalculadas(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.formulasService.findFormulasCalculadasPaginated(pageNum, limitNum);
+    }
     return this.formulasService.findAllFormulasCalculadas();
   }
 

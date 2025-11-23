@@ -36,6 +36,23 @@ export class FormulasService {
     });
   }
 
+  async findVariablesPaginated(page: number = 1, limit: number = 20): Promise<{ data: VariableCalculada[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.variablesRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { codigo: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOneVariable(id: string): Promise<VariableCalculada> {
     const variable = await this.variablesRepository.findOne({
       where: { id },
@@ -68,6 +85,23 @@ export class FormulasService {
     });
   }
 
+  async findModelosPaginated(page: number = 1, limit: number = 20): Promise<{ data: Modelo[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.modelosRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { codigo: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOneModelo(id: string): Promise<Modelo> {
     const modelo = await this.modelosRepository.findOne({
       where: { id },
@@ -98,6 +132,24 @@ export class FormulasService {
     return await this.formulasCalculadasRepository.find({
       relations: ['modelo', 'variable'],
     });
+  }
+
+  async findFormulasCalculadasPaginated(page: number = 1, limit: number = 20): Promise<{ data: FormulaCalculada[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.formulasCalculadasRepository.findAndCount({
+      skip,
+      take: limit,
+      relations: ['modelo', 'variable'],
+      order: { orden: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   async findOneFormulaCalculada(id: string): Promise<FormulaCalculada> {
