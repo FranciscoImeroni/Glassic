@@ -1,10 +1,10 @@
-import { IsArray, ValidateNested, IsInt } from 'class-validator';
+import { IsArray, ValidateNested, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 import { CreateCoordenadasPlanoDto } from './create-coordenadas-plano.dto';
 
 export class BatchCoordenadasPlanoDto {
-  @IsInt()
-  modeloId: number;
+  @IsUUID()
+  modeloId: string;
 
   @IsArray()
   @ValidateNested({ each: true })

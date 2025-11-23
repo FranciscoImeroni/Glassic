@@ -21,23 +21,23 @@ export class CoordenadasPlanoController {
   @Get()
   findAll(@Query('modeloId') modeloId?: string) {
     if (modeloId) {
-      return this.coordenadasPlanoService.findByModelo(+modeloId);
+      return this.coordenadasPlanoService.findByModelo(modeloId);
     }
     return this.coordenadasPlanoService.findAll();
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.coordenadasPlanoService.findOne(+id);
+    return this.coordenadasPlanoService.findOne(id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDto: UpdateCoordenadasPlanoDto) {
-    return this.coordenadasPlanoService.update(+id, updateDto);
+    return this.coordenadasPlanoService.update(id, updateDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.coordenadasPlanoService.remove(+id);
+    return this.coordenadasPlanoService.remove(id);
   }
 }

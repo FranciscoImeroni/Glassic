@@ -25,7 +25,7 @@ export class CoordenadasPlantillaController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.coordenadasPlantillaService.findOne(+id);
+    return this.coordenadasPlantillaService.findOne(id);
   }
 
   @Get('elemento/:elemento')
@@ -35,11 +35,11 @@ export class CoordenadasPlantillaController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateDto: UpdateCoordenadasPlantillaDto) {
-    return this.coordenadasPlantillaService.update(+id, updateDto);
+    return this.coordenadasPlantillaService.update(id, updateDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.coordenadasPlantillaService.remove(+id);
+    return this.coordenadasPlantillaService.remove(id);
   }
 }

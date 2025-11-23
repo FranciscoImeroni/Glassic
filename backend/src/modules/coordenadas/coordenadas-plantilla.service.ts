@@ -24,7 +24,7 @@ export class CoordenadasPlantillaService {
     });
   }
 
-  async findOne(id: number): Promise<CoordenadasPlantilla> {
+  async findOne(id: string): Promise<CoordenadasPlantilla> {
     const coordenada = await this.coordenadasPlantillaRepository.findOne({
       where: { id },
     });
@@ -44,12 +44,12 @@ export class CoordenadasPlantillaService {
     return coordenada;
   }
 
-  async update(id: number, updateDto: UpdateCoordenadasPlantillaDto): Promise<CoordenadasPlantilla> {
+  async update(id: string, updateDto: UpdateCoordenadasPlantillaDto): Promise<CoordenadasPlantilla> {
     await this.coordenadasPlantillaRepository.update(id, updateDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.coordenadasPlantillaRepository.delete(id);
   }
 

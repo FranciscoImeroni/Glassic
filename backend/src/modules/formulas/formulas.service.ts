@@ -36,7 +36,7 @@ export class FormulasService {
     });
   }
 
-  async findOneVariable(id: number): Promise<VariableCalculada> {
+  async findOneVariable(id: string): Promise<VariableCalculada> {
     const variable = await this.variablesRepository.findOne({
       where: { id },
       relations: ['formulas'],
@@ -47,12 +47,12 @@ export class FormulasService {
     return variable;
   }
 
-  async updateVariable(id: number, updateVariableDto: UpdateVariableCalculadaDto): Promise<VariableCalculada> {
+  async updateVariable(id: string, updateVariableDto: UpdateVariableCalculadaDto): Promise<VariableCalculada> {
     await this.variablesRepository.update(id, updateVariableDto);
     return this.findOneVariable(id);
   }
 
-  async removeVariable(id: number): Promise<void> {
+  async removeVariable(id: string): Promise<void> {
     await this.variablesRepository.delete(id);
   }
 
@@ -68,7 +68,7 @@ export class FormulasService {
     });
   }
 
-  async findOneModelo(id: number): Promise<Modelo> {
+  async findOneModelo(id: string): Promise<Modelo> {
     const modelo = await this.modelosRepository.findOne({
       where: { id },
       relations: ['formulas'],
@@ -79,12 +79,12 @@ export class FormulasService {
     return modelo;
   }
 
-  async updateModelo(id: number, updateModeloDto: UpdateModeloDto): Promise<Modelo> {
+  async updateModelo(id: string, updateModeloDto: UpdateModeloDto): Promise<Modelo> {
     await this.modelosRepository.update(id, updateModeloDto);
     return this.findOneModelo(id);
   }
 
-  async removeModelo(id: number): Promise<void> {
+  async removeModelo(id: string): Promise<void> {
     await this.modelosRepository.delete(id);
   }
 
@@ -100,7 +100,7 @@ export class FormulasService {
     });
   }
 
-  async findOneFormulaCalculada(id: number): Promise<FormulaCalculada> {
+  async findOneFormulaCalculada(id: string): Promise<FormulaCalculada> {
     const formula = await this.formulasCalculadasRepository.findOne({
       where: { id },
       relations: ['modelo', 'variable'],
@@ -111,7 +111,7 @@ export class FormulasService {
     return formula;
   }
 
-  async findFormulasByModelo(modeloId: number): Promise<FormulaCalculada[]> {
+  async findFormulasByModelo(modeloId: string): Promise<FormulaCalculada[]> {
     return await this.formulasCalculadasRepository.find({
       where: { modeloId, activa: true },
       relations: ['variable'],
@@ -119,12 +119,12 @@ export class FormulasService {
     });
   }
 
-  async updateFormulaCalculada(id: number, updateFormulaDto: UpdateFormulaCalculadaDto): Promise<FormulaCalculada> {
+  async updateFormulaCalculada(id: string, updateFormulaDto: UpdateFormulaCalculadaDto): Promise<FormulaCalculada> {
     await this.formulasCalculadasRepository.update(id, updateFormulaDto);
     return this.findOneFormulaCalculada(id);
   }
 
-  async removeFormulaCalculada(id: number): Promise<void> {
+  async removeFormulaCalculada(id: string): Promise<void> {
     await this.formulasCalculadasRepository.delete(id);
   }
 

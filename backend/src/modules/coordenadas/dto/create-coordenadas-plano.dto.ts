@@ -1,11 +1,11 @@
-import { IsInt, IsString, IsOptional, Min } from 'class-validator';
+import { IsInt, IsString, IsOptional, Min, IsUUID } from 'class-validator';
 
 export class CreateCoordenadasPlanoDto {
-  @IsInt()
-  modeloId: number;
+  @IsUUID()
+  modeloId: string;
 
-  @IsInt()
-  variableId: number;
+  @IsUUID()
+  variableId: string;
 
   @IsInt()
   x: number;

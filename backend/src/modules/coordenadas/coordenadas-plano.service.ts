@@ -24,7 +24,7 @@ export class CoordenadasPlanoService {
     });
   }
 
-  async findByModelo(modeloId: number): Promise<CoordenadasPlano[]> {
+  async findByModelo(modeloId: string): Promise<CoordenadasPlano[]> {
     return await this.coordenadasPlanoRepository.find({
       where: { modeloId },
       relations: ['modelo', 'variable'],
@@ -32,7 +32,7 @@ export class CoordenadasPlanoService {
     });
   }
 
-  async findOne(id: number): Promise<CoordenadasPlano> {
+  async findOne(id: string): Promise<CoordenadasPlano> {
     const coordenada = await this.coordenadasPlanoRepository.findOne({
       where: { id },
       relations: ['modelo', 'variable'],
@@ -43,12 +43,12 @@ export class CoordenadasPlanoService {
     return coordenada;
   }
 
-  async update(id: number, updateDto: UpdateCoordenadasPlanoDto): Promise<CoordenadasPlano> {
+  async update(id: string, updateDto: UpdateCoordenadasPlanoDto): Promise<CoordenadasPlano> {
     await this.coordenadasPlanoRepository.update(id, updateDto);
     return this.findOne(id);
   }
 
-  async remove(id: number): Promise<void> {
+  async remove(id: string): Promise<void> {
     await this.coordenadasPlanoRepository.delete(id);
   }
 

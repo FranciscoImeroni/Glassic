@@ -27,7 +27,7 @@ export class ConfiguracionService {
     return await this.valoresFijosRepository.find();
   }
 
-  async findOneValorFijo(id: number): Promise<ValoresFijos> {
+  async findOneValorFijo(id: string): Promise<ValoresFijos> {
     const valorFijo = await this.valoresFijosRepository.findOne({ where: { id } });
     if (!valorFijo) {
       throw new NotFoundException(`Valor fijo con ID ${id} no encontrado`);
@@ -35,12 +35,12 @@ export class ConfiguracionService {
     return valorFijo;
   }
 
-  async updateValorFijo(id: number, updateValorFijoDto: UpdateValorFijoDto): Promise<ValoresFijos> {
+  async updateValorFijo(id: string, updateValorFijoDto: UpdateValorFijoDto): Promise<ValoresFijos> {
     await this.valoresFijosRepository.update(id, updateValorFijoDto);
     return this.findOneValorFijo(id);
   }
 
-  async removeValorFijo(id: number): Promise<void> {
+  async removeValorFijo(id: string): Promise<void> {
     await this.valoresFijosRepository.delete(id);
   }
 
@@ -54,7 +54,7 @@ export class ConfiguracionService {
     return await this.kitsRepository.find();
   }
 
-  async findOneKit(id: number): Promise<Kits> {
+  async findOneKit(id: string): Promise<Kits> {
     const kit = await this.kitsRepository.findOne({ where: { id } });
     if (!kit) {
       throw new NotFoundException(`Kit con ID ${id} no encontrado`);
@@ -62,12 +62,12 @@ export class ConfiguracionService {
     return kit;
   }
 
-  async updateKit(id: number, updateKitDto: UpdateKitDto): Promise<Kits> {
+  async updateKit(id: string, updateKitDto: UpdateKitDto): Promise<Kits> {
     await this.kitsRepository.update(id, updateKitDto);
     return this.findOneKit(id);
   }
 
-  async removeKit(id: number): Promise<void> {
+  async removeKit(id: string): Promise<void> {
     await this.kitsRepository.delete(id);
   }
 }
