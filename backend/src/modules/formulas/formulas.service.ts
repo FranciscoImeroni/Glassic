@@ -24,6 +24,23 @@ export class FormulasService {
     return await this.modelosRepository.find();
   }
 
+  async findModelosPaginated(page: number = 1, limit: number = 20): Promise<{ data: Modelo[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.modelosRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { codigo: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOneModelo(id: string): Promise<Modelo> {
     const modelo = await this.modelosRepository.findOne({
       where: { id },

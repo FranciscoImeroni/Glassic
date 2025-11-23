@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { FormulasService } from './formulas.service';
 import { CreateModeloDto } from './dto/create-modelo.dto';
 import { UpdateModeloDto } from './dto/update-modelo.dto';
@@ -15,7 +15,12 @@ export class FormulasController {
   }
 
   @Get('modelos')
-  findAllModelos() {
+  findAllModelos(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.formulasService.findModelosPaginated(pageNum, limitNum);
+    }
     return this.formulasService.findAllModelos();
   }
 
