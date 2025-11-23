@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
 import { ConfiguracionService } from './configuracion.service';
 import { CreateValorFijoDto } from './dto/create-configuracion.dto';
 import { UpdateValorFijoDto } from './dto/update-configuracion.dto';
@@ -16,7 +16,12 @@ export class ConfiguracionController {
   }
 
   @Get('valores-fijos')
-  findAllValoresFijos() {
+  findAllValoresFijos(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.configuracionService.findValoresFijosPaginated(pageNum, limitNum);
+    }
     return this.configuracionService.findAllValoresFijos();
   }
 
@@ -42,7 +47,12 @@ export class ConfiguracionController {
   }
 
   @Get('kits')
-  findAllKits() {
+  findAllKits(@Query('page') page?: string, @Query('limit') limit?: string) {
+    if (page || limit) {
+      const pageNum = page ? parseInt(page, 10) : 1;
+      const limitNum = limit ? parseInt(limit, 10) : 20;
+      return this.configuracionService.findKitsPaginated(pageNum, limitNum);
+    }
     return this.configuracionService.findAllKits();
   }
 

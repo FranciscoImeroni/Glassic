@@ -27,6 +27,23 @@ export class ConfiguracionService {
     return await this.valoresFijosRepository.find();
   }
 
+  async findValoresFijosPaginated(page: number = 1, limit: number = 20): Promise<{ data: ValoresFijos[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.valoresFijosRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { codigo: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
+  }
+
   async findOneValorFijo(id: string): Promise<ValoresFijos> {
     const valorFijo = await this.valoresFijosRepository.findOne({ where: { id } });
     if (!valorFijo) {
@@ -52,6 +69,23 @@ export class ConfiguracionService {
 
   async findAllKits(): Promise<Kits[]> {
     return await this.kitsRepository.find();
+  }
+
+  async findKitsPaginated(page: number = 1, limit: number = 20): Promise<{ data: Kits[], total: number, page: number, totalPages: number }> {
+    const skip = (page - 1) * limit;
+
+    const [data, total] = await this.kitsRepository.findAndCount({
+      skip,
+      take: limit,
+      order: { codigo: 'ASC' }
+    });
+
+    return {
+      data,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   async findOneKit(id: string): Promise<Kits> {
