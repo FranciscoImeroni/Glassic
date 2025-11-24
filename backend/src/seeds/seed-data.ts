@@ -100,7 +100,7 @@ async function seed() {
         codigo: '1000',
         descripcion: 'Modelo 1000',
         hpf1: 'ALT1-7',
-        bpf1: 'VANO-7',
+        bpf1: 'VAN0-7',
         ckit: 'PN-80',
         hkit: 'SI(ALT1>1600;"x 200";"x 160")',
       },
@@ -108,7 +108,7 @@ async function seed() {
         codigo: '1010-i',
         descripcion: 'Modelo 1010 izquierdo',
         hpf1: 'ALT1-7',
-        bpf1: 'VANO-7',
+        bpf1: 'VAN0-7',
         ckit: 'PN-80',
         hkit: 'SI(ALT1>1600;"x 200";"x 160")',
       },
@@ -116,7 +116,7 @@ async function seed() {
         codigo: '1010-d',
         descripcion: 'Modelo 1010 derecho',
         hpf1: 'ALT1-7',
-        bpf1: 'VANO-7',
+        bpf1: 'VAN0-7',
         ckit: 'PN-80',
         hkit: 'SI(ALT1>1600;"x 200";"x 160")',
       },
@@ -341,7 +341,10 @@ async function seed() {
         await modeloRepo.save(modelo);
         console.log(`  ✓ Modelo ${modeloData.codigo} creado`);
       } else {
-        console.log(`  • Modelo ${modeloData.codigo} ya existe`);
+        // Actualizar modelo existente con las fórmulas
+        Object.assign(modelo, modeloData);
+        await modeloRepo.save(modelo);
+        console.log(`  ✓ Modelo ${modeloData.codigo} actualizado con fórmulas`);
       }
       modelosCreados.push(modelo);
     }
