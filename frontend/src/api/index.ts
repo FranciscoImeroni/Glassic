@@ -67,24 +67,20 @@ export interface Modelo {
   id: string;
   codigo: string;
   descripcion: string;
-}
-
-export interface VariableCalculada {
-  id: string;
-  codigo: string;
-  descripcion: string;
-  tipoSalida?: 'number' | 'string';
-}
-
-export interface FormulaCalculada {
-  id: string;
-  modeloId: string;
-  variableId: string;
-  expresion: string;
-  orden: number;
-  activa: boolean;
-  modelo?: Modelo;
-  variable?: VariableCalculada;
+  // Columnas de fórmulas
+  hpf1?: string;
+  hpf2?: string;
+  hpue?: string;
+  bpf1?: string;
+  bpf2?: string;
+  bpf3?: string;
+  bpf4?: string;
+  bpu1?: string;
+  bp2?: string;
+  debi?: string;
+  htir?: string;
+  ckit?: string;
+  hkit?: string;
 }
 
 export interface ValorFijo {
