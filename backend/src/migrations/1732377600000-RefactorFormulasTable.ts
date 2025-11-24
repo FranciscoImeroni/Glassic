@@ -55,8 +55,8 @@ export class RefactorFormulasTable1732377600000 implements MigrationInterface {
       // Actualizar cada modelo con sus fórmulas
       for (const [modeloId, data] of Object.entries(formulasPorModelo) as any) {
         const formulas = data.formulas;
-        const updates = [];
-        const values = [];
+        const updates: string[] = [];
+        const values: any[] = [];
         let paramIndex = 1;
 
         for (const [varCode, expresion] of Object.entries(formulas)) {
