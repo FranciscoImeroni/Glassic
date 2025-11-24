@@ -306,52 +306,10 @@ export async function createModelo(data: Omit<Modelo, 'id'>): Promise<Modelo> {
 }
 
 // ==================== VARIABLES CALCULADAS ====================
-
-export async function getVariablesCalculadas(): Promise<VariableCalculada[]> {
-  const res = await fetch(`${API_URL}/formulas/variables`);
-  if (!res.ok) throw new Error('Error al obtener variables calculadas');
-  return res.json();
-}
-
-export async function getVariablesCalculadasPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<VariableCalculada>> {
-  const res = await fetch(`${API_URL}/formulas/variables?page=${page}&limit=${limit}`);
-  if (!res.ok) throw new Error('Error al obtener variables calculadas');
-  return res.json();
-}
-
-export async function createVariableCalculada(data: Omit<VariableCalculada, 'id'>): Promise<VariableCalculada> {
-  const res = await fetch(`${API_URL}/formulas/variables`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error('Error al crear variable calculada');
-  return res.json();
-}
+// NOTA: Eliminadas tras refactorización - las fórmulas ahora están integradas en los modelos
 
 // ==================== FÓRMULAS CALCULADAS ====================
-
-export async function getFormulasCalculadas(): Promise<FormulaCalculada[]> {
-  const res = await fetch(`${API_URL}/formulas/calculadas`);
-  if (!res.ok) throw new Error('Error al obtener fórmulas calculadas');
-  return res.json();
-}
-
-export async function getFormulasCalculadasPaginated(page: number = 1, limit: number = 20): Promise<PaginatedResponse<FormulaCalculada>> {
-  const res = await fetch(`${API_URL}/formulas/calculadas?page=${page}&limit=${limit}`);
-  if (!res.ok) throw new Error('Error al obtener fórmulas calculadas');
-  return res.json();
-}
-
-export async function createFormulaCalculada(data: Omit<FormulaCalculada, 'id' | 'modelo' | 'variable'>): Promise<FormulaCalculada> {
-  const res = await fetch(`${API_URL}/formulas/calculadas`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(data),
-  });
-  if (!res.ok) throw new Error('Error al crear fórmula calculada');
-  return res.json();
-}
+// NOTA: Eliminadas tras refactorización - las fórmulas ahora están integradas en los modelos
 
 // ==================== VALORES FIJOS ====================
 

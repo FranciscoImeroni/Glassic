@@ -6,8 +6,6 @@ import type {
   Accesorio,
   Producto,
   Modelo,
-  VariableCalculada,
-  FormulaCalculada,
   ValorFijo,
   Kit,
   PaginatedResponse,
@@ -19,8 +17,6 @@ import {
   getAccesoriosPaginated,
   getProductosPaginated,
   getModelosPaginated,
-  getVariablesCalculadasPaginated,
-  getFormulasCalculadasPaginated,
   getValoresFijosPaginated,
   getKitsPaginated,
   createVidrio,
@@ -29,14 +25,12 @@ import {
   createAccesorio,
   createProducto,
   createModelo,
-  createVariableCalculada,
-  createFormulaCalculada,
   createValorFijo,
   createKit,
 } from '../../api';
 import './AdminBasesDeDatosPage.css';
 
-type TabType = 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos' | 'modelos' | 'variablesCalculadas' | 'formulas' | 'valoresFijos' | 'kits';
+type TabType = 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos' | 'modelos' | 'valoresFijos' | 'kits';
 
 interface DataTableProps<T> {
   data: T[];
