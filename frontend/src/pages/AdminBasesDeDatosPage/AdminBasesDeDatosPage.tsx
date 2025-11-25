@@ -27,6 +27,22 @@ import {
   createModelo,
   createValorFijo,
   createKit,
+  updateVidrio,
+  updateServicio,
+  updateHerraje,
+  updateAccesorio,
+  updateProducto,
+  updateModelo,
+  updateValorFijo,
+  updateKit,
+  deleteVidrio,
+  deleteServicio,
+  deleteHerraje,
+  deleteAccesorio,
+  deleteProducto,
+  deleteModelo,
+  deleteValorFijo,
+  deleteKit,
 } from '../../api';
 import './AdminBasesDeDatosPage.css';
 
@@ -42,6 +58,8 @@ interface DataTableProps<T> {
   total: number;
   onPageChange: (page: number) => void;
   onAddNew: () => void;
+  onEdit: (item: T) => void;
+  onDelete: (item: T) => void;
 }
 
 function DataTable<T>({
@@ -54,6 +72,8 @@ function DataTable<T>({
   total,
   onPageChange,
   onAddNew,
+  onEdit,
+  onDelete,
 }: DataTableProps<T>) {
   if (loading) {
     return <div className="loading-message">Cargando datos...</div>;
@@ -88,6 +108,7 @@ function DataTable<T>({
                   {columns.map((col) => (
                     <th key={String(col.key)}>{col.label}</th>
                   ))}
+                  <th>Acciones</th>
                 </tr>
               </thead>
               <tbody>
@@ -96,6 +117,14 @@ function DataTable<T>({
                     {columns.map((col) => (
                       <td key={String(col.key)}>{String(row[col.key] || '-')}</td>
                     ))}
+                    <td className="actions-cell">
+                      <button className="btn-edit" onClick={() => onEdit(row)} title="Editar">
+                        ✏️
+                      </button>
+                      <button className="btn-delete" onClick={() => onDelete(row)} title="Eliminar">
+                        🗑️
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
@@ -137,6 +166,8 @@ function DataTable<T>({
 export default function AdminBasesDeDatosPage() {
   const [activeTab, setActiveTab] = useState<TabType>('vidrios');
   const [showForm, setShowForm] = useState(false);
+  const [editMode, setEditMode] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
   const [saveStatus, setSaveStatus] = useState<string>('');
 
   // Estados para Vidrios
@@ -383,11 +414,15 @@ export default function AdminBasesDeDatosPage() {
 
   const handleAddNew = () => {
     setShowForm(true);
+    setEditMode(false);
+    setEditingId(null);
     setSaveStatus('');
   };
 
   const handleCancel = () => {
     setShowForm(false);
+    setEditMode(false);
+    setEditingId(null);
     setSaveStatus('');
     // Limpiar formularios
     setFormVidrio({ tipo: '', color: '' });
@@ -416,70 +451,248 @@ export default function AdminBasesDeDatosPage() {
     setFormKit({ codigo: '', serieMampara: '', nombreKit: '' });
   };
 
+  const handleEdit = (item: any) => {
+    setEditMode(true);
+    setEditingId(item.id);
+    setShowForm(true);
+    setSaveStatus('');
+
+    // Cargar datos en el formulario según el tipo de tab
+    switch (activeTab) {
+      case 'vidrios':
+        setFormVidrio({ tipo: item.tipo || '', color: item.color || '' });
+        break;
+      case 'servicios':
+        setFormServicio({ nombre: item.nombre || '' });
+        break;
+      case 'herrajes':
+        setFormHerraje({ color: item.color || '' });
+        break;
+      case 'accesorios':
+        setFormAccesorio({ descripcion: item.descripcion || '' });
+        break;
+      case 'productos':
+        setFormProducto({
+          linea: item.linea || '',
+          serie: item.serie || '',
+          modelo: item.modelo || '',
+          varVi: item.varVi || '',
+          codIvi: item.codIvi || '',
+          espVidrio: item.espVidrio || 6,
+        });
+        break;
+      case 'formulas':
+        setFormFormula({
+          codigo: item.codigo || '',
+          descripcion: item.descripcion || '',
+          hpf1: item.hpf1 || '',
+          hpf2: item.hpf2 || '',
+          hpue: item.hpue || '',
+          bpf1: item.bpf1 || '',
+          bpf2: item.bpf2 || '',
+          bpf3: item.bpf3 || '',
+          bpf4: item.bpf4 || '',
+          bpu1: item.bpu1 || '',
+          bp2: item.bp2 || '',
+          debi: item.debi || '',
+          htir: item.htir || '',
+          ckit: item.ckit || '',
+          hkit: item.hkit || '',
+        });
+        break;
+      case 'valoresFijos':
+        setFormValorFijo({
+          codigo: item.codigo || '',
+          descripcion: item.descripcion || '',
+          valorMm: item.valorMm || 0,
+        });
+        break;
+      case 'kits':
+        setFormKit({
+          codigo: item.codigo || '',
+          serieMampara: item.serieMampara || '',
+          nombreKit: item.nombreKit || '',
+        });
+        break;
+    }
+  };
+
+  const handleDelete = async (item: any) => {
+    const confirmMessage = '¿Estás seguro de que deseas eliminar este registro?';
+    if (!window.confirm(confirmMessage)) {
+      return;
+    }
+
+    try {
+      setSaveStatus('Eliminando...');
+
+      switch (activeTab) {
+        case 'vidrios':
+          await deleteVidrio(item.id);
+          break;
+        case 'servicios':
+          await deleteServicio(item.id);
+          break;
+        case 'herrajes':
+          await deleteHerraje(item.id);
+          break;
+        case 'accesorios':
+          await deleteAccesorio(item.id);
+          break;
+        case 'productos':
+          await deleteProducto(item.id);
+          break;
+        case 'formulas':
+          await deleteModelo(item.id);
+          break;
+        case 'valoresFijos':
+          await deleteValorFijo(item.id);
+          break;
+        case 'kits':
+          await deleteKit(item.id);
+          break;
+      }
+
+      setSaveStatus('Eliminado exitosamente');
+
+      // Recargar datos
+      await loadData();
+
+      // Limpiar mensaje después de 2 segundos
+      setTimeout(() => setSaveStatus(''), 2000);
+    } catch (error) {
+      setSaveStatus('Error al eliminar: ' + (error instanceof Error ? error.message : 'Error desconocido'));
+    }
+  };
+
   const handleSave = async () => {
     try {
       setSaveStatus('Guardando...');
 
-      switch (activeTab) {
-        case 'vidrios':
-          await createVidrio(formVidrio);
-          setFormVidrio({ tipo: '', color: '' });
-          break;
+      if (editMode && editingId) {
+        // Modo edición
+        switch (activeTab) {
+          case 'vidrios':
+            await updateVidrio(editingId, formVidrio);
+            setFormVidrio({ tipo: '', color: '' });
+            break;
 
-        case 'servicios':
-          await createServicio(formServicio);
-          setFormServicio({ nombre: '' });
-          break;
+          case 'servicios':
+            await updateServicio(editingId, formServicio);
+            setFormServicio({ nombre: '' });
+            break;
 
-        case 'herrajes':
-          await createHerraje(formHerraje);
-          setFormHerraje({ color: '' });
-          break;
+          case 'herrajes':
+            await updateHerraje(editingId, formHerraje);
+            setFormHerraje({ color: '' });
+            break;
 
-        case 'accesorios':
-          await createAccesorio(formAccesorio);
-          setFormAccesorio({ descripcion: '' });
-          break;
+          case 'accesorios':
+            await updateAccesorio(editingId, formAccesorio);
+            setFormAccesorio({ descripcion: '' });
+            break;
 
-        case 'productos':
-          await createProducto({ ...formProducto, variables: [], instrucciones: [] });
-          setFormProducto({ linea: '', serie: '', modelo: '', varVi: '', codIvi: '', espVidrio: 6 });
-          break;
+          case 'productos':
+            await updateProducto(editingId, formProducto);
+            setFormProducto({ linea: '', serie: '', modelo: '', varVi: '', codIvi: '', espVidrio: 6 });
+            break;
 
-        case 'formulas':
-          await createModelo(formFormula);
-          setFormFormula({
-            codigo: '',
-            descripcion: '',
-            hpf1: '',
-            hpf2: '',
-            hpue: '',
-            bpf1: '',
-            bpf2: '',
-            bpf3: '',
-            bpf4: '',
-            bpu1: '',
-            bp2: '',
-            debi: '',
-            htir: '',
-            ckit: '',
-            hkit: '',
-          });
-          break;
+          case 'formulas':
+            await updateModelo(editingId, formFormula);
+            setFormFormula({
+              codigo: '',
+              descripcion: '',
+              hpf1: '',
+              hpf2: '',
+              hpue: '',
+              bpf1: '',
+              bpf2: '',
+              bpf3: '',
+              bpf4: '',
+              bpu1: '',
+              bp2: '',
+              debi: '',
+              htir: '',
+              ckit: '',
+              hkit: '',
+            });
+            break;
 
-        case 'valoresFijos':
-          await createValorFijo(formValorFijo);
-          setFormValorFijo({ codigo: '', descripcion: '', valorMm: 0 });
-          break;
+          case 'valoresFijos':
+            await updateValorFijo(editingId, formValorFijo);
+            setFormValorFijo({ codigo: '', descripcion: '', valorMm: 0 });
+            break;
 
-        case 'kits':
-          await createKit(formKit);
-          setFormKit({ codigo: '', serieMampara: '', nombreKit: '' });
-          break;
+          case 'kits':
+            await updateKit(editingId, formKit);
+            setFormKit({ codigo: '', serieMampara: '', nombreKit: '' });
+            break;
+        }
+      } else {
+        // Modo creación
+        switch (activeTab) {
+          case 'vidrios':
+            await createVidrio(formVidrio);
+            setFormVidrio({ tipo: '', color: '' });
+            break;
+
+          case 'servicios':
+            await createServicio(formServicio);
+            setFormServicio({ nombre: '' });
+            break;
+
+          case 'herrajes':
+            await createHerraje(formHerraje);
+            setFormHerraje({ color: '' });
+            break;
+
+          case 'accesorios':
+            await createAccesorio(formAccesorio);
+            setFormAccesorio({ descripcion: '' });
+            break;
+
+          case 'productos':
+            await createProducto({ ...formProducto, variables: [], instrucciones: [] });
+            setFormProducto({ linea: '', serie: '', modelo: '', varVi: '', codIvi: '', espVidrio: 6 });
+            break;
+
+          case 'formulas':
+            await createModelo(formFormula);
+            setFormFormula({
+              codigo: '',
+              descripcion: '',
+              hpf1: '',
+              hpf2: '',
+              hpue: '',
+              bpf1: '',
+              bpf2: '',
+              bpf3: '',
+              bpf4: '',
+              bpu1: '',
+              bp2: '',
+              debi: '',
+              htir: '',
+              ckit: '',
+              hkit: '',
+            });
+            break;
+
+          case 'valoresFijos':
+            await createValorFijo(formValorFijo);
+            setFormValorFijo({ codigo: '', descripcion: '', valorMm: 0 });
+            break;
+
+          case 'kits':
+            await createKit(formKit);
+            setFormKit({ codigo: '', serieMampara: '', nombreKit: '' });
+            break;
+        }
       }
 
-      setSaveStatus('Guardado exitosamente');
+      setSaveStatus(editMode ? 'Actualizado exitosamente' : 'Guardado exitosamente');
       setShowForm(false);
+      setEditMode(false);
+      setEditingId(null);
 
       // Recargar datos
       await loadData();
@@ -582,7 +795,7 @@ export default function AdminBasesDeDatosPage() {
         {/* Formulario de agregar */}
         {showForm && (
           <div className="add-form">
-            <h3>Agregar {activeTab}</h3>
+            <h3>{editMode ? 'Editar' : 'Agregar'} {activeTab}</h3>
 
             {activeTab === 'vidrios' && (
               <div className="form-fields">
@@ -942,6 +1155,8 @@ export default function AdminBasesDeDatosPage() {
               total={vidriosData.total}
               onPageChange={setVidriosPage}
               onAddNew={handleAddNew}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         )}
@@ -959,6 +1174,8 @@ export default function AdminBasesDeDatosPage() {
               total={serviciosData.total}
               onPageChange={setServiciosPage}
               onAddNew={handleAddNew}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         )}
@@ -976,6 +1193,8 @@ export default function AdminBasesDeDatosPage() {
               total={herrajesData.total}
               onPageChange={setHerrajesPage}
               onAddNew={handleAddNew}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         )}
@@ -993,6 +1212,8 @@ export default function AdminBasesDeDatosPage() {
               total={accesoriosData.total}
               onPageChange={setAccesoriosPage}
               onAddNew={handleAddNew}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         )}
@@ -1017,6 +1238,8 @@ export default function AdminBasesDeDatosPage() {
               total={productosData.total}
               onPageChange={setProductosPage}
               onAddNew={handleAddNew}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         )}
@@ -1049,6 +1272,8 @@ export default function AdminBasesDeDatosPage() {
               total={formulasData.total}
               onPageChange={setFormulasPage}
               onAddNew={handleAddNew}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         )}
@@ -1070,6 +1295,8 @@ export default function AdminBasesDeDatosPage() {
               total={valoresFijosData.total}
               onPageChange={setValoresFijosPage}
               onAddNew={handleAddNew}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         )}
@@ -1091,6 +1318,8 @@ export default function AdminBasesDeDatosPage() {
               total={kitsData.total}
               onPageChange={setKitsPage}
               onAddNew={handleAddNew}
+              onEdit={handleEdit}
+              onDelete={handleDelete}
             />
           </div>
         )}

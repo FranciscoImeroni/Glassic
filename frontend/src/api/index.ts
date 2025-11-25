@@ -145,6 +145,23 @@ export async function createVidrio(data: Omit<Vidrio, 'id'>): Promise<Vidrio> {
   return res.json();
 }
 
+export async function updateVidrio(id: string, data: Partial<Omit<Vidrio, 'id'>>): Promise<Vidrio> {
+  const res = await fetch(`${API_URL}/vidrios/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al actualizar vidrio');
+  return res.json();
+}
+
+export async function deleteVidrio(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/vidrios/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Error al eliminar vidrio');
+}
+
 // ==================== SERVICIOS ====================
 
 export async function getServicios(): Promise<Servicio[]> {
@@ -167,6 +184,23 @@ export async function createServicio(data: Omit<Servicio, 'id'>): Promise<Servic
   });
   if (!res.ok) throw new Error('Error al crear servicio');
   return res.json();
+}
+
+export async function updateServicio(id: string, data: Partial<Omit<Servicio, 'id'>>): Promise<Servicio> {
+  const res = await fetch(`${API_URL}/servicios/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al actualizar servicio');
+  return res.json();
+}
+
+export async function deleteServicio(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/servicios/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Error al eliminar servicio');
 }
 
 // ==================== HERRAJES ====================
@@ -193,6 +227,23 @@ export async function createHerraje(data: Omit<Herraje, 'id'>): Promise<Herraje>
   return res.json();
 }
 
+export async function updateHerraje(id: string, data: Partial<Omit<Herraje, 'id'>>): Promise<Herraje> {
+  const res = await fetch(`${API_URL}/herrajes/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al actualizar herraje');
+  return res.json();
+}
+
+export async function deleteHerraje(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/herrajes/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Error al eliminar herraje');
+}
+
 // ==================== ACCESORIOS ====================
 
 export async function getAccesorios(): Promise<Accesorio[]> {
@@ -215,6 +266,23 @@ export async function createAccesorio(data: Omit<Accesorio, 'id'>): Promise<Acce
   });
   if (!res.ok) throw new Error('Error al crear accesorio');
   return res.json();
+}
+
+export async function updateAccesorio(id: string, data: Partial<Omit<Accesorio, 'id'>>): Promise<Accesorio> {
+  const res = await fetch(`${API_URL}/accesorios/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al actualizar accesorio');
+  return res.json();
+}
+
+export async function deleteAccesorio(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/accesorios/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Error al eliminar accesorio');
 }
 
 // ==================== VARIABLES ====================
@@ -277,6 +345,23 @@ export async function createProducto(data: Omit<Producto, 'id'>): Promise<Produc
   return res.json();
 }
 
+export async function updateProducto(id: string, data: Partial<Omit<Producto, 'id'>>): Promise<Producto> {
+  const res = await fetch(`${API_URL}/productos/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al actualizar producto');
+  return res.json();
+}
+
+export async function deleteProducto(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/productos/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Error al eliminar producto');
+}
+
 // ==================== MODELOS (FÓRMULAS) ====================
 
 export async function getModelos(): Promise<Modelo[]> {
@@ -299,6 +384,23 @@ export async function createModelo(data: Omit<Modelo, 'id'>): Promise<Modelo> {
   });
   if (!res.ok) throw new Error('Error al crear modelo');
   return res.json();
+}
+
+export async function updateModelo(id: string, data: Partial<Omit<Modelo, 'id'>>): Promise<Modelo> {
+  const res = await fetch(`${API_URL}/formulas/modelos/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al actualizar modelo');
+  return res.json();
+}
+
+export async function deleteModelo(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/formulas/modelos/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Error al eliminar modelo');
 }
 
 // ==================== VARIABLES CALCULADAS ====================
@@ -331,6 +433,23 @@ export async function createValorFijo(data: Omit<ValorFijo, 'id'>): Promise<Valo
   return res.json();
 }
 
+export async function updateValorFijo(id: string, data: Partial<Omit<ValorFijo, 'id'>>): Promise<ValorFijo> {
+  const res = await fetch(`${API_URL}/configuracion/valores-fijos/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al actualizar valor fijo');
+  return res.json();
+}
+
+export async function deleteValorFijo(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/configuracion/valores-fijos/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Error al eliminar valor fijo');
+}
+
 // ==================== KITS ====================
 
 export async function getKits(): Promise<Kit[]> {
@@ -353,6 +472,23 @@ export async function createKit(data: Omit<Kit, 'id'>): Promise<Kit> {
   });
   if (!res.ok) throw new Error('Error al crear kit');
   return res.json();
+}
+
+export async function updateKit(id: string, data: Partial<Omit<Kit, 'id'>>): Promise<Kit> {
+  const res = await fetch(`${API_URL}/configuracion/kits/${id}`, {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data),
+  });
+  if (!res.ok) throw new Error('Error al actualizar kit');
+  return res.json();
+}
+
+export async function deleteKit(id: string): Promise<void> {
+  const res = await fetch(`${API_URL}/configuracion/kits/${id}`, {
+    method: 'DELETE',
+  });
+  if (!res.ok) throw new Error('Error al eliminar kit');
 }
 
 // ==================== HELPERS ====================
