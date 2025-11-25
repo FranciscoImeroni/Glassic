@@ -93,8 +93,9 @@ export class AddCoordenadasTables1731877200000 implements MigrationInterface {
             type: 'uuid',
           },
           {
-            name: 'variable_id',
-            type: 'uuid',
+            name: 'variable_codigo',
+            type: 'varchar',
+            length: '20',
           },
           {
             name: 'x',
@@ -124,8 +125,14 @@ export class AddCoordenadasTables1731877200000 implements MigrationInterface {
           {
             name: 'color',
             type: 'varchar',
-            length: '20',
+            length: '7',
             default: "'#000000'",
+          },
+          {
+            name: 'align',
+            type: 'varchar',
+            length: '10',
+            default: "'left'",
           },
           {
             name: 'created_at',
@@ -142,33 +149,23 @@ export class AddCoordenadasTables1731877200000 implements MigrationInterface {
       true,
     );
 
-    // Crear índice único compuesto para coordenadas_plano (modelo_id, variable_id)
+    // Crear índice único compuesto para coordenadas_plano (modelo_id, variable_codigo)
     await queryRunner.createIndex(
       'coordenadas_plano',
       new TableIndex({
         name: 'IDX_COORDENADAS_PLANO_MODELO_VARIABLE',
-        columnNames: ['modelo_id', 'variable_id'],
+        columnNames: ['modelo_id', 'variable_codigo'],
         isUnique: true,
       }),
     );
 
-    // Crear foreign keys
+    // Crear foreign key para modelo_id
     await queryRunner.createForeignKey(
       'coordenadas_plano',
       new TableForeignKey({
         columnNames: ['modelo_id'],
         referencedColumnNames: ['id'],
         referencedTableName: 'modelos',
-        onDelete: 'CASCADE',
-      }),
-    );
-
-    await queryRunner.createForeignKey(
-      'coordenadas_plano',
-      new TableForeignKey({
-        columnNames: ['variable_id'],
-        referencedColumnNames: ['id'],
-        referencedTableName: 'variables_calculadas',
         onDelete: 'CASCADE',
       }),
     );

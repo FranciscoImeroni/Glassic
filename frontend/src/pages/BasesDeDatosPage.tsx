@@ -6,8 +6,6 @@ import type {
   Accesorio,
   Producto,
   Modelo,
-  VariableCalculada,
-  FormulaCalculada,
   ValorFijo,
   Kit,
   PaginatedResponse,
@@ -19,14 +17,12 @@ import {
   getAccesoriosPaginated,
   getProductosPaginated,
   getModelosPaginated,
-  getVariablesCalculadasPaginated,
-  getFormulasCalculadasPaginated,
   getValoresFijosPaginated,
   getKitsPaginated,
 } from '../api';
 import './BasesDeDatosPage.css';
 
-type TabType = 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos' | 'modelos' | 'variablesCalculadas' | 'formulas' | 'valoresFijos' | 'kits';
+type TabType = 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos' | 'formulas' | 'valoresFijos' | 'kits';
 
 interface DataTableProps<T> {
   data: T[];
@@ -129,9 +125,7 @@ export default function BasesDeDatosPage() {
   const herrajes = createState<Herraje>();
   const accesorios = createState<Accesorio>();
   const productos = createState<Producto>();
-  const modelos = createState<Modelo>();
-  const variablesCalculadas = createState<VariableCalculada>();
-  const formulas = createState<FormulaCalculada>();
+  const formulas = createState<Modelo>();
   const valoresFijos = createState<ValorFijo>();
   const kits = createState<Kit>();
 
@@ -160,9 +154,7 @@ export default function BasesDeDatosPage() {
   useEffect(() => { loadData(getHerrajesPaginated, herrajes, 'herrajes'); }, [activeTab, herrajes.page]);
   useEffect(() => { loadData(getAccesoriosPaginated, accesorios, 'accesorios'); }, [activeTab, accesorios.page]);
   useEffect(() => { loadData(getProductosPaginated, productos, 'productos'); }, [activeTab, productos.page]);
-  useEffect(() => { loadData(getModelosPaginated, modelos, 'modelos'); }, [activeTab, modelos.page]);
-  useEffect(() => { loadData(getVariablesCalculadasPaginated, variablesCalculadas, 'variablesCalculadas'); }, [activeTab, variablesCalculadas.page]);
-  useEffect(() => { loadData(getFormulasCalculadasPaginated, formulas, 'formulas'); }, [activeTab, formulas.page]);
+  useEffect(() => { loadData(getModelosPaginated, formulas, 'formulas'); }, [activeTab, formulas.page]);
   useEffect(() => { loadData(getValoresFijosPaginated, valoresFijos, 'valoresFijos'); }, [activeTab, valoresFijos.page]);
   useEffect(() => { loadData(getKitsPaginated, kits, 'kits'); }, [activeTab, kits.page]);
 
@@ -186,12 +178,6 @@ export default function BasesDeDatosPage() {
           </button>
           <button className={`tab-button ${activeTab === 'productos' ? 'active' : ''}`} onClick={() => setActiveTab('productos')}>
             Productos
-          </button>
-          <button className={`tab-button ${activeTab === 'modelos' ? 'active' : ''}`} onClick={() => setActiveTab('modelos')}>
-            Modelos
-          </button>
-          <button className={`tab-button ${activeTab === 'variablesCalculadas' ? 'active' : ''}`} onClick={() => setActiveTab('variablesCalculadas')}>
-            Variables Calc.
           </button>
           <button className={`tab-button ${activeTab === 'formulas' ? 'active' : ''}`} onClick={() => setActiveTab('formulas')}>
             Fórmulas
@@ -293,54 +279,26 @@ export default function BasesDeDatosPage() {
           </div>
         )}
 
-        {activeTab === 'modelos' && (
-          <div className="tab-panel">
-            <h2>Modelos</h2>
-            <DataTable
-              data={modelos.data.data}
-              columns={[
-                { key: 'codigo', label: 'Código' },
-                { key: 'nombre', label: 'Nombre' },
-              ]}
-              loading={modelos.loading}
-              error={modelos.error}
-              page={modelos.data.page}
-              totalPages={modelos.data.totalPages}
-              total={modelos.data.total}
-              onPageChange={modelos.setPage}
-            />
-          </div>
-        )}
-
-        {activeTab === 'variablesCalculadas' && (
-          <div className="tab-panel">
-            <h2>Variables Calculadas</h2>
-            <DataTable
-              data={variablesCalculadas.data.data}
-              columns={[
-                { key: 'codigo', label: 'Código' },
-                { key: 'nombre', label: 'Nombre' },
-                { key: 'descripcion', label: 'Descripción' },
-              ]}
-              loading={variablesCalculadas.loading}
-              error={variablesCalculadas.error}
-              page={variablesCalculadas.data.page}
-              totalPages={variablesCalculadas.data.totalPages}
-              total={variablesCalculadas.data.total}
-              onPageChange={variablesCalculadas.setPage}
-            />
-          </div>
-        )}
-
         {activeTab === 'formulas' && (
           <div className="tab-panel">
-            <h2>Fórmulas Calculadas</h2>
+            <h2>Fórmulas</h2>
             <DataTable
               data={formulas.data.data}
               columns={[
-                { key: 'expresion', label: 'Expresión' },
-                { key: 'orden', label: 'Orden' },
-                { key: 'activa', label: 'Activa' },
+                { key: 'codigo', label: 'Modelo' },
+                { key: 'hpf1', label: 'HPF1' },
+                { key: 'hpf2', label: 'HPF2' },
+                { key: 'hpue', label: 'HPUE' },
+                { key: 'bpf1', label: 'BPF1' },
+                { key: 'bpf2', label: 'BPF2' },
+                { key: 'bpf3', label: 'BPF3' },
+                { key: 'bpf4', label: 'BPF4' },
+                { key: 'bpu1', label: 'BPU1' },
+                { key: 'bp2', label: 'BP2' },
+                { key: 'debi', label: 'DEBI' },
+                { key: 'htir', label: 'HTIR' },
+                { key: 'ckit', label: 'CKIT' },
+                { key: 'hkit', label: 'HKIT' },
               ]}
               loading={formulas.loading}
               error={formulas.error}

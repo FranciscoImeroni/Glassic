@@ -4,8 +4,8 @@ export class CreateCoordenadasPlanoDto {
   @IsUUID()
   modeloId: string;
 
-  @IsUUID()
-  variableId: string;
+  @IsString()
+  variableCodigo: string;
 
   @IsInt()
   x: number;

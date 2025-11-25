@@ -6,8 +6,6 @@ import type {
   Accesorio,
   Producto,
   Modelo,
-  VariableCalculada,
-  FormulaCalculada,
   ValorFijo,
   Kit,
   PaginatedResponse,
@@ -19,8 +17,6 @@ import {
   getAccesoriosPaginated,
   getProductosPaginated,
   getModelosPaginated,
-  getVariablesCalculadasPaginated,
-  getFormulasCalculadasPaginated,
   getValoresFijosPaginated,
   getKitsPaginated,
   createVidrio,
@@ -29,14 +25,12 @@ import {
   createAccesorio,
   createProducto,
   createModelo,
-  createVariableCalculada,
-  createFormulaCalculada,
   createValorFijo,
   createKit,
 } from '../../api';
 import './AdminBasesDeDatosPage.css';
 
-type TabType = 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos' | 'modelos' | 'variablesCalculadas' | 'formulas' | 'valoresFijos' | 'kits';
+type TabType = 'vidrios' | 'servicios' | 'herrajes' | 'accesorios' | 'productos' | 'formulas' | 'valoresFijos' | 'kits';
 
 interface DataTableProps<T> {
   data: T[];
@@ -212,32 +206,8 @@ export default function AdminBasesDeDatosPage() {
     espVidrio: 6,
   });
 
-  // Estados para Modelos
-  const [modelosData, setModelosData] = useState<PaginatedResponse<Modelo>>({
-    data: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-  });
-  const [modelosPage, setModelosPage] = useState(1);
-  const [modelosLoading, setModelosLoading] = useState(false);
-  const [modelosError, setModelosError] = useState<string | null>(null);
-  const [formModelo, setFormModelo] = useState({ codigo: '', descripcion: '' });
-
-  // Estados para Variables Calculadas
-  const [variablesCalculadasData, setVariablesCalculadasData] = useState<PaginatedResponse<VariableCalculada>>({
-    data: [],
-    total: 0,
-    page: 1,
-    totalPages: 0,
-  });
-  const [variablesCalculadasPage, setVariablesCalculadasPage] = useState(1);
-  const [variablesCalculadasLoading, setVariablesCalculadasLoading] = useState(false);
-  const [variablesCalculadasError, setVariablesCalculadasError] = useState<string | null>(null);
-  const [formVariableCalculada, setFormVariableCalculada] = useState({ codigo: '', descripcion: '', tipoSalida: 'number' as 'number' | 'string' });
-
-  // Estados para Fórmulas Calculadas
-  const [formulasData, setFormulasData] = useState<PaginatedResponse<FormulaCalculada>>({
+  // Estados para Fórmulas (antes Modelos)
+  const [formulasData, setFormulasData] = useState<PaginatedResponse<Modelo>>({
     data: [],
     total: 0,
     page: 1,
@@ -247,11 +217,21 @@ export default function AdminBasesDeDatosPage() {
   const [formulasLoading, setFormulasLoading] = useState(false);
   const [formulasError, setFormulasError] = useState<string | null>(null);
   const [formFormula, setFormFormula] = useState({
-    modeloId: '',
-    variableId: '',
-    expresion: '',
-    orden: 0,
-    activa: true,
+    codigo: '',
+    descripcion: '',
+    hpf1: '',
+    hpf2: '',
+    hpue: '',
+    bpf1: '',
+    bpf2: '',
+    bpf3: '',
+    bpf4: '',
+    bpu1: '',
+    bp2: '',
+    debi: '',
+    htir: '',
+    ckit: '',
+    hkit: '',
   });
 
   // Estados para Valores Fijos
@@ -346,37 +326,11 @@ export default function AdminBasesDeDatosPage() {
         }
         break;
 
-      case 'modelos':
-        setModelosLoading(true);
-        setModelosError(null);
-        try {
-          const result = await getModelosPaginated(modelosPage, 20);
-          setModelosData(result);
-        } catch (err) {
-          setModelosError(err instanceof Error ? err.message : 'Error desconocido');
-        } finally {
-          setModelosLoading(false);
-        }
-        break;
-
-      case 'variablesCalculadas':
-        setVariablesCalculadasLoading(true);
-        setVariablesCalculadasError(null);
-        try {
-          const result = await getVariablesCalculadasPaginated(variablesCalculadasPage, 20);
-          setVariablesCalculadasData(result);
-        } catch (err) {
-          setVariablesCalculadasError(err instanceof Error ? err.message : 'Error desconocido');
-        } finally {
-          setVariablesCalculadasLoading(false);
-        }
-        break;
-
       case 'formulas':
         setFormulasLoading(true);
         setFormulasError(null);
         try {
-          const result = await getFormulasCalculadasPaginated(formulasPage, 20);
+          const result = await getModelosPaginated(formulasPage, 20);
           setFormulasData(result);
         } catch (err) {
           setFormulasError(err instanceof Error ? err.message : 'Error desconocido');
@@ -422,8 +376,6 @@ export default function AdminBasesDeDatosPage() {
     herrajesPage,
     accesoriosPage,
     productosPage,
-    modelosPage,
-    variablesCalculadasPage,
     formulasPage,
     valoresFijosPage,
     kitsPage,
@@ -443,9 +395,23 @@ export default function AdminBasesDeDatosPage() {
     setFormHerraje({ color: '' });
     setFormAccesorio({ descripcion: '' });
     setFormProducto({ linea: '', serie: '', modelo: '', varVi: '', codIvi: '', espVidrio: 6 });
-    setFormModelo({ codigo: '', descripcion: '' });
-    setFormVariableCalculada({ codigo: '', descripcion: '', tipoSalida: 'number' as 'number' | 'string' });
-    setFormFormula({ modeloId: '', variableId: '', expresion: '', orden: 0, activa: true });
+    setFormFormula({
+      codigo: '',
+      descripcion: '',
+      hpf1: '',
+      hpf2: '',
+      hpue: '',
+      bpf1: '',
+      bpf2: '',
+      bpf3: '',
+      bpf4: '',
+      bpu1: '',
+      bp2: '',
+      debi: '',
+      htir: '',
+      ckit: '',
+      hkit: '',
+    });
     setFormValorFijo({ codigo: '', descripcion: '', valorMm: 0 });
     setFormKit({ codigo: '', serieMampara: '', nombreKit: '' });
   };
@@ -480,19 +446,25 @@ export default function AdminBasesDeDatosPage() {
           setFormProducto({ linea: '', serie: '', modelo: '', varVi: '', codIvi: '', espVidrio: 6 });
           break;
 
-        case 'modelos':
-          await createModelo(formModelo);
-          setFormModelo({ codigo: '', descripcion: '' });
-          break;
-
-        case 'variablesCalculadas':
-          await createVariableCalculada(formVariableCalculada);
-          setFormVariableCalculada({ codigo: '', descripcion: '', tipoSalida: 'number' as 'number' | 'string' });
-          break;
-
         case 'formulas':
-          await createFormulaCalculada(formFormula);
-          setFormFormula({ modeloId: '', variableId: '', expresion: '', orden: 0, activa: true });
+          await createModelo(formFormula);
+          setFormFormula({
+            codigo: '',
+            descripcion: '',
+            hpf1: '',
+            hpf2: '',
+            hpue: '',
+            bpf1: '',
+            bpf2: '',
+            bpf3: '',
+            bpf4: '',
+            bpu1: '',
+            bp2: '',
+            debi: '',
+            htir: '',
+            ckit: '',
+            hkit: '',
+          });
           break;
 
         case 'valoresFijos':
@@ -569,24 +541,6 @@ export default function AdminBasesDeDatosPage() {
             }}
           >
             Productos
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'modelos' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('modelos');
-              setShowForm(false);
-            }}
-          >
-            Modelos
-          </button>
-          <button
-            className={`tab-button ${activeTab === 'variablesCalculadas' ? 'active' : ''}`}
-            onClick={() => {
-              setActiveTab('variablesCalculadas');
-              setShowForm(false);
-            }}
-          >
-            Var. Calc.
           </button>
           <button
             className={`tab-button ${activeTab === 'formulas' ? 'active' : ''}`}
@@ -756,14 +710,14 @@ export default function AdminBasesDeDatosPage() {
               </div>
             )}
 
-            {activeTab === 'modelos' && (
+            {activeTab === 'formulas' && (
               <div className="form-fields">
                 <label>
                   Código:
                   <input
                     type="text"
-                    value={formModelo.codigo}
-                    onChange={(e) => setFormModelo({ ...formModelo, codigo: e.target.value })}
+                    value={formFormula.codigo}
+                    onChange={(e) => setFormFormula({ ...formFormula, codigo: e.target.value })}
                     placeholder="Ej: 1000-d"
                   />
                 </label>
@@ -771,92 +725,127 @@ export default function AdminBasesDeDatosPage() {
                   Descripción:
                   <input
                     type="text"
-                    value={formModelo.descripcion}
-                    onChange={(e) => setFormModelo({ ...formModelo, descripcion: e.target.value })}
+                    value={formFormula.descripcion}
+                    onChange={(e) => setFormFormula({ ...formFormula, descripcion: e.target.value })}
                     placeholder="Ej: Modelo 1000-d"
                   />
                 </label>
-              </div>
-            )}
-
-            {activeTab === 'variablesCalculadas' && (
-              <div className="form-fields">
                 <label>
-                  Código:
+                  HPF1:
                   <input
                     type="text"
-                    value={formVariableCalculada.codigo}
-                    onChange={(e) => setFormVariableCalculada({ ...formVariableCalculada, codigo: e.target.value })}
-                    placeholder="Ej: CAR1"
+                    value={formFormula.hpf1}
+                    onChange={(e) => setFormFormula({ ...formFormula, hpf1: e.target.value })}
+                    placeholder="Ej: ALT1-10"
                   />
                 </label>
                 <label>
-                  Descripción:
+                  HPF2:
                   <input
                     type="text"
-                    value={formVariableCalculada.descripcion}
-                    onChange={(e) => setFormVariableCalculada({ ...formVariableCalculada, descripcion: e.target.value })}
-                    placeholder="Ej: Medida de carpintería"
+                    value={formFormula.hpf2}
+                    onChange={(e) => setFormFormula({ ...formFormula, hpf2: e.target.value })}
+                    placeholder="Ej: HPF1+20"
                   />
                 </label>
                 <label>
-                  Tipo de Salida:
-                  <select
-                    value={formVariableCalculada.tipoSalida}
-                    onChange={(e) => setFormVariableCalculada({ ...formVariableCalculada, tipoSalida: e.target.value as 'number' | 'string' })}
-                  >
-                    <option value="number">Number</option>
-                    <option value="string">String</option>
-                  </select>
-                </label>
-              </div>
-            )}
-
-            {activeTab === 'formulas' && (
-              <div className="form-fields">
-                <label>
-                  Modelo ID:
+                  HPUE:
                   <input
                     type="text"
-                    value={formFormula.modeloId}
-                    onChange={(e) => setFormFormula({ ...formFormula, modeloId: e.target.value })}
-                    placeholder="UUID del modelo"
+                    value={formFormula.hpue}
+                    onChange={(e) => setFormFormula({ ...formFormula, hpue: e.target.value })}
+                    placeholder="Ej: ALT1-50"
                   />
                 </label>
                 <label>
-                  Variable ID:
+                  BPF1:
                   <input
                     type="text"
-                    value={formFormula.variableId}
-                    onChange={(e) => setFormFormula({ ...formFormula, variableId: e.target.value })}
-                    placeholder="UUID de la variable"
+                    value={formFormula.bpf1}
+                    onChange={(e) => setFormFormula({ ...formFormula, bpf1: e.target.value })}
+                    placeholder="Ej: VAN0-20"
                   />
                 </label>
                 <label>
-                  Expresión:
+                  BPF2:
                   <input
                     type="text"
-                    value={formFormula.expresion}
-                    onChange={(e) => setFormFormula({ ...formFormula, expresion: e.target.value })}
-                    placeholder="Ej: ALT1 + VAN0"
+                    value={formFormula.bpf2}
+                    onChange={(e) => setFormFormula({ ...formFormula, bpf2: e.target.value })}
+                    placeholder="Ej: BPF1+10"
                   />
                 </label>
                 <label>
-                  Orden:
+                  BPF3:
                   <input
-                    type="number"
-                    value={formFormula.orden}
-                    onChange={(e) => setFormFormula({ ...formFormula, orden: parseInt(e.target.value) || 0 })}
-                    placeholder="Ej: 1"
+                    type="text"
+                    value={formFormula.bpf3}
+                    onChange={(e) => setFormFormula({ ...formFormula, bpf3: e.target.value })}
+                    placeholder="Ej: BPF2-5"
                   />
                 </label>
                 <label>
+                  BPF4:
                   <input
-                    type="checkbox"
-                    checked={formFormula.activa}
-                    onChange={(e) => setFormFormula({ ...formFormula, activa: e.target.checked })}
+                    type="text"
+                    value={formFormula.bpf4}
+                    onChange={(e) => setFormFormula({ ...formFormula, bpf4: e.target.value })}
+                    placeholder="Ej: BPF3+15"
                   />
-                  Activa
+                </label>
+                <label>
+                  BPU1:
+                  <input
+                    type="text"
+                    value={formFormula.bpu1}
+                    onChange={(e) => setFormFormula({ ...formFormula, bpu1: e.target.value })}
+                    placeholder="Ej: VAN0-30"
+                  />
+                </label>
+                <label>
+                  BP2:
+                  <input
+                    type="text"
+                    value={formFormula.bp2}
+                    onChange={(e) => setFormFormula({ ...formFormula, bp2: e.target.value })}
+                    placeholder="Ej: BPU1+5"
+                  />
+                </label>
+                <label>
+                  DEBI:
+                  <input
+                    type="text"
+                    value={formFormula.debi}
+                    onChange={(e) => setFormFormula({ ...formFormula, debi: e.target.value })}
+                    placeholder="Ej: VAN0"
+                  />
+                </label>
+                <label>
+                  HTIR:
+                  <input
+                    type="text"
+                    value={formFormula.htir}
+                    onChange={(e) => setFormFormula({ ...formFormula, htir: e.target.value })}
+                    placeholder="Ej: ALT1-100"
+                  />
+                </label>
+                <label>
+                  CKIT:
+                  <input
+                    type="text"
+                    value={formFormula.ckit}
+                    onChange={(e) => setFormFormula({ ...formFormula, ckit: e.target.value })}
+                    placeholder="Ej: A01000"
+                  />
+                </label>
+                <label>
+                  HKIT:
+                  <input
+                    type="text"
+                    value={formFormula.hkit}
+                    onChange={(e) => setFormFormula({ ...formFormula, hkit: e.target.value })}
+                    placeholder="Ej: 1000"
+                  />
                 </label>
               </div>
             )}
@@ -1032,56 +1021,26 @@ export default function AdminBasesDeDatosPage() {
           </div>
         )}
 
-        {activeTab === 'modelos' && (
-          <div className="tab-panel">
-            <h2>Modelos</h2>
-            <DataTable
-              data={modelosData.data}
-              columns={[
-                { key: 'codigo', label: 'Código' },
-                { key: 'descripcion', label: 'Descripción' },
-              ]}
-              loading={modelosLoading}
-              error={modelosError}
-              page={modelosData.page}
-              totalPages={modelosData.totalPages}
-              total={modelosData.total}
-              onPageChange={setModelosPage}
-              onAddNew={handleAddNew}
-            />
-          </div>
-        )}
-
-        {activeTab === 'variablesCalculadas' && (
-          <div className="tab-panel">
-            <h2>Variables Calculadas</h2>
-            <DataTable
-              data={variablesCalculadasData.data}
-              columns={[
-                { key: 'codigo', label: 'Código' },
-                { key: 'descripcion', label: 'Descripción' },
-                { key: 'tipoSalida', label: 'Tipo' },
-              ]}
-              loading={variablesCalculadasLoading}
-              error={variablesCalculadasError}
-              page={variablesCalculadasData.page}
-              totalPages={variablesCalculadasData.totalPages}
-              total={variablesCalculadasData.total}
-              onPageChange={setVariablesCalculadasPage}
-              onAddNew={handleAddNew}
-            />
-          </div>
-        )}
-
         {activeTab === 'formulas' && (
           <div className="tab-panel">
-            <h2>Fórmulas Calculadas</h2>
+            <h2>Fórmulas</h2>
             <DataTable
               data={formulasData.data}
               columns={[
-                { key: 'expresion', label: 'Expresión' },
-                { key: 'orden', label: 'Orden' },
-                { key: 'activa', label: 'Activa' },
+                { key: 'codigo', label: 'Modelo' },
+                { key: 'hpf1', label: 'HPF1' },
+                { key: 'hpf2', label: 'HPF2' },
+                { key: 'hpue', label: 'HPUE' },
+                { key: 'bpf1', label: 'BPF1' },
+                { key: 'bpf2', label: 'BPF2' },
+                { key: 'bpf3', label: 'BPF3' },
+                { key: 'bpf4', label: 'BPF4' },
+                { key: 'bpu1', label: 'BPU1' },
+                { key: 'bp2', label: 'BP2' },
+                { key: 'debi', label: 'DEBI' },
+                { key: 'htir', label: 'HTIR' },
+                { key: 'ckit', label: 'CKIT' },
+                { key: 'hkit', label: 'HKIT' },
               ]}
               loading={formulasLoading}
               error={formulasError}

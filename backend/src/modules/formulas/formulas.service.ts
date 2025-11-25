@@ -1,77 +1,18 @@
 import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { VariableCalculada } from './entities/formula.entity';
 import { Modelo } from './entities/modelo.entity';
-import { FormulaCalculada } from './entities/formula-calculada.entity';
-import { CreateVariableCalculadaDto } from './dto/create-formula.dto';
-import { UpdateVariableCalculadaDto } from './dto/update-formula.dto';
 import { CreateModeloDto } from './dto/create-modelo.dto';
 import { UpdateModeloDto } from './dto/update-modelo.dto';
-import { CreateFormulaCalculadaDto } from './dto/create-formula-calculada.dto';
-import { UpdateFormulaCalculadaDto } from './dto/update-formula-calculada.dto';
 import { CalcularFormulasDto } from './dto/calcular-formulas.dto';
 const FormulaParser = require('hot-formula-parser').Parser;
 
 @Injectable()
 export class FormulasService {
   constructor(
-    @InjectRepository(VariableCalculada)
-    private variablesRepository: Repository<VariableCalculada>,
     @InjectRepository(Modelo)
     private modelosRepository: Repository<Modelo>,
-    @InjectRepository(FormulaCalculada)
-    private formulasCalculadasRepository: Repository<FormulaCalculada>,
   ) {}
-
-  // VARIABLES CALCULADAS
-  async createVariable(createVariableDto: CreateVariableCalculadaDto): Promise<VariableCalculada> {
-    const variable = this.variablesRepository.create(createVariableDto);
-    return await this.variablesRepository.save(variable);
-  }
-
-  async findAllVariables(): Promise<VariableCalculada[]> {
-    return await this.variablesRepository.find({
-      relations: ['formulas'],
-    });
-  }
-
-  async findVariablesPaginated(page: number = 1, limit: number = 20): Promise<{ data: VariableCalculada[], total: number, page: number, totalPages: number }> {
-    const skip = (page - 1) * limit;
-
-    const [data, total] = await this.variablesRepository.findAndCount({
-      skip,
-      take: limit,
-      order: { codigo: 'ASC' }
-    });
-
-    return {
-      data,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit)
-    };
-  }
-
-  async findOneVariable(id: string): Promise<VariableCalculada> {
-    const variable = await this.variablesRepository.findOne({
-      where: { id },
-      relations: ['formulas'],
-    });
-    if (!variable) {
-      throw new NotFoundException(`Variable calculada con ID ${id} no encontrada`);
-    }
-    return variable;
-  }
-
-  async updateVariable(id: string, updateVariableDto: UpdateVariableCalculadaDto): Promise<VariableCalculada> {
-    await this.variablesRepository.update(id, updateVariableDto);
-    return this.findOneVariable(id);
-  }
-
-  async removeVariable(id: string): Promise<void> {
-    await this.variablesRepository.delete(id);
-  }
 
   // MODELOS
   async createModelo(createModeloDto: CreateModeloDto): Promise<Modelo> {
@@ -80,9 +21,7 @@ export class FormulasService {
   }
 
   async findAllModelos(): Promise<Modelo[]> {
-    return await this.modelosRepository.find({
-      relations: ['formulas'],
-    });
+    return await this.modelosRepository.find();
   }
 
   async findModelosPaginated(page: number = 1, limit: number = 20): Promise<{ data: Modelo[], total: number, page: number, totalPages: number }> {
@@ -105,7 +44,6 @@ export class FormulasService {
   async findOneModelo(id: string): Promise<Modelo> {
     const modelo = await this.modelosRepository.findOne({
       where: { id },
-      relations: ['formulas'],
     });
     if (!modelo) {
       throw new NotFoundException(`Modelo con ID ${id} no encontrado`);
@@ -122,74 +60,12 @@ export class FormulasService {
     await this.modelosRepository.delete(id);
   }
 
-  // FORMULAS CALCULADAS
-  async createFormulaCalculada(createFormulaDto: CreateFormulaCalculadaDto): Promise<FormulaCalculada> {
-    const formula = this.formulasCalculadasRepository.create(createFormulaDto);
-    return await this.formulasCalculadasRepository.save(formula);
-  }
-
-  async findAllFormulasCalculadas(): Promise<FormulaCalculada[]> {
-    return await this.formulasCalculadasRepository.find({
-      relations: ['modelo', 'variable'],
-    });
-  }
-
-  async findFormulasCalculadasPaginated(page: number = 1, limit: number = 20): Promise<{ data: FormulaCalculada[], total: number, page: number, totalPages: number }> {
-    const skip = (page - 1) * limit;
-
-    const [data, total] = await this.formulasCalculadasRepository.findAndCount({
-      skip,
-      take: limit,
-      relations: ['modelo', 'variable'],
-      order: { orden: 'ASC' }
-    });
-
-    return {
-      data,
-      total,
-      page,
-      totalPages: Math.ceil(total / limit)
-    };
-  }
-
-  async findOneFormulaCalculada(id: string): Promise<FormulaCalculada> {
-    const formula = await this.formulasCalculadasRepository.findOne({
-      where: { id },
-      relations: ['modelo', 'variable'],
-    });
-    if (!formula) {
-      throw new NotFoundException(`Fórmula calculada con ID ${id} no encontrada`);
-    }
-    return formula;
-  }
-
-  async findFormulasByModelo(modeloId: string): Promise<FormulaCalculada[]> {
-    return await this.formulasCalculadasRepository.find({
-      where: { modeloId, activa: true },
-      relations: ['variable'],
-      order: { orden: 'ASC' },
-    });
-  }
-
-  async updateFormulaCalculada(id: string, updateFormulaDto: UpdateFormulaCalculadaDto): Promise<FormulaCalculada> {
-    await this.formulasCalculadasRepository.update(id, updateFormulaDto);
-    return this.findOneFormulaCalculada(id);
-  }
-
-  async removeFormulaCalculada(id: string): Promise<void> {
-    await this.formulasCalculadasRepository.delete(id);
-  }
-
   // CALCULAR FORMULAS
   async calcularFormulas(calcularDto: CalcularFormulasDto): Promise<{ valoresCalculados: Record<string, number | string> }> {
     const { modeloId, valoresEntrada } = calcularDto;
 
-    // Obtener las fórmulas del modelo ordenadas por orden
-    const formulas = await this.findFormulasByModelo(modeloId);
-
-    if (formulas.length === 0) {
-      return { valoresCalculados: {} };
-    }
+    // Obtener el modelo
+    const modelo = await this.findOneModelo(modeloId);
 
     // Crear parser de hot-formula-parser
     const parser = new FormulaParser();
@@ -202,8 +78,31 @@ export class FormulasService {
       parser.setVariable(key, value);
     }
 
+    // Definir las fórmulas en orden
+    const formulas = [
+      { codigo: 'HPF1', expresion: modelo.hpf1 },
+      { codigo: 'HPF2', expresion: modelo.hpf2 },
+      { codigo: 'HPUE', expresion: modelo.hpue },
+      { codigo: 'BPF1', expresion: modelo.bpf1 },
+      { codigo: 'BPF2', expresion: modelo.bpf2 },
+      { codigo: 'BPF3', expresion: modelo.bpf3 },
+      { codigo: 'BPF4', expresion: modelo.bpf4 },
+      { codigo: 'BPU1', expresion: modelo.bpu1 },
+      { codigo: 'BP2', expresion: modelo.bp2 },
+      { codigo: 'DEBI', expresion: modelo.debi },
+      { codigo: 'HTIR', expresion: modelo.htir },
+      { codigo: 'CKIT', expresion: modelo.ckit },
+      { codigo: 'HKIT', expresion: modelo.hkit },
+    ];
+
+    const valoresCalculados: Record<string, number | string> = {};
+
     // Procesar cada fórmula en orden
     for (const formula of formulas) {
+      if (!formula.expresion) {
+        continue; // Saltar si no hay fórmula definida
+      }
+
       try {
         // Convertir la expresión de sintaxis Excel española (;) a inglesa (,)
         let expresion = formula.expresion.replace(/;/g, ',');
@@ -219,30 +118,22 @@ export class FormulasService {
 
         if (resultado.error) {
           throw new BadRequestException(
-            `Error al calcular fórmula para variable ${formula.variable.codigo}: ${resultado.error}`
+            `Error al calcular fórmula para variable ${formula.codigo}: ${resultado.error}`
           );
         }
 
-        // Guardar el resultado en el contexto
+        // Guardar el resultado
         const valor = resultado.result;
-        contexto[formula.variable.codigo] = valor;
+        valoresCalculados[formula.codigo] = valor;
+        contexto[formula.codigo] = valor;
 
         // Actualizar la variable en el parser para las siguientes fórmulas
-        parser.setVariable(formula.variable.codigo, valor);
+        parser.setVariable(formula.codigo, valor);
 
       } catch (error) {
         throw new BadRequestException(
-          `Error procesando fórmula para variable ${formula.variable.codigo}: ${error.message}`
+          `Error procesando fórmula para variable ${formula.codigo}: ${error.message}`
         );
-      }
-    }
-
-    // Filtrar solo los valores calculados (quitar los de entrada)
-    const valoresCalculados: Record<string, number | string> = {};
-    for (const formula of formulas) {
-      const codigo = formula.variable.codigo;
-      if (codigo in contexto) {
-        valoresCalculados[codigo] = contexto[codigo];
       }
     }
 
