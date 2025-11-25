@@ -118,11 +118,11 @@ function DataTable<T>({
                       <td key={String(col.key)}>{String(row[col.key] || '-')}</td>
                     ))}
                     <td className="actions-cell">
-                      <button className="btn-edit" onClick={() => onEdit(row)} title="Editar">
-                        ✏️
+                      <button className="btn-edit" onClick={() => onEdit(row)}>
+                        Editar
                       </button>
-                      <button className="btn-delete" onClick={() => onDelete(row)} title="Eliminar">
-                        🗑️
+                      <button className="btn-delete" onClick={() => onDelete(row)}>
+                        Eliminar
                       </button>
                     </td>
                   </tr>
@@ -1141,7 +1141,6 @@ export default function AdminBasesDeDatosPage() {
         {/* Tablas de datos */}
         {activeTab === 'vidrios' && (
           <div className="tab-panel">
-            <h2>Vidrios</h2>
             <DataTable
               data={vidriosData.data}
               columns={[
@@ -1163,7 +1162,6 @@ export default function AdminBasesDeDatosPage() {
 
         {activeTab === 'servicios' && (
           <div className="tab-panel">
-            <h2>Servicios</h2>
             <DataTable
               data={serviciosData.data}
               columns={[{ key: 'nombre', label: 'Nombre' }]}
@@ -1182,7 +1180,6 @@ export default function AdminBasesDeDatosPage() {
 
         {activeTab === 'herrajes' && (
           <div className="tab-panel">
-            <h2>Herrajes</h2>
             <DataTable
               data={herrajesData.data}
               columns={[{ key: 'color', label: 'Color' }]}
@@ -1201,7 +1198,6 @@ export default function AdminBasesDeDatosPage() {
 
         {activeTab === 'accesorios' && (
           <div className="tab-panel">
-            <h2>Accesorios</h2>
             <DataTable
               data={accesoriosData.data}
               columns={[{ key: 'descripcion', label: 'Descripción' }]}
@@ -1220,7 +1216,6 @@ export default function AdminBasesDeDatosPage() {
 
         {activeTab === 'productos' && (
           <div className="tab-panel">
-            <h2>Productos</h2>
             <DataTable
               data={productosData.data}
               columns={[
@@ -1246,7 +1241,6 @@ export default function AdminBasesDeDatosPage() {
 
         {activeTab === 'formulas' && (
           <div className="tab-panel">
-            <h2>Fórmulas</h2>
             <DataTable
               data={formulasData.data}
               columns={[
@@ -1280,7 +1274,6 @@ export default function AdminBasesDeDatosPage() {
 
         {activeTab === 'valoresFijos' && (
           <div className="tab-panel">
-            <h2>Valores Fijos</h2>
             <DataTable
               data={valoresFijosData.data}
               columns={[
@@ -1303,7 +1296,6 @@ export default function AdminBasesDeDatosPage() {
 
         {activeTab === 'kits' && (
           <div className="tab-panel">
-            <h2>Kits</h2>
             <DataTable
               data={kitsData.data}
               columns={[
