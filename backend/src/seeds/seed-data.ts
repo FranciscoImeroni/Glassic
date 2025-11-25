@@ -20,7 +20,7 @@ async function seed() {
     url: process.env.DATABASE_URL,
     entities: ['src/**/*.entity.ts'],
     synchronize: false,
-    ssl: {
+    ssl: process.env.DATABASE_URL?.includes('localhost') ? false : {
       rejectUnauthorized: false,
     },
   });
